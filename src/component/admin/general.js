@@ -53,7 +53,7 @@ const Car = () => {
                        </div>
                     </Col>
                     <Col >
-                        sd
+                        test 56
                 </Col>
                 </Row>
             </Card>
