@@ -60,7 +60,7 @@ const FromRequest = () => {
     return (
         <div>
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
-            <div className='margin font'>
+            <div className='margin fontForm'>
                 <Row justify='center'> <h2 style={{ marginTop: '8px' }}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
                     initialValues={{ driver: 'yes' }}
@@ -95,7 +95,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='font'>ชื่อ - นามสกุล (Full Name)</p>
+                            <p className='fontForm'>ชื่อ - นามสกุล (Full Name)</p>
                             <Form.Item
                                 name="fullname"
                                 rules={[
@@ -108,7 +108,7 @@ const FromRequest = () => {
                                     }]} >
                                 <Input placeholder="ชื่อ - นามสกุล (Full Name)" />
                             </Form.Item>
-                            <p className='font'>โทรศัพท์มือถือ (Mobile Phone Number)</p>
+                            <p className='fontForm'>โทรศัพท์มือถือ (Mobile Phone Number)</p>
                             <Form.Item
                                 name="mobile_phone"
                                 rules={[
@@ -122,7 +122,7 @@ const FromRequest = () => {
                                     }]} >
                                 <Input onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
                             </Form.Item>
-                            <p className='font'>วันที่ต้องการ (Date Required)</p>
+                            <p className='fontForm'>วันที่ต้องการ (Date Required)</p>
                             <Form.Item
                                 name="date"
                                 rules={[
@@ -137,7 +137,7 @@ const FromRequest = () => {
                                     onChange={onChange} />
 
                             </Form.Item>
-                            <p className='font'>ประเภทรถ (Type of car)</p>
+                            <p className='fontForm'>ประเภทรถ (Type of car)</p>
                             <Form.Item
                                 name="car_type"
                                 rules={[
@@ -154,7 +154,7 @@ const FromRequest = () => {
                                 </Select>
 
                             </Form.Item>
-                            <p className='font'>สถานที่ไป (Place)</p>
+                            <p className='fontForm'>สถานที่ไป (Place)</p>
                             <Form.Item
                                 name="place"
                                 rules={[
@@ -171,7 +171,7 @@ const FromRequest = () => {
 
 
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='font'>แผนก/ฝ่าย (Sect./Dept.)</p>
+                            <p className='fontForm'>แผนก/ฝ่าย (Sect./Dept.)</p>
                             <Form.Item
                                 name="department"
                                 rules={[
@@ -185,7 +185,7 @@ const FromRequest = () => {
                                     <Option value="Yiminghe">yiminghe</Option>
                                 </Select>
                             </Form.Item>
-                            <p className='font'>โทรศัพท์ภายใน (Telephone Number)</p>
+                            <p className='fontForm'>โทรศัพท์ภายใน (Telephone Number)</p>
                             <Form.Item
                                 name="company_phone"
                                 rules={[
@@ -195,7 +195,7 @@ const FromRequest = () => {
                                     },]} >
                                 <Input placeholder="โทรศัพท์ภายใน (Telephone Number)" />
                             </Form.Item>
-                            <p className='font'>เวลา (Time)</p>
+                            <p className='fontForm'>เวลา (Time)</p>
                             <Form.Item
                                 name="time"
                                 rules={[
@@ -207,7 +207,7 @@ const FromRequest = () => {
 
                                 />
                             </Form.Item>
-                            <p className='font'>จำนวนคน (Amount)</p>
+                            <p className='fontForm'>จำนวนคน (Amount)</p>
                             <Form.Item
                                 name="amout"
                                 rules={[
@@ -222,7 +222,7 @@ const FromRequest = () => {
                                     <Option value="Yiminghe">yiminghe</Option>
                                 </Select>
                             </Form.Item>
-                            <p className='font'>จังหวัด</p>
+                            <p className='fontForm'>จังหวัด</p>
                             <Form.Item
                                 name="province"
                                 rules={[
@@ -242,7 +242,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 6 }} sm={{ span: 4 }} >
-                            <p className='font'>ต้องการคนขับรถ<br />(Driver Required)</p>
+                            <p className='fontForm'>ต้องการคนขับรถ<br />(Driver Required)</p>
 
                         </Col>
                         <Col xs={{ span: 6 }} sm={{ span: 4 }} >
@@ -261,7 +261,7 @@ const FromRequest = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                            <p className='font'>อีเมลล์ของหัวหน้า (Manager's Email)</p>
+                            <p className='fontForm'>อีเมลล์ของหัวหน้า (Manager's Email)</p>
                             <Form.Item
                                 name="manager_email"
                                 rules={[
@@ -280,7 +280,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='font'>เหตุผลที่ต้องการใช้รถ (Purpos of using vehicle)</p>
+                            <p className='fontForm'>เหตุผลที่ต้องการใช้รถ (Purpos of using vehicle)</p>
                             <Form.Item
                                 name="purpos"
                                 rules={[
@@ -299,7 +299,7 @@ const FromRequest = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                        <p className='font'>ระบุ</p>
+                        <p className='fontForm'>ระบุ</p>
                             <Form.Item
                                 name="other_purpos"
                                 rules={[
@@ -313,7 +313,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 24 }} sm={{ span: 16 }} >
-                            <p className='font'>รายละเอียดอื่น ๆ (Other comment)</p>
+                            <p className='fontForm'>รายละเอียดอื่น ๆ (Other comment)</p>
                             <Form.Item
                                 name="comment"
                             >

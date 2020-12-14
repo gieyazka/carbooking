@@ -10,6 +10,15 @@
 .btn{
     width:20%;
 }
+.fontForm{
+    /* margin-top : -12px ; */
+    font-family: Bai Jamjuree;
+font-style: normal;
+font-weight: 500;
+font-size: 1vw;
+line-height: 140%;
+/* color: rgba(255, 255, 255, 0.87); */
+}
 .font{
     /* margin-top : -12px ; */
     font-family: Bai Jamjuree;
@@ -40,17 +49,56 @@ color: rgba(0, 0, 0, 0.6);
      border-radius: 20px ;
         margin-bottom : 2% ;
       color: white ;
+      
+}
+.dragicon1{
+    position: absolute;
+    right: 0;
+}
+.selectWidth {
+    width: 100%;
+    /* height: ; */
+}
+.fontGeneralBtn{
+    font-size: 1vw;
+    height: auto ;
+}
+.posGeneralBtn  {
+    position: absolute ; 
+    top: 50% ;
+    /* left : 50% ; */
+    transform: translate(0%,-50%)  ;
+}
+
+.ScrollCar {
+    /* margin-top : 20px; */
+    width: 100%;
+    height: calc(93vh - 64px);
+
+    overflow: auto;
 }
 /* mobile */
 @media only screen and (max-width: 600px) {
+
+    .selectWidth {
+        width: auto;
+    }
     .cardMobile {
         display: inline-block;
         margin-right : 4% ;
+        width : 100%;
+        padding-right: 20px;
     }
     .horizonScroll {
         overflow-x: scroll;
         overflow-y: hidden;
         white-space: nowrap;
+    }
+    .Scroll {
+        margin-top : 20px;
+        width: 100%;
+        height: 24vh;
+        overflow: auto;
     }
     .margin {
         margin-left: 16px ;
@@ -60,13 +108,43 @@ color: rgba(0, 0, 0, 0.6);
         width:auto;
     }
     .font{
-        font-size: 14px;
+        font-size: 1.5vh;
+    }
+    .carfont{
+        font-size: 2vh;
+    }
+    .dragicon1{
+        position: relative;
+    right: '0%';
+    
+    }
+    .dragRequest{
+        display: flex;
+    /* right: '0%'; */
+    }
+    /* .dragReques>div{
+        width: 100%;
+    } */
+    .fontGeneralBtn{
+        /* margin-top : 12% ; */
+        font-size: 3vw;
+        height: auto;
+    }
+    .posGeneralBtn  {
+        margin-top: 8px;
+        position: relative ; 
+     
+    }
+    .ScrollCar {
+        /* margin-top : 20px; */
+        width: 100%;
+        height: auto;
     }
   }
   
   
   /* tablet or pc */
-  @media only screen and (min-width: 576) {
+  @media only screen and (min-width: 1367px) {
   
     .margin {
         margin-left: 120px ;
@@ -76,4 +154,13 @@ color: rgba(0, 0, 0, 0.6);
     .btn{
         width:20%;
     }
+  }
+  @media only screen and (max-width: 1367px) {
+  
+    .margin {
+        margin-left: 40px ;
+        margin-right: 40px 
+    }
+
+    
   }

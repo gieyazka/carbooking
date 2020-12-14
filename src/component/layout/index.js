@@ -72,9 +72,9 @@ const AppLayout = () => {
                 <Content
                     className="site-layout-background"
                     style={{
-                        margin: '24px 16px',
-                        padding: 24,
-                        minHeight: '100vh',
+                      
+                        paddingTop: 8,
+                        minHeight: '80vh',
                     }}
                 >
 
