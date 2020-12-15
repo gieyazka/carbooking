@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import Formrequest from '../form/formrequest'
 import Admin from '../admin/general'
 import { Layout, Menu } from 'antd';
-import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-dom";
+import {  Route, Link, useLocation } from "react-router-dom";
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -48,7 +48,7 @@ const AppLayout = () => {
         // <Router>
 
         <Layout >
-            <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
+            <Sider theme="dark" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<UserOutlined />}>
@@ -72,9 +72,7 @@ const AppLayout = () => {
                 <Content
                     className="site-layout-background"
                     style={{
-                      
-                        paddingTop: 8,
-                        minHeight: '80vh',
+                        minHeight: 'calc(100vh-64px)',
                     }}
                 >
 

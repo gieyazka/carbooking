@@ -1,4 +1,7 @@
 
+
+
+
 .ant-select:not(.ant-select-customize-input) .ant-select-selector,
 .ant-input,.ant-btn  {
     border-radius: 8px;
@@ -10,6 +13,18 @@
 .btn{
     width:20%;
 }
+
+.text{
+  /* padding-top: '20px' ; */
+    text-align: left;
+}
+.carPos{
+    /* top: 60%; */
+ /* left: 50%; */
+ /* position: absolute; */
+ position: relative;
+ /* transform: translate(-50%,-50%); */
+ }
 .fontForm{
     /* margin-top : -12px ; */
     font-family: Bai Jamjuree;
@@ -44,6 +59,12 @@ color: rgba(0, 0, 0, 0.6);
     min-width: 0px;
     max-width: 0px;
 }
+.Scroll {
+
+    width: 33vh;
+
+    overflow: auto;
+}
 .cardMobile {
     background-color: #1D366D ;
      border-radius: 20px ;
@@ -51,36 +72,82 @@ color: rgba(0, 0, 0, 0.6);
       color: white ;
       
 }
+
+.carImg{
+    position: absolute ;
+    top: 50% ; 
+    left: 50% ;
+    transform: translate(-50%,-50%);
+}
 .dragicon1{
     position: absolute;
     right: 0;
 }
 .selectWidth {
-    width: 100%;
+    width: 90%;
+    font-size: 1vw;
     /* height: ; */
 }
 .fontGeneralBtn{
-    font-size: 1vw;
+    font-size: 12px;
     height: auto ;
 }
 .posGeneralBtn  {
     position: absolute ; 
     top: 50% ;
+  
     /* left : 50% ; */
     transform: translate(0%,-50%)  ;
 }
-
+.Scroll {
+    /* margin-top : 20px; */
+    width: 100%;
+    /* height: 24vh; */
+    /* overflow: auto; */
+}
 .ScrollCar {
     /* margin-top : 20px; */
     width: 100%;
-    height: calc(93vh - 64px);
-
+    height: calc(90vh - 72px );
     overflow: auto;
 }
-/* mobile */
-@media only screen and (max-width: 600px) {
 
+.sideFilter.isactive {
+    width: 30vw;
+ 
+    transition: 0.3s ;
+    transition-timing-function: ease-in-out;
+}
+.sideFilter {
+    background-color: #FFF;
+    position: fixed;
+    top: -72px;
+    right: 0px;
+    height: calc(110vh);
+    width: 0px;
+    transition: 0.3s ;
+    transition-timing-function: ease-in-out;
+    overflow-x: hidden;
+    z-index: 5;
+  }
+/* mobile */
+
+
+@media only screen and (max-width: 600px) {
+    .sideFilter.isactive {
+        width: 60vw;
+        transition: 0.3s ;
+        transition-timing-function: ease-in-out;
+    }
+    .carImg{
+        position: relative ;
+    
+    }
+    .text{
+        text-align: center;
+    }
     .selectWidth {
+        font-size: 1.5vh;
         width: auto;
     }
     .cardMobile {
@@ -104,6 +171,14 @@ color: rgba(0, 0, 0, 0.6);
         margin-left: 16px ;
         margin-right: 16px 
     }
+    .padDate {
+        padding-left: 16px ;
+        padding-right: 10px ;
+        background-color: #fff ;
+         box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) ;
+         display: flex;
+         justify-content:space-between; 
+    }
     .btn{
         width:auto;
     }
@@ -112,7 +187,9 @@ color: rgba(0, 0, 0, 0.6);
     }
     .carfont{
         font-size: 2vh;
+        padding-left: 8px;
     }
+
     .dragicon1{
         position: relative;
     right: '0%';
@@ -122,19 +199,20 @@ color: rgba(0, 0, 0, 0.6);
         display: flex;
     /* right: '0%'; */
     }
-    /* .dragReques>div{
-        width: 100%;
-    } */
+    .carPos{
+      position: relative;
+     }
     .fontGeneralBtn{
         /* margin-top : 12% ; */
         font-size: 3vw;
         height: auto;
     }
     .posGeneralBtn  {
-        margin-top: 8px;
+        /* margin-top: 8px; */
         position: relative ; 
-     
+        text-align: left;
     }
+    
     .ScrollCar {
         /* margin-top : 20px; */
         width: 100%;
@@ -145,21 +223,42 @@ color: rgba(0, 0, 0, 0.6);
   
   /* tablet or pc */
   @media only screen and (min-width: 1367px) {
-  
+   
     .margin {
         margin-left: 120px ;
         margin-right: 120px 
     }
-  
+    .padDate {
+        z-index:  -5;
+        margin-top: -16px ;
+        padding-top: 16px;
+        padding-left: 120px ;
+        padding-right: 10px ;
+        background-color: #fff ;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) ;
+        display: flex;
+        justify-content:space-between; 
+    }
     .btn{
         width:20%;
     }
   }
   @media only screen and (max-width: 1367px) {
-  
+   
     .margin {
         margin-left: 40px ;
         margin-right: 40px 
+    }
+    .padDate {
+        z-index:  -5;
+        margin-top: -20px ;
+        padding-top: 20px;
+        padding-left: 40px ;
+        padding-right: 10px ;
+        background-color: #fff ;
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25) ;
+        display: flex;
+        justify-content:space-between; 
     }
 
     
