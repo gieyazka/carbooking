@@ -114,17 +114,31 @@ color: rgba(0, 0, 0, 0.6);
 
 .sideFilter.isactive {
     width: 30vw;
- 
     transition: 0.3s ;
     transition-timing-function: ease-in-out;
+   
 }
+.test {
+    position: fixed; 
+    top : -64px ;
+    /* right: 30vw ; */
+    width: 100vw;
+    height: calc(100vh + 64px); 
+    background-color: rgba(1, 1, 1, 0.2);
+    z-index: 4;
+ 
+   
+}
+/* .ant-layout:has(.ant-layout-content.site-layout-background>.sideFilter.isactive){
+    background-color: red;
+} */
 .sideFilter {
     background-color: #FFF;
     position: fixed;
     top: -72px;
-    right: 0px;
+    right: 0;
     height: calc(110vh);
-    width: 0px;
+    width: 0;
     transition: 0.3s ;
     transition-timing-function: ease-in-out;
     overflow-x: hidden;
@@ -135,7 +149,7 @@ color: rgba(0, 0, 0, 0.6);
 
 @media only screen and (max-width: 600px) {
     .sideFilter.isactive {
-        width: 60vw;
+        width: 80vw;
         transition: 0.3s ;
         transition-timing-function: ease-in-out;
     }
@@ -208,7 +222,7 @@ color: rgba(0, 0, 0, 0.6);
         height: auto;
     }
     .posGeneralBtn  {
-        /* margin-top: 8px; */
+        margin-top: 8px;
         position: relative ; 
         text-align: left;
     }
@@ -230,7 +244,7 @@ color: rgba(0, 0, 0, 0.6);
     }
     .padDate {
         z-index:  -5;
-        margin-top: -16px ;
+        /* margin-top: -16px ; */
         padding-top: 16px;
         padding-left: 120px ;
         padding-right: 10px ;
@@ -251,7 +265,7 @@ color: rgba(0, 0, 0, 0.6);
     }
     .padDate {
         z-index:  -5;
-        margin-top: -20px ;
+        /* margin-top: -20px ; */
         padding-top: 20px;
         padding-left: 40px ;
         padding-right: 10px ;

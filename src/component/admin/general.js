@@ -116,7 +116,7 @@ const Car = ({ testt }) => {
     const clearData = () => {
         console.log('click clear Data');
         // setState({ ...state, test2: [] });
-        setState({...state,test : pastTest.test,test2 : pastTest.test2 });
+        setState({ ...state, test: pastTest.test, test2: pastTest.test2 });
         console.log(pastTest);
         console.log(state.test2);
     }
@@ -311,28 +311,46 @@ const General = () => {
 
         }
     };
-    console.log(state);
+    // console.log(state);
     const toggleSidebar = () => {
         setSidebar(!sidebar)
     }
     const closeSidebar = () => {
-        console.log('closesidebar');
+        // console.log('closesidebar');
         setSidebar(true)
     }
-    console.log(sidebar);
+    // console.log(sidebar);
     function useOutsideAlerter(ref) {
-        console.log(ref);
+        // console.log(ref);
         useEffect(() => {
             /**
              * Alert if clicked on outside of element
              */
             function handleClickOutside(event) {
-                console.log(ref.current.contains(event.target));
+                // console.log(ref.current.contains(event.target));
+                let focusDatePick = document.querySelector('.ant-picker-focused ')
+                // console.log(focusDatePick);
+                if (focusDatePick) {
+                    var datePick = document.querySelector('.ant-picker-dropdown ')
+                    // console.log(datePick);
+
+                }
+                let focusProvinceSelect = document.querySelector('.ant-select-focused ')
+                // console.log(focusProvinceSelect);
+                if (focusProvinceSelect) {
+                    var provincePick = document.querySelector('.ant-select-dropdown ')
+                    // console.log(datePick);
+
+                }
+                // console.log(ref.current);
+
                 if (ref.current && !ref.current.contains(event.target)) {
                     // alert('out')
-                    if (sidebar == true) {
-                        closeSidebar()
-
+                    if (!datePick && !provincePick) {
+                        // console.log('!datepick');
+                        if (sidebar == true) {
+                            closeSidebar()
+                        }
                     }
                 }
             }
@@ -346,12 +364,13 @@ const General = () => {
     }
 
     useOutsideAlerter(wrapperRef);
-
+    const { Option } = Select;
 
     // console.log(test);
     return (
-        <div>
-            <Row style={{ color: 'black' }}>
+        <div >
+            <div className={!sidebar == true ? 'test' : 'red' }></div>
+            <Row  style={{ color: 'black' }}>
                 <Col span={24} >
                     <div >
 
@@ -361,10 +380,11 @@ const General = () => {
 
 
                             <div style={{ position: 'relative' }}>
-                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 1 รายการ <span >
+                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ <span >
                                     <Button onClick={() => { toggleSidebar() }} style={{ fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px' }}><img src={filer} /> <span style={{ paddingLeft: '8px' }}></span>กรอง</Button>
                                 </span>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
+                                 
                                     <div style={{ position: 'absolute', color: 'black', top: '120px', left: '8%', fontFamily: 'Bai Jamjuree' }}>
                                         <p>บริษัท</p>
                                         <Row>
@@ -428,6 +448,11 @@ const General = () => {
                                             </Col>
 
                                         </Row>
+
+                                        <hr />
+
+
+
                                         <p>เหตุผลที่ต้องการใช้รถ</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
@@ -456,6 +481,33 @@ const General = () => {
                                             <Col span={1}>
                                             </Col>
                                         </Row>
+                                        <p>วันที่</p>
+                                        <Row >
+                                            <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
+                                                <DatePicker ref={wrapperRef} style={{ width: '100%' }} />
+                                            </Col>
+                                        </Row>
+                                        <p style={{ paddingTop: '8px' }}>จังหวัด</p>
+                                        <Row >
+                                            <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
+                                                <Select
+                                                    showSearch
+                                                    style={{ width: '100%' }}
+                                                    placeholder="Select a person"
+                                                    optionFilterProp="children"
+
+                                                    filterOption={(input, option) =>
+                                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                    }
+                                                >
+                                                    <Option value="jack">Jack</Option>
+                                                    <Option value="lucy">Lucy</Option>
+                                                    <Option value="tom">Tom</Option>
+                                                </Select>
+                                            </Col>
+
+                                        </Row>
+
                                     </div>
                                 </div>
                             </div>

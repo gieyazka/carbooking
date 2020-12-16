@@ -61,7 +61,7 @@ const FromRequest = () => {
         <div>
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
             <div className='margin fontForm'>
-                <Row justify='center'> <h2 style={{ marginTop: '8px' }}>Car Booking</h2>  </Row>
+                <Row justify='center'> <h2 style={{ marginTop: '8px' ,paddingTop : '8px',fontSize : '22px'}}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
                     initialValues={{ driver: 'yes' }}
                 >
