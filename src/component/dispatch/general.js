@@ -75,7 +75,7 @@ const RequestCar = ({ test }) => {
                                                         <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > ส่งของ  </span>
                                                     </div>
                                                     <div style={{ paddingTop: '4%' }}>
-                                                        <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม </span>
+                                                        <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
                                                     </div>
 
                                                 </Card>
@@ -106,6 +106,9 @@ const Car = ({ testt }) => {
     const { Option } = Select
     const { innerHeight, innerWidth } = window
     const [pastTest, setpastTest] = useState({ test2: state.test2, test: state.test })
+    const getListStyle = isDraggingOver => ({
+        height: isDraggingOver ? "auto" : "100%",
+      });
     // if (!state.test2[0]) {
     //     alert('true')
     // }
@@ -140,7 +143,7 @@ const Car = ({ testt }) => {
                         >
 
 
-                            <Card className='cardMobile' style={{ paddingBottom: "16px", backgroundColor: '#FFF', borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
+                            <Card className='cardMobile' style={{paddingBottom: "16px",   backgroundColor: snapshot.isDraggingOver ? "lightblue" : "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
                                 <Row gutter={{ xs: 16, sm: 16 }}>
                                     <Col xs={{ span: 24 }} sm={{ span: 5 }} align='center'>
                                         <div className='carPos' >
@@ -173,7 +176,7 @@ const Car = ({ testt }) => {
                                     </Col>
                                     <Col xs={{ span: 24 }} sm={{ span: 7 }} >
                                         <div className='Scroll'>
-
+                                        {/* <div> */}
                                             {state.test2.map((res, index) =>
                                                 <Draggable
                                                     key={(res + 10) * (res + 1) + 50}
@@ -202,8 +205,8 @@ const Car = ({ testt }) => {
                                     </Col>
                                     <Col xs={{ span: 24 }} sm={{ span: 7 }}  >
                                         <div className='posGeneralBtn'  >
-                                            <span>  <Button className='fontGeneralBtn' onClick={() => clearData()} style={{ backgroundColor: '#40A9FF', color: '#FFF' }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button> &nbsp;
-                          <Button className='fontGeneralBtn' style={{ backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span></Button></span>
+                                            <span>  <Button className='fontGeneralBtn' onClick={() => clearData()} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button> &nbsp;
+                          <Button className='fontGeneralBtn' style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button></span>
                                         </div>
                                     </Col>
                                 </Row>
@@ -369,8 +372,8 @@ const General = () => {
     // console.log(test);
     return (
         <div >
-            <div className={!sidebar == true ? 'test' : 'red' }></div>
-            <Row  style={{ color: 'black' }}>
+            <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
+            <Row style={{ color: 'black' }}>
                 <Col span={24} >
                     <div >
 
@@ -384,7 +387,7 @@ const General = () => {
                                     <Button onClick={() => { toggleSidebar() }} style={{ fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px' }}><img src={filer} /> <span style={{ paddingLeft: '8px' }}></span>กรอง</Button>
                                 </span>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
-                                 
+
                                     <div style={{ position: 'absolute', color: 'black', top: '120px', left: '8%', fontFamily: 'Bai Jamjuree' }}>
                                         <p>บริษัท</p>
                                         <Row>

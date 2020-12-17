@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import Formrequest from '../form/formrequest'
-import Admin from '../admin/general'
+import Dispatch from '../dispatch/general'
+import Hrapprove from '../hr/hrapprove'
 import { Layout, Menu } from 'antd';
 import {  Route, Link, useLocation } from "react-router-dom";
 import {
@@ -54,11 +55,11 @@ const AppLayout = () => {
                     <Menu.Item key="requestform" icon={<UserOutlined />}>
                         Request form<Link to="/requestform" />
                     </Menu.Item>
-                    <Menu.Item key="admin" icon={<VideoCameraOutlined />}>
-                        Admin<Link to="/admin" />
+                    <Menu.Item key="dispatch" icon={<VideoCameraOutlined />}>
+                        dispatch<Link to="/dispatch" />
                     </Menu.Item>
                     <Menu.Item key="3" icon={<UploadOutlined />}>
-                        nav 3<Link to="/" />
+                       Hr Approve<Link to="/hr" />
                     </Menu.Item>
                 </Menu>
             </Sider>
@@ -72,13 +73,14 @@ const AppLayout = () => {
                 <Content
                     className="site-layout-background"
                     style={{
-                        minHeight: 'calc(100vh - 64px)',
+                        height: 'calc(100vh - 64px)',
                     }}
                 >
 
                     {/* <Route exact path="/" component={Dashboard} /> */}
                     <Route path="/requestform" component={Formrequest} />
-                    <Route path="/admin" component={Admin} />
+                    <Route path="/dispatch" component={Dispatch} />
+                    <Route path="/hr" component={Hrapprove} />
                     {/* <Formrequest /> */}
                 </Content>
             </Layout>

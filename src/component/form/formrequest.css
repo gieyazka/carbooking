@@ -13,7 +13,9 @@
 .btn{
     width:20%;
 }
-
+.cursor :hover {
+    cursor: pointer;
+}
 .text{
   /* padding-top: '20px' ; */
     text-align: left;
@@ -49,6 +51,16 @@ color: rgba(255, 255, 255, 0.87);
 font-style: normal;
 font-weight: 500;
 font-size: 1vw;
+line-height: 140%;
+color: rgba(0, 0, 0, 0.6);
+
+}
+.hrfont{
+    /* margin-top : -12px ; */
+    font-family: Bai Jamjuree;
+font-style: normal;
+font-weight: 500;
+font-size: '16px';
 line-height: 140%;
 color: rgba(0, 0, 0, 0.6);
 
@@ -118,7 +130,7 @@ color: rgba(0, 0, 0, 0.6);
     transition-timing-function: ease-in-out;
    
 }
-.test {
+.contentFilter {
     position: fixed; 
     top : -64px ;
     /* right: 30vw ; */
@@ -167,7 +179,7 @@ color: rgba(0, 0, 0, 0.6);
     .cardMobile {
         display: inline-block;
         margin-right : 4% ;
-        width : 100%;
+        /* width : 100%; */
         padding-right: 20px;
     }
     .horizonScroll {
