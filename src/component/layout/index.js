@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import Formrequest from '../form/formrequest'
 import Dispatch from '../dispatch/general'
 import Hrapprove from '../hr/hrapprove'
+import ManageDriver from '../driver/managedriver'
 import { Layout, Menu } from 'antd';
 import {  Route, Link, useLocation } from "react-router-dom";
 import {
@@ -61,6 +62,9 @@ const AppLayout = () => {
                     <Menu.Item key="3" icon={<UploadOutlined />}>
                        Hr Approve<Link to="/hr" />
                     </Menu.Item>
+                    <Menu.Item key="4" icon={<UploadOutlined />}>
+                      Manage driver<Link to="/driver" />
+                    </Menu.Item>
                 </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -81,6 +85,7 @@ const AppLayout = () => {
                     <Route path="/requestform" component={Formrequest} />
                     <Route path="/dispatch" component={Dispatch} />
                     <Route path="/hr" component={Hrapprove} />
+                    <Route path="/driver" component={ManageDriver} />
                     {/* <Formrequest /> */}
                 </Content>
             </Layout>

@@ -10,9 +10,39 @@
     margin-left: 120px ;
     margin-right: 120px 
 }
+.driverimg{
+    /* position: absolute; */
+    width : 240px ;
+    height : 240px ;
+    /* object-fit : cover ; */
+    /* z-index: -1; */
+}
+.hoverDriver{
+    position:absolute;
+    top : 16px ;
+    width: 100%;
+    height: 0%;
+    background-color: transparent;
+     transition: height 0.3s ;
+     transition-timing-function: ease-in-out;
+     z-index: -1;
+  
+}
+.person:hover > .hoverDriver {
+    text-align: center;
+    position:absolute;
+    left: 50%;
+    transform: translateX(-50%) ;
+   
+    /* width: calc(100% - 8px); */
+    width: 240px;
+    height: 240px;
+    background-color:  rgba(29, 54, 109, 0.6);;
+    z-index: 2;
+}
 .btn{
     width:20%;
-}
+} 
 .cursor :hover {
     cursor: pointer;
 }
@@ -160,6 +190,11 @@ color: rgba(0, 0, 0, 0.6);
 
 
 @media only screen and (max-width: 600px) {
+    /* .driverimg{
+        width : 240px ;
+        height : 240px ;
+        object-fit : cover ;
+    } */
     .sideFilter.isactive {
         width: 80vw;
         transition: 0.3s ;
