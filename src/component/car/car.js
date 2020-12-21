@@ -12,8 +12,7 @@ const ManageDriver = () => {
         isModalVisible: false,
         openCreateModal: false,
         driverData: {
-            name: null,
-            lastname : null ,
+            name: null
         }
     });
     const hiddenFileInput = React.useRef(null)
@@ -24,6 +23,7 @@ const ManageDriver = () => {
         console.log('clickedit');
         hiddenFileInput.current.click();
     };
+
     //
     const openEdit = (e, data) => {
 
@@ -75,7 +75,7 @@ const ManageDriver = () => {
             },
             focusConfirm: false,
             buttonsStyling: false,
-            focusCancel: false,
+            focusCancel : false,
             showCancelButton: true,
             confirmButtonText: 'บันทึก',
             // confirmButtonColor: '#2CC84D',
@@ -107,39 +107,22 @@ const ManageDriver = () => {
 
     const test = [0, 1, 2, 3, 4, 5, 6]
     const { Option } = Select
-    const onFinish = values => {
-        console.log('Success:', values);
-    };
 
-    const onFinishFailed = errorInfo => {
-        console.log('Failed:', errorInfo);
-    };
-    // const lastnameRef = useRef(null);
+
     const imgRef = useRef();
+    // const openEdit = (e, data) => {
 
-    const handleLastname = e =>{
-        console.log(e.target.value);
-        setDriverstate({...driverstate,driverData : { lastname : e.target.value}})
-
-        // const [driverstate, setDriverstate] = useState({
-        //     isModalVisible: false,
-        //     openCreateModal: false,
-        //     driverData: {
-        //         name: null,
-        //         lastname : null ,
-        //     }
-        // });
-    }
+    //     showModal(data)
+    //     // swal(`this is click from res id : ${data}`);
+    // }
     console.log(driverstate);
-    const [form] = Form.useForm();
     return (
         <div>
-
             <div className=' padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p className='hrfont' style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
                     <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black', paddingRight: '8px' }}> <span style={{ paddingRight: '8px' }}>999 รายการ </span>
-                        <Button onClick={(e) => openCreate(e)} style={{ backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '24px' }}>+ เพิ่มคนขับรถ</Button>
+                        <Button onClick={(e) => openCreate(e)} style={{ backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '24px' }}>+ เพิ่มรถ</Button>
                     </span>
 
                 </div>
@@ -149,44 +132,41 @@ const ManageDriver = () => {
                 <Row gutter={{ xs: 24, sm: 24 }}>
 
                     {test.map(res =>
-                        // <div key={res} style={{display : 'flex' , justifyContent : 'center' , alignItems : 'center'}} >
-                            <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} >
 
-                                <div style={{ position: 'relative', textAlign: 'center', paddingTop: '16px' }}>
-                                    <div className='person'>
-                                        <div className='hoverDriver'  >
-                                            <img style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', cursor: 'pointer' }} src={editdriver}
-                                                onClick={(e) => openEdit(e, res)} />
-                                        </div>
-
-                                        <img className='driverimg'
-                                            src='https://images.unsplash.com/photo-1545996124-0501ebae84d0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80' />
-
+                        <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} >
+                            <div style={{ position: 'relative', textAlign: 'center', paddingTop: '16px' }}>
+                                <div className='person'>
+                                    <div className='hoverDriver'  >
+                                        <img style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', cursor: 'pointer' }} src={editdriver}
+                                            onClick={(e) => openEdit(e, res)} />
                                     </div>
-                                </div>
 
-                            </Col>
-                        // </div>
+                                    <img className='driverimg'
+                                        src='https://www.autodeft.com/_uploads/images/Aston%20Martin%20Valkyrie_01.jpg' />
+
+                                </div>
+                            </div>
+
+                        </Col>
+
                     )}
 
                 </Row>
-
                 <Modal title="" visible={driverstate.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
                     <Row gutter={{ xs: 24, sm: 24 }} style={{ textAlign: 'center' }}>
                         <Col span={24}>
                             {!driverstate.openCreateModal ? <Button key="back" style={{ backgroundColor: '#C53030', color: 'white', width: '35%' }} onClick={() => handleRemove()}>
                                 ลบ
             </Button> : ''}
-                            <Button style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }} onClick={handleOk}>
+                            <Button key="submit" style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }} onClick={handleOk}>
                                 บันทึก
             </Button>
                         </Col>
                     </Row>,
                 ]}>
-
                     <div className='person' style={{ textAlign: "center" }}>
-                        <img style={{ width: '154px', height: '154px', borderRadius: '50%' }} src='https://images.unsplash.com/photo-1545996124-0501ebae84d0?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=700&q=80' />
-                        <div className='editDriver'  >
+                        <img style={{ width: '183px', height: '183px' }} src='https://wsa1.pakwheels.com/assets/default-display-image-car-638815e7606c67291ff77fd17e1dbb16.png' />
+                        <div className='hoverCar'  >
                             <img style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', cursor: 'pointer' }} src={editdriver} onClick={() => handleClick()}
                             />
                             <input
@@ -198,38 +178,34 @@ const ManageDriver = () => {
 
                         </div>
                     </div>
-                    <div style={{ marginTop: '24px' }}>
+                    <div style={{ marginTop: '24px' ,fontFamily : 'Bai Jamjuree'}} >
                         <Row gutter={{ xs: 24, sm: 24 }}>
-                            <Col span={12}>
-                                <h3 style={{ fontWeight: 'bold' }}>ชื่อ</h3>
+                            <Col span={6}></Col>
+                            <Col span={8}>
+                                <h3 style={{ fontWeight: 'bold' }}>เลขทะเบียนรถ</h3>
                                 {/* <p>{driverstate.driverData.name}</p> */}
-                                <Input placeholder='ชื่อ' bordered={false} value={driverstate.driverData ? driverstate.driverData.name : null} />
-
+                                <Input placeholder='เลขทะเบียนรถ' bordered={false} value={driverstate.driverData ? driverstate.driverData.name : null} />
+                                <h3 style={{ fontWeight: 'bold' }}>ประเภทรถ</h3>
+                                <Input placeholder='ประเภทรถ' bordered={false} />
+                                <h3 style={{ fontWeight: 'bold' }}>เลขไมล์รถ</h3>
+                                <Input placeholder='เลขไมล์รถ' bordered={false} />
                             </Col>
-                            <Col span={12}>
-                                <h3 style={{ fontWeight: 'bold' }}>นามสกุล</h3>
-                                <Input placeholder='นามสกุล' bordered={false} onChange={(e)=>{handleLastname(e)}} />
+                            <Col span={8}>
+                                <h3 style={{ fontWeight: 'bold' }}>จังหวัด</h3>
+                                <Input placeholder='จังหวัด' bordered={false} />
+                                <h3 style={{ fontWeight: 'bold' }}>ยี่ห้อ</h3>
+                                <Input placeholder='ยี่ห้อ' bordered={false} />
                             </Col>
-                            <Col span={24}>
-                                <h3 style={{ fontWeight: 'bold' }}>รหัสพนักงาน</h3>
-                                <Input placeholder='รหัสพนักงาน' bordered={false} />
-                                <h3 style={{ fontWeight: 'bold' }}>เบอร์โทรศัพท์</h3>
-                                <Input placeholder='เบอร์โทรศัพท์' bordered={false} />
-                                <h3 style={{ fontWeight: 'bold' }}>ชื่อบัญชีผู้ใช้</h3>
-                                <Input placeholder='ชื่อบัญชีผู้ใช้' bordered={false} />
-                                <h3 style={{ fontWeight: 'bold' }}>รหัสผ่าน</h3>
-                                <Input placeholder='รหัสผ่าน' bordered={false} />
-                                <h3 style={{ fontWeight: 'bold' }}>ยืนยันรหัสผ่าน</h3>
-                                <Input placeholder='ยืนยันรหัสผ่าน' bordered={false} />
-                            </Col>
+                            {/* <Col span={4}></Col> */}
+                           
                         </Row>
 
 
                     </div>
 
                 </Modal>
-            </div>
 
+            </div>
         </div>
     )
 

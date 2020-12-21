@@ -4,6 +4,7 @@ import Formrequest from '../form/formrequest'
 import Dispatch from '../dispatch/general'
 import Hrapprove from '../hr/hrapprove'
 import ManageDriver from '../driver/managedriver'
+import Car from '../car/car'
 import { Layout, Menu } from 'antd';
 import {  Route, Link, useLocation } from "react-router-dom";
 import {
@@ -65,6 +66,9 @@ const AppLayout = () => {
                     <Menu.Item key="4" icon={<UploadOutlined />}>
                       Manage driver<Link to="/driver" />
                     </Menu.Item>
+                    <Menu.Item key="5" icon={<UploadOutlined />}>
+                      Manage car<Link to="/car" />
+                    </Menu.Item>
                 </Menu>
             </Sider>
             <Layout className="site-layout">
@@ -86,6 +90,7 @@ const AppLayout = () => {
                     <Route path="/dispatch" component={Dispatch} />
                     <Route path="/hr" component={Hrapprove} />
                     <Route path="/driver" component={ManageDriver} />
+                    <Route path="/car" component={Car} />
                     {/* <Formrequest /> */}
                 </Content>
             </Layout>

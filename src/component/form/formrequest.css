@@ -1,7 +1,75 @@
 
+.swConfirm{
+    font-family:  'Bai Jamjuree';
+    background-color: #2CC84D;
+    color: #FFF;
+ 
+    /* border: 0; */
+    border-radius: 10px;
+
+    padding: 4px 16px;
+    border: 0;
+    /* border-radius: .25em; */
+    /* background: initial; */
+    /* background-color: #2778c4; */
+    color: #fff;
+    font-size: 1.0625em;
+}
 
 
+.swCancel{
+    margin-right: 8px;
+    font-family:  'Bai Jamjuree';
+    border: 1px solid rgba(0, 0, 0, 0.6);
+    box-sizing: border-box;
+    border-radius: 10px;
+    border-color: #71a07b;
+    /* border: 0; */
+    border-radius: 10px;
+    padding: 4px 16px;
+    /* border: 0; */
+    /* border-radius: .25em; */
+    /* background: initial; */
+    /* background-color: #757575; */
+    /* color: #fff; */
+    font-size: 1.0625em;
+}
 
+.swRemove{
+    font-family:  'Bai Jamjuree';
+    background-color: #C53030;
+    color: #FFF;
+ 
+    /* border: 0; */
+    border-radius: 10px;
+    
+    padding: 4px 16px;
+    border: 0;
+    /* border-radius: .25em; */
+    /* background: initial; */
+    /* background-color: #2778c4; */
+    color: #fff;
+    font-size: 1.0625em;
+}
+
+
+.swCancelRemove{
+    margin-right: 8px;
+    font-family:  'Bai Jamjuree';
+    border: 1px solid rgba(197, 48, 48);
+    box-sizing: border-box;
+    border-radius: 10px;
+    color: #C53030;
+    /* border: 0; */
+    border-radius: 10px;
+    padding: 4px 16px;
+    /* border: 0; */
+    /* border-radius: .25em; */
+    /* background: initial; */
+    /* background-color: #757575; */
+    /* color: #fff; */
+    font-size: 1.0625em;
+}
 .ant-select:not(.ant-select-customize-input) .ant-select-selector,
 .ant-input,.ant-btn  {
     border-radius: 8px;
@@ -20,23 +88,67 @@
 .hoverDriver{
     position:absolute;
     top : 16px ;
-    width: 100%;
-    height: 0%;
+    width: 240;
+    height: 0px;
+    left: 50%;
     background-color: transparent;
-     transition: height 0.3s ;
-     transition-timing-function: ease-in-out;
+     transition: all 0.3s ease ;
+   
      z-index: -1;
-  
+     transform: translateX(-50%) ;
 }
 .person:hover > .hoverDriver {
     text-align: center;
     position:absolute;
     left: 50%;
     transform: translateX(-50%) ;
-   
-    /* width: calc(100% - 8px); */
-    width: 240px;
+    width: 240px; 
     height: 240px;
+    background-color:  rgba(29, 54, 109, 0.6);;
+    z-index: 2;
+}
+.hoverCar{
+    position:absolute;
+    top : 24px ;
+    width: 184px;
+    height: 0px;
+    left: 50%;
+    background-color: transparent;
+     transition: all 0.3s ease ;
+   
+     z-index: -1;
+     transform: translateX(-50%) ;
+}
+.person:hover > .hoverCar {
+    text-align: center;
+    position:absolute;
+    left: 50%;
+    transform: translateX(-50%) ;
+    width: 184px; 
+    height: 184px;
+    background-color:  rgba(29, 54, 109, 0.6);;
+    z-index: 2;
+}
+.editDriver{
+    position:absolute;
+    top : 24px ;
+    width: 240;
+    height: 0px;
+    left: 50%;
+    background-color: transparent;
+     transition: all 0.3s ease ;
+    border-radius: 50%;
+     z-index: -1;
+     transform: translateX(-50%) ;
+}
+.person:hover > .editDriver {
+    text-align: center;
+    position:absolute;
+    left: 50%;
+    transform: translateX(-50%) ;
+
+    width: 154px; 
+    height: 154px;
     background-color:  rgba(29, 54, 109, 0.6);;
     z-index: 2;
 }
