@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import 'antd/dist/antd.css';
 import Formrequest from '../form/formrequest'
 import Dispatch from '../dispatch/general'
+import View from '../dispatch/view'
 import Hrapprove from '../hr/hrapprove'
 import ManageDriver from '../driver/managedriver'
 import Car from '../car/car'
@@ -60,13 +61,16 @@ const AppLayout = () => {
                     <Menu.Item key="dispatch" icon={<VideoCameraOutlined />}>
                         dispatch<Link to="/dispatch" />
                     </Menu.Item>
-                    <Menu.Item key="3" icon={<UploadOutlined />}>
+                    <Menu.Item key="view" icon={<VideoCameraOutlined />}>
+                        View Job<Link to="/view" />
+                    </Menu.Item>
+                    <Menu.Item key="he" icon={<UploadOutlined />}>
                        Hr Approve<Link to="/hr" />
                     </Menu.Item>
-                    <Menu.Item key="4" icon={<UploadOutlined />}>
+                    <Menu.Item key="driver" icon={<UploadOutlined />}>
                       Manage driver<Link to="/driver" />
                     </Menu.Item>
-                    <Menu.Item key="5" icon={<UploadOutlined />}>
+                    <Menu.Item key="car" icon={<UploadOutlined />}>
                       Manage car<Link to="/car" />
                     </Menu.Item>
                 </Menu>
@@ -87,6 +91,7 @@ const AppLayout = () => {
 
                     {/* <Route exact path="/" component={Dashboard} /> */}
                     <Route path="/requestform" component={Formrequest} />
+                    <Route path="/view" component={View} />
                     <Route path="/dispatch" component={Dispatch} />
                     <Route path="/hr" component={Hrapprove} />
                     <Route path="/driver" component={ManageDriver} />

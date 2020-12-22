@@ -383,8 +383,10 @@ const General = () => {
 
 
                             <div style={{ position: 'relative' }}>
-                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ <span >
-                                    <Button onClick={() => { toggleSidebar() }} style={{ fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px' }}><img src={filer} /> <span style={{ paddingLeft: '8px' }}></span>กรอง</Button>
+                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ
+                                 <span  style={{padding : '8px'}} >
+                                    <button onClick={() => { toggleSidebar() }} style={{padding : '4px 12px',fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px',border : '0' }}>
+                                        <img src={filer}  />กรอง</button>
                                 </span>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
 

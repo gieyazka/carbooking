@@ -90,11 +90,13 @@ const Hrapprove = () => {
             <div className='padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
-                    <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black', paddingRight: '8px' }}> <span style={{ paddingRight: '8px' }}>999 รายการ </span>
-                        <Button onClick={() => { toggleSidebar() }} style={{ fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px' }}><img src={filer} /> <span style={{ paddingLeft: '8px' }}>กรอง</span></Button>
+                    <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black' }}>999 รายการ </span>
+                    <span style={{ padding: '8px' }} >
+                        <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                            <img src={filer} />กรอง</button>
                     </span>
                     <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
-
+                        
                         <div style={{ position: 'absolute', color: 'black', top: '120px', left: '8%', fontFamily: 'Bai Jamjuree' }}>
                             <p>บริษัท</p>
                             <Row>
@@ -224,7 +226,7 @@ const Hrapprove = () => {
             </div>
             <div className='margin hrfont'>
                 <Row gutter={{ xs: 24, sm: 24 }}>
-                    <Col xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop : '8px'}}>
+                    <Col xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
                         <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
                             <Card style={{
                                 position: 'relative',
@@ -248,15 +250,15 @@ const Hrapprove = () => {
 
                             </Card>
                             <Row>
-                                <Col style={{ paddingTop: '8%'}} span={4} >
-                                    <div  class='cursor'>
+                                <Col style={{ paddingTop: '8%' }} span={4} >
+                                    <div class='cursor'>
                                         <img src={hrdescription} />
                                     </div>
                                 </Col>
-                                <Col style={{ paddingTop: '8%',textAlign:'right' }} span={20} >
-                                    <div style={{paddingTop : '4px'}}>
-                                        <Button style={{borderRadius : '24px',borderColor : '#E53E3E',backgroundColor : '#E53E3E' ,color : "#FFF"}}><img style={{marginBottom : '2px'}} src={xicon} /> <span style={{paddingLeft :'4px'}}>ไม่อนุมัติ</span></Button> &nbsp;
-                                        <Button style={{borderRadius : '24px',borderColor : '#2BA441',backgroundColor : '#2BA441',color : "#FFF"}}><img style={{marginBottom : '2px'}} src={assignicon} /> <span style={{paddingLeft :'4px'}}>อนุมัติ</span></Button>
+                                <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
+                                    <div style={{ paddingTop: '4px' }}>
+                                        <Button style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
+                                        <Button style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
                                     </div>
                                 </Col>
                             </Row>
