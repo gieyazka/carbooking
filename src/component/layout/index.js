@@ -6,6 +6,8 @@ import View from '../dispatch/view'
 import Hrapprove from '../hr/hrapprove'
 import ManageDriver from '../driver/managedriver'
 import Car from '../car/car'
+import logout from '../asset/logout.png'
+import Login from '../login'
 import { Layout, Menu } from 'antd';
 import {  Route, Link, useLocation } from "react-router-dom";
 import {
@@ -33,20 +35,10 @@ const AppLayout = () => {
     function HeaderView() {
         const location = useLocation();
         let path = location.pathname.replace('/', '')
-
-        // if (path == 'requestform') {
-        //     setState({ ...state, path: 1 })
-        // } else if (path == 'requestform') {
-        //     setState({ ...state, path: 2 })
-        // }
         return path
     }
     const currentPath = HeaderView()
-    // console.log(currentPath);
-    // React.useEffect(() => {
 
-
-    // }, [])
 
     return (
         // <Router>
@@ -56,26 +48,28 @@ const AppLayout = () => {
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<UserOutlined />}>
-                        Request form<Link to="/requestform" />
+                        Request form<Link to="/user/requestform" />
                     </Menu.Item>
                     <Menu.Item key="dispatch" icon={<VideoCameraOutlined />}>
-                        dispatch<Link to="/dispatch" />
+                        dispatch<Link to="/user/dispatch" />
                     </Menu.Item>
                     <Menu.Item key="view" icon={<VideoCameraOutlined />}>
-                        View Job<Link to="/view" />
+                        View Job<Link to="/user/view" />
                     </Menu.Item>
                     <Menu.Item key="he" icon={<UploadOutlined />}>
-                       Hr Approve<Link to="/hr" />
+                       Hr Approve<Link to="/user/hr" />
                     </Menu.Item>
                     <Menu.Item key="driver" icon={<UploadOutlined />}>
-                      Manage driver<Link to="/driver" />
+                      Manage driver<Link to="/user/driver" />
                     </Menu.Item>
                     <Menu.Item key="car" icon={<UploadOutlined />}>
-                      Manage car<Link to="/car" />
+                      Manage car<Link to="/user/car" />
                     </Menu.Item>
                 </Menu>
             </Sider>
-            <Layout className="site-layout">
+            <Layout className="site-layout" style={{position:'relative'}}>
+            <img style={{position : 'absolute',top : '18px',right : '2vw', width : '24px',cursor:'pointer'}} src={logout} />
+
                 <Header className="site-layout-background" style={{ padding: 0, backgroundColor: '#1D366D' }}>
                     {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                         className: 'trigger',
@@ -90,12 +84,13 @@ const AppLayout = () => {
                 >
 
                     {/* <Route exact path="/" component={Dashboard} /> */}
-                    <Route path="/requestform" component={Formrequest} />
-                    <Route path="/view" component={View} />
-                    <Route path="/dispatch" component={Dispatch} />
-                    <Route path="/hr" component={Hrapprove} />
-                    <Route path="/driver" component={ManageDriver} />
-                    <Route path="/car" component={Car} />
+                    <Route path="/user/requestform" component={Formrequest} />
+                    <Route path="/user/view" component={View} />
+                    <Route path="/user/dispatch" component={Dispatch} />
+                    <Route path="/user/hr" component={Hrapprove} />
+                    <Route path="/user/driver" component={ManageDriver} />
+                    <Route path="/user/car" component={Car} />
+                   
                     {/* <Formrequest /> */}
                 </Content>
             </Layout>
