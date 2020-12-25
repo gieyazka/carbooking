@@ -28,7 +28,7 @@ const ManageDriver = () => {
         if (e.target.name == 'plate_car') {
             setcarState({ ...carState, carData: { ...carState.carData, plate_car: e.target.value } })
         }
-     
+
         if (e.target.name == 'start_mileage') {
             setcarState({ ...carState, carData: { ...carState.carData, start_mileage: e.target.value } })
         }
@@ -36,7 +36,7 @@ const ManageDriver = () => {
             // console.log( e.target.files[0]);
             setcarState({ ...carState, carData: { ...carState.carData, imgname: e.target.files[0] ? e.target.files[0].name : null, img: URL.createObjectURL(e.target.files[0]) } })
         }
-   
+
 
 
     }
@@ -204,7 +204,7 @@ const ManageDriver = () => {
 
                 </Row>
                 <Modal title="" visible={carState.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
-                    <Row gutter={{ xs: 24, sm: 24 }} style={{ textAlign: 'center' }}>
+                    <Row gutter={{ xs: 24, sm: 24 }} style={{ marginBottom : '8px',textAlign: 'center' }}>
                         <Col span={24}>
                             {!carState.openCreateModal ? <Button key="back" style={{ backgroundColor: '#C53030', color: 'white', width: '35%' }} onClick={() => handleRemove()}>
                                 ลบ
@@ -234,8 +234,8 @@ const ManageDriver = () => {
                         </div>
                     </div>
                     <div style={{ marginTop: '24px', fontFamily: 'Bai Jamjuree' }} >
-                        <Row gutter={{ xs: 24, sm: 24 }}>
-                            <Col span={6}></Col>
+                        <Row gutter={{ xs: 24, sm: 24 }} >
+                            <Col span={5}></Col>
                             <Col span={8}>
                                 <h3 style={{ fontWeight: 'bold' }}>เลขทะเบียนรถ</h3>
                                 {/* <p>{carState.carData.name}</p> */}
@@ -245,7 +245,7 @@ const ManageDriver = () => {
                                     value={carState.carData ? carState.carData.plate_car : null}
                                     onChange={(e) => { handleCarData(e) }} />
                                 <h3 style={{ fontWeight: 'bold' }}>ประเภทรถ</h3>
-                                <Select value={carState.carData ? carState.carData.type_car : null}  name='type_car' placeholder='ประเภทรถ' bordered={false}
+                                <Select value={carState.carData ? carState.carData.type_car : null} name='type_car' placeholder='ประเภทรถ' bordered={false}
                                     style={{ width: '100%', backgroundColor: '#EDEDED' }}
                                     onChange={(e) => { setcarState({ ...carState, carData: { ...carState.carData, type_car: e } }) }}
                                     showSearch
@@ -260,8 +260,8 @@ const ManageDriver = () => {
                                     <Option value="tom">Tom</Option>
                                 </Select>
                                 <h3 style={{ fontWeight: 'bold' }}>เลขไมล์รถ</h3>
-                                <Input name='start_mileage' placeholder='เลขไมล์รถ' style={{ width: '100%', backgroundColor: '#EDEDED' }} bordered={false} onChange={(e) => { handleCarData(e) }} 
-                                value={carState.carData ? carState.carData.start_mileage : null}  />
+                                <Input name='start_mileage' placeholder='เลขไมล์รถ' style={{ width: '100%', backgroundColor: '#EDEDED' }} bordered={false} onChange={(e) => { handleCarData(e) }}
+                                    value={carState.carData ? carState.carData.start_mileage : null} />
 
                             </Col>
                             <Col span={8}>
@@ -281,7 +281,7 @@ const ManageDriver = () => {
                                     <Option value="tom">Tom</Option>
                                 </Select>
                                 <h3 style={{ fontWeight: 'bold' }}>ยี่ห้อ</h3>
-                                <Select value={carState.carData ? carState.carData.model : null}  name='model' placeholder='ยี่ห้อ' bordered={false}
+                                <Select value={carState.carData ? carState.carData.model : null} name='model' placeholder='ยี่ห้อ' bordered={false}
                                     onChange={(e) => { setcarState({ ...carState, carData: { ...carState.carData, model: e } }) }}
                                     style={{ width: '100%', backgroundColor: '#EDEDED' }}
                                     showSearch

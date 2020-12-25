@@ -2,19 +2,35 @@ import React, { useState, useForm } from 'react'
 import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio } from 'antd';
 import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-dom";
 import './formrequest.css'
+import dataProvince from '../../province.json'
+import moment from 'moment';
+import { saveBooking } from '../util/index'
+import Swal from 'sweetalert2'
 const FromRequest = () => {
     const [form] = Form.useForm();
     const { TextArea } = Input;
     const { RangePicker } = TimePicker;
     const { Option } = Select;
     const [comment, setComment] = React.useState(true);
+    const [formDropdown, setFormDropdown] = React.useState({
+        province: []
+    });
     const [state, setState] = useState({
         companyphone: '0877565422',
         mobilephone: null,
         radiocheck: 'yes'
     });
-    
-
+    var provinceArray = []
+    React.useMemo(() => {
+        var i = 0
+        for (const data in dataProvince) {
+            provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
+            i++
+        }
+        setFormDropdown({
+            ...formDropdown, province: provinceArray
+        })
+    }, [])
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -39,7 +55,7 @@ const FromRequest = () => {
         } else {
             setComment(true)
             form.setFieldsValue({
-                other_purpos : null,
+                other_purpos: null,
             });
         }
     }
@@ -49,21 +65,43 @@ const FromRequest = () => {
     function onChange(date, dateString) {
         console.log(date, dateString);
     }
-    const onFinish = (values) => {
-        console.log('Success:', values);
+    const onFinish = async (values) => {
+        // console.log(values);
+        if (values.purpos == 'Other') {
+            values.purpos = values.other_purpos
+        }
+        
+        values.mobile_phone = values.mobile_phone.replaceAll('-', '')
+        // console.log(values.purpos);
+        // console.log('Success:', values);
+        const saveForm = await saveBooking(values).then(res => {
+            Swal.fire({
+
+                icon: 'success',
+                title: 'บันทึกสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        })
     };
 
     const onFinishFailed = (errorInfo) => {
         console.log('Failed:', errorInfo);
     };
+    function disabledDate(current) {
+        // Can not select days before today and today
 
+        return current && current < moment().subtract('1', 'days').endOf('day');
+    }
+    const loginData = JSON.parse(sessionStorage.getItem('user'));
+   
     return (
         <div>
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
             <div className='margin fontForm'>
-                <Row justify='center'> <h2 style={{ marginTop: '8px' ,paddingTop : '8px',fontSize : '22px'}}>Car Booking</h2>  </Row>
+                <Row justify='center'> <h2 style={{ marginTop: '8px', paddingTop: '8px', fontSize: '22px' }}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
-                    initialValues={{ driver: 'yes' }}
+                    initialValues={{ driver: true, company: loginData.company }}
                 >
                     {/* <Row gutter={[24,12]} justify='center'> */}
                     <Row gutter={{ xs: 16, sm: 24 }} justify='center'>
@@ -80,15 +118,31 @@ const FromRequest = () => {
                                 <Select
                                     showSearch
                                     style={{ width: '100%' }}
-                                    placeholder="เลือกบริษัท"
+                                    placeholder="บริษัท (Company)"
                                     optionFilterProp="children"
                                     filterOption={(input, option) =>
                                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                 >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="tom">Tom</Option>
+                                    <Option value="AH">AH</Option>
+                                    <Option value="AHP">AHP</Option>
+                                    <Option value="AITS">AITS</Option>
+                                    <Option value="APR">APR</Option>
+                                    <Option value="AA">AA</Option>
+                                    <Option value="AL">AL</Option>
+                                    <Option value="ASP">ASP</Option>
+                                    <Option value="AHA">AHA</Option>
+                                    <Option value="AK">AK</Option>
+                                    <Option value="AMI">AMI</Option>
+                                    <Option value="AH">AH</Option>
+                                    <Option value="AM GROUP">AM GROUP</Option>
+                                    <Option value="APB">APB</Option>
+                                    <Option value="TSR">TSR</Option>
+                                    <Option value="AMM">AMM</Option>
+                                    <Option value="NESM">NESM</Option>
+                                    <Option value="NESC">NESC</Option>
+                                    <Option value="AF APC">AF APC</Option>
+
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -103,7 +157,7 @@ const FromRequest = () => {
                                         required: true,
                                         message: '*require',
                                     }, {
-                                        pattern: new RegExp(/(^[A-Za-zก-๙.]{3,16})([ ]{0,1})([A-Za-zก-๙]{3,16})?([ ]{0,1})?([,A-Za-zก-๙]{3,16})?([ ]{0,1})?([,-Za-zก-๙]{3,16})/),
+                                        // pattern: new RegExp(/(^[A-Za-zก-๙.]{3,16})([ ]{0,1})([A-Za-zก-๙]{3,16})?([ ]{0,1})?([,A-Za-zก-๙]{3,16})?([ ]{0,1})?([,-Za-zก-๙]{3,16})/),
                                         message: 'pattern invalid',
                                     }]} >
                                 <Input placeholder="ชื่อ - นามสกุล (Full Name)" />
@@ -115,10 +169,10 @@ const FromRequest = () => {
                                     {
                                         required: true,
                                         message: '*require',
-                                    },{  
-                                        len : 12,
+                                    }, {
+                                        len: 12,
                                         pattern: new RegExp(/(^\d{3})([-]{1})(\d{3})([-]{1})(\d{4})/g),
-                                        message : 'pattern invalid'
+                                        message: 'pattern invalid'
                                     }]} >
                                 <Input onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
                             </Form.Item>
@@ -132,6 +186,7 @@ const FromRequest = () => {
                                     },]} >
 
                                 <DatePicker
+                                    disabledDate={disabledDate}
                                     placeholder="วันที่ต้องการ (Date Required)"
                                     style={{ width: '100%' }}
                                     onChange={onChange} />
@@ -146,7 +201,7 @@ const FromRequest = () => {
                                         message: '*require',
                                     },]} >
 
-                                <Select placeholder="ประเภทรถ" style={{ width: '100%' }} onChange={handleChange} >
+                                <Select placeholder="ประเภทรถ (Type of car)" style={{ width: '100%' }} onChange={handleChange} >
                                     <Option value="jack">Jack</Option>
                                     <Option value="lucy">Lucy</Option>
 
@@ -178,12 +233,9 @@ const FromRequest = () => {
                                     {
                                         required: true, message: 'กรุณาเลือกแผนก',
                                     },]} >
-                                <Select placeholder="เลือกแผนก" style={{ width: '100%' }} onChange={handleChange} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
+                                <Input placeholder="เลือกแผนก" style={{ width: '100%' }} onChange={handleChange} >
 
-                                    <Option value="Yiminghe">yiminghe</Option>
-                                </Select>
+                                </Input>
                             </Form.Item>
                             <p className='fontForm'>โทรศัพท์ภายใน (Telephone Number)</p>
                             <Form.Item
@@ -204,7 +256,7 @@ const FromRequest = () => {
                                         message: 'require',
                                     },]} >
                                 <RangePicker
-
+                                    format='HH:mm'
                                 />
                             </Form.Item>
                             <p className='fontForm'>จำนวนคน (Amount)</p>
@@ -215,14 +267,19 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'require',
                                     },]} >
-                                <Select placeholder="จำนวนคน" style={{ width: '100%' }} onChange={handleChange} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-
-                                    <Option value="Yiminghe">yiminghe</Option>
+                                <Select placeholder="จำนวนคน (Amount)" style={{ width: '100%' }} onChange={handleChange} >
+                                    <Option value="1">1</Option>
+                                    <Option value="2">2</Option>
+                                    <Option value="3">3</Option>
+                                    <Option value="4">4</Option>
+                                    <Option value="5">5</Option>
+                                    <Option value="6">6</Option>
+                                    <Option value="8">8</Option>
+                                    <Option value="9">9</Option>
+                                    <Option value="10">10</Option>
                                 </Select>
                             </Form.Item>
-                            <p className='fontForm'>จังหวัด</p>
+                            <p className='fontForm'>จังหวัด (Province)</p>
                             <Form.Item
                                 name="province"
                                 rules={[
@@ -230,11 +287,18 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'require',
                                     },]} >
-                                <Select placeholder="จังหวัด" style={{ width: '100%' }} onChange={handleChange} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
+                                <Select
+                                    showSearch
+                                    style={{ width: '100%' }}
+                                    placeholder="จังหวัด (Province)"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
+                                    {formDropdown.province}
 
-                                    <Option value="Yiminghe">yiminghe</Option>
+
                                 </Select>
                             </Form.Item>
                         </Col>
@@ -255,8 +319,8 @@ const FromRequest = () => {
                                         message: 'require',
                                     },]} >
                                 <Radio.Group onChange={radioOnChange} value={state.radiocheck}>
-                                    <Radio value='yes'>ต้องการ (Yes)</Radio> <br></br>
-                                    <Radio value='no'>ไม่ต้องการ (No)</Radio>
+                                    <Radio value={true}>ต้องการ (Yes)</Radio> <br></br>
+                                    <Radio value={false}>ไม่ต้องการ (No)</Radio>
                                 </Radio.Group>
                             </Form.Item>
                         </Col>
@@ -267,14 +331,14 @@ const FromRequest = () => {
                                 rules={[
                                     {
                                         required: true,
-                                        message: 'require',
-                                    },]} >
-                                <Select placeholder="Email" style={{ width: '100%' }} onChange={handleChange} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
+                                        message: '*require',
+                                    }, {
+                                        pattern: new RegExp(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/),
+                                        message: 'Email invalid',
+                                    }]}>
+                                <Input placeholder="อีเมลล์ของหัวหน้า (Manager's Email)" style={{ width: '100%' }} onChange={handleChange} >
 
-                                    <Option value="Yiminghe">yiminghe</Option>
-                                </Select>
+                                </Input>
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
@@ -289,17 +353,18 @@ const FromRequest = () => {
                                         message: '*require',
                                     },]} >
 
-                                <Select placeholder="???" style={{ width: '100%' }} onChange={purposChange} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-
-                                    <Option value="Other">Other</Option>
+                                <Select placeholder="เหตุผลที่ต้องการใช้รถ (Purpos of using vehicle)" style={{ width: '100%' }} onChange={purposChange} >
+                                    <Option value="ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร">ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Option>
+                                    <Option value="ส่งของ">ส่งของ</Option>
+                                    <Option value="รับ - ส่งแขก">รับ - ส่งแขก</Option>
+                                    <Option value="ติดต่อลูกค้า">ติดต่อลูกค้า</Option>
+                                    <Option value="Other">อื่น ๆ</Option>
                                 </Select>
 
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                        <p className='fontForm'>ระบุ</p>
+                            <p className='fontForm'>ระบุ</p>
                             <Form.Item
                                 name="other_purpos"
                                 rules={[

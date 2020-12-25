@@ -9,7 +9,7 @@ import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../login'
 import { Layout, Menu } from 'antd';
-import {  Route, Link, useLocation } from "react-router-dom";
+import { Route, Link, useLocation, useHistory, Redirect } from "react-router-dom";
 import {
     MenuUnfoldOutlined,
     MenuFoldOutlined,
@@ -21,7 +21,14 @@ import {
 const { Header, Sider, Content } = Layout;
 
 const AppLayout = () => {
+    let history = useHistory();
 
+    React.useMemo(() => {
+        if (!sessionStorage.getItem("user")) {
+            history.push('/login')
+
+        }
+    }, [])
     const [state, setState] = useState({
         collapsed: true,
         path: 1
@@ -39,16 +46,20 @@ const AppLayout = () => {
     }
     const currentPath = HeaderView()
 
+    const onLogout = () => {
+        sessionStorage.clear();
+        history.push('/login')
+    }
 
     return (
-        // <Router>
+
 
         <Layout >
             <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<UserOutlined />}>
-                        Request form<Link to="/user/requestform" />
+                        Request form<Link to="/user" />
                     </Menu.Item>
                     <Menu.Item key="dispatch" icon={<VideoCameraOutlined />}>
                         dispatch<Link to="/user/dispatch" />
@@ -57,18 +68,18 @@ const AppLayout = () => {
                         View Job<Link to="/user/view" />
                     </Menu.Item>
                     <Menu.Item key="he" icon={<UploadOutlined />}>
-                       Hr Approve<Link to="/user/hr" />
+                        Hr Approve<Link to="/user/hr" />
                     </Menu.Item>
                     <Menu.Item key="driver" icon={<UploadOutlined />}>
-                      Manage driver<Link to="/user/driver" />
+                        Manage driver<Link to="/user/driver" />
                     </Menu.Item>
                     <Menu.Item key="car" icon={<UploadOutlined />}>
-                      Manage car<Link to="/user/car" />
+                        Manage car<Link to="/user/car" />
                     </Menu.Item>
                 </Menu>
             </Sider>
-            <Layout className="site-layout" style={{position:'relative'}}>
-            <img style={{position : 'absolute',top : '18px',right : '2vw', width : '24px',cursor:'pointer'}} src={logout} />
+            <Layout className="site-layout" style={{ position: 'relative' }}>
+                <img onClick={() => { onLogout() }} style={{ position: 'absolute', top: '18px', right: '2vw', width: '24px', cursor: 'pointer' }} src={logout} />
 
                 <Header className="site-layout-background" style={{ padding: 0, backgroundColor: '#1D366D' }}>
                     {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
@@ -84,20 +95,21 @@ const AppLayout = () => {
                 >
 
                     {/* <Route exact path="/" component={Dashboard} /> */}
-                    <Route path="/user/requestform" component={Formrequest} />
                     <Route path="/user/view" component={View} />
                     <Route path="/user/dispatch" component={Dispatch} />
                     <Route path="/user/hr" component={Hrapprove} />
                     <Route path="/user/driver" component={ManageDriver} />
                     <Route path="/user/car" component={Car} />
-                   
+                    <Route exact path="/user" component={Formrequest} />
+
                     {/* <Formrequest /> */}
                 </Content>
             </Layout>
         </Layout>
-        // </Router>
+
     );
 }
+
 
 
 export default AppLayout;
