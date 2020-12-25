@@ -108,26 +108,16 @@ const Hrapprove = () => {
     const showData = ({totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
         // console.log(carType, comment, company, reason);
         setModal({ totalPassenger,carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
-
     }
     useOutsideAlerter(wrapperRef);
     React.useMemo(async () => {
-
-
         const bookingControl = async () => {
             setBookingData(await getBooking().then(async res => {
                 return res
             }))
-
         }
         await bookingControl()
-
-
-
     }, [])
-
-    // console.log(bookingData);
-    console.log(modal);
     return (
         <div>
 
