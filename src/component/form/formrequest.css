@@ -52,7 +52,9 @@
     font-size: 1.0625em;
 }
 
-
+.filterbgColor{
+    background-color: rgba(247,250,252,1);
+}
 .swCancelRemove{
     margin-right: 8px;
     font-family:  'Bai Jamjuree';

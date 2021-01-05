@@ -16,7 +16,7 @@ function App() {
         <Router>
           <Route path="/login" component={Login} />
           <Route path="/user" component={Layout} />
-          {/* <Route exact path="/" component={Layout} /> */}
+          <Route exact path="/" component={Login} />
         </Router>
       </DataContextProvider>
     </div>

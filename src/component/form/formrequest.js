@@ -6,31 +6,37 @@ import dataProvince from '../../province.json'
 import moment from 'moment';
 import { saveBooking } from '../util/index'
 import Swal from 'sweetalert2'
+import { DataContext } from "../store/store"
 const FromRequest = () => {
     const [form] = Form.useForm();
+    const [state, setState] = React.useContext(DataContext);
     const { TextArea } = Input;
     const { RangePicker } = TimePicker;
     const { Option } = Select;
     const [comment, setComment] = React.useState(true);
-    const [formDropdown, setFormDropdown] = React.useState({
-        province: []
-    });
-    const [state, setState] = useState({
-        companyphone: '0877565422',
-        mobilephone: null,
-        radiocheck: 'yes'
-    });
-    var provinceArray = []
-    React.useMemo(() => {
-        var i = 0
-        for (const data in dataProvince) {
-            provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
-            i++
-        }
-        setFormDropdown({
-            ...formDropdown, province: provinceArray
-        })
-    }, [])
+    // const [formDropdown, setFormDropdown] = React.useState({
+    //     province: []
+    // });
+    // const [state, setState] = useState({
+    //     companyphone: '0877565422',
+    //     mobilephone: null,
+    //     radiocheck: 'yes'
+    // });
+    // var provinceArray = []
+    // React.useMemo(() => {
+    //     var i = 0
+    //     for (const data in dataProvince) {
+    //         provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
+    //         i++
+    //     }
+
+    //     // setFormDropdown({
+    //     //     ...formDropdown, province: provinceArray
+    //     // })
+    //     setState({
+    //         ...formDropdown, province: provinceArray
+    //     })
+    // }, [])
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -70,7 +76,7 @@ const FromRequest = () => {
         if (values.purpos == 'Other') {
             values.purpos = values.other_purpos
         }
-        
+
         values.mobile_phone = values.mobile_phone.replaceAll('-', '')
         // console.log(values.purpos);
         // console.log('Success:', values);
@@ -94,7 +100,7 @@ const FromRequest = () => {
         return current && current < moment().subtract('1', 'days').endOf('day');
     }
     const loginData = JSON.parse(sessionStorage.getItem('user'));
-   
+
     return (
         <div>
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
@@ -134,7 +140,7 @@ const FromRequest = () => {
                                     <Option value="AHA">AHA</Option>
                                     <Option value="AK">AK</Option>
                                     <Option value="AMI">AMI</Option>
-                                    <Option value="AH">AH</Option>
+                                    <Option value="AHT">AHT</Option>
                                     <Option value="AM GROUP">AM GROUP</Option>
                                     <Option value="APB">APB</Option>
                                     <Option value="TSR">TSR</Option>
@@ -296,7 +302,7 @@ const FromRequest = () => {
                                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                 >
-                                    {formDropdown.province}
+                                    {state.province}
 
 
                                 </Select>
@@ -318,7 +324,7 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'require',
                                     },]} >
-                                <Radio.Group onChange={radioOnChange} value={state.radiocheck}>
+                                <Radio.Group onChange={radioOnChange} >
                                     <Radio value={true}>ต้องการ (Yes)</Radio> <br></br>
                                     <Radio value={false}>ไม่ต้องการ (No)</Radio>
                                 </Radio.Group>

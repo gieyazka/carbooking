@@ -1,5 +1,6 @@
 import axios from 'axios';
 import moment from 'moment';
+
 const loginApi = 'http://10.10.10.227:1337/auth/local';
 const bookingApi = 'http://10.10.10.227:1337/bookings';
 export const loginCheck = async (identifier, password) => {
@@ -8,9 +9,22 @@ export const loginCheck = async (identifier, password) => {
         identifier,
         password
     }).then(res => {
-
+// console.log(res)
         return res;
     }).catch(err => { return { err: err } });
+}
+export const handleHrApprove = async (id, status) => {
+    console.log(id, status);
+    if (status == false) {
+        return await axios.put(`${bookingApi}/${id}`, {
+            hrApprove: false
+        })
+    } else {
+        return await axios.put(`${bookingApi}/${id}`, {
+            hrApprove: true
+        })
+    }
+
 }
 
 export const saveBooking = async (formData) => {

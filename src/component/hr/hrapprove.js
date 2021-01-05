@@ -15,22 +15,33 @@ import xicon from '../asset/xicon.png'
 import assignicon from '../asset/assignicon.png'
 import statusdriver2 from '../asset/statusdriver2.png'
 import countRequest from '../asset/countRequest.png'
+import clearIcon from '../asset/clearIcon.png'
 import car from '../asset/carblack.png'
 import people from '../asset/people.png'
-
+import Swal from 'sweetalert2'
 // import statusdriver2 from '../asset/statusdriver2.png'
 
 import filer from '../asset/filer.png'
-import { getBooking } from '../util/index'
+import { getBooking, handleHrApprove } from '../util/index'
+
 const Hrapprove = () => {
     const TestBtn = Button
+    let filterCompany = null
+    let filterType = null
     // console.log(res);
     const [sidebar, setSidebar] = useState(true)
     const [bookingData, setBookingData] = useState([])
     const wrapperRef = useRef(null);
     const [state, setState] = React.useContext(DataContext);
     const { Option } = Select
-
+    const [filerBooking, setFilter] = useState({
+        search: false,
+        company: null,
+        department: null,
+        reason: null,
+        date: null,
+        province: null
+    })
     const { innerHeight, innerWidth } = window
     // console.log(innerHeight,innerWidth);
     if (innerWidth <= 575) {
@@ -58,11 +69,145 @@ const Hrapprove = () => {
         name: null,
         driver: null,
         reason: null,
-        totalPassenger : null ,
-
+        totalPassenger: null,
         open: false
     })
 
+    const hrCancleClick = (res) => {
+        Swal.fire({
+            text: `ไม่อนุมัติคำขอของ ${res.name} ?`,
+            // text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: 'gray',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonText: 'ยืนยัน',
+            reverseButtons: true
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const status = false
+                await handleHrApprove(res.id, status).then(async () => {
+                    setBookingData(await getBooking().then(async res => {
+                        // console.log(res);
+                        return res
+                    }))
+                })
+                //   Swal.fire(
+                //     'Deleted!',
+                //     'Your file has been deleted.',
+                //     'success'
+                //   )
+            }
+        })
+        // console.log(res);
+    }
+    const hrApproveClick = (res) => {
+        Swal.fire({
+            text: `อนุมัติคำขอของ ${res.name} ?`,
+            // text: "You won't be able to revert this!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: 'rgb(43, 164, 65)',
+            cancelButtonColor: 'gray',
+            cancelButtonText: 'ยกเลิก',
+            confirmButtonText: 'ยืนยัน',
+            reverseButtons: true
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const status = true
+                await handleHrApprove(res.id, status).then(async () => {
+                    setBookingData(await getBooking().then(async res => {
+                        console.log(res);
+                        return res
+                    }))
+                })
+
+                //   Swal.fire(
+                //     'Deleted!',
+                //     'Your file has been deleted.',
+                //     'success'
+                //   )
+            }
+        })
+        // console.log(res);
+    }
+
+    const [oldCount, setOldCount] = useState(0)
+    const filterBooking = (dataFilter, filter) => {
+        console.log(dataFilter, filter);
+
+
+        let countBooking = 0
+        // console.log(countBooking);
+        if (filter == 'Company') {
+            setFilter({ ...filerBooking, search: true, company: dataFilter })
+        } else if (filter == 'Department') {
+            setFilter({ ...filerBooking, search: true, department: dataFilter })
+        } else if (filter == 'Reason') {
+            setFilter({ ...filerBooking, search: true, reason: dataFilter })
+        } else if (filter == 'Date') {
+            setFilter({ ...filerBooking, search: true, date: dataFilter })
+        } else if (filter == 'Province') {
+            setFilter({ ...filerBooking, search: true, province: dataFilter })
+        }
+        // console.log(count);
+        let arr = []
+        bookingData.map(res => {
+            // console.log(res);
+            if (dataFilter != 'Other' && res.hrApprove == null && res.company == dataFilter
+                || res.hrApprove == null && res.department == dataFilter
+                || res.hrApprove == null && res.reason == dataFilter
+                || res.hrApprove == null && res.date == dataFilter
+                || res.hrApprove == null && res.destProvince == dataFilter) {
+                countBooking += 1
+                arr.push(res)
+            } else
+                if (
+                    filter == 'Company' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
+                    console.log(176);
+                    countBooking += 1
+                arr.push(res)
+
+                } else if (filter == 'Department'
+                    && res.department != 'Production' && res.department != 'production'
+                    && res.department != 'Marketing' && res.department != 'marketing'
+                    && res.department != 'QA & QC'
+                    && res.department != 'Personnel' && res.department != 'personnel'
+                    && res.department != 'IT' && res.department != 'it'
+                    && res.department != 'Business Deverlopment' && res.department != 'business deverlopment'
+                    && res.department != 'Purchasing' && res.department != 'purchasing'
+                    && res.department != 'Safety' && res.department != 'Safety') {
+                    countBooking += 1
+                    console.log(191);
+                arr.push(res)
+
+                }
+
+            console.log(arr);
+            setCount(countBooking)
+            // setOldCount(countBooking)
+        })
+    }
+    // console.log(filerBooking);
+    const clearBtn = () => {
+        setFilter({
+            search: false,
+            company: null,
+            department: null,
+            reason: null,
+            date: null,
+            province: null
+        })
+        let countData = 0
+        bookingData.map(data => {
+            if (data.hrApprove == null) {
+                countData += 1
+            }
+        })
+        setCount(countData)
+    }
+    // console.log(filerBooking);
     function useOutsideAlerter(ref) {
         // console.log(ref);
         useEffect(() => {
@@ -105,27 +250,36 @@ const Hrapprove = () => {
             };
         }, [ref]);
     }
-    const showData = ({totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
+    const showData = ({ totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
         // console.log(carType, comment, company, reason);
-        setModal({ totalPassenger,carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
+        setModal({ totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
     }
     useOutsideAlerter(wrapperRef);
+    const [count, setCount] = useState(0)
     React.useMemo(async () => {
         const bookingControl = async () => {
             setBookingData(await getBooking().then(async res => {
+                let countData = 0
+                res.map(data => {
+                    if (data.hrApprove == null) {
+                        countData += 1
+                    }
+                })
+                setCount(countData)
+                // console.log(res);
                 return res
             }))
         }
         await bookingControl()
     }, [])
+
     return (
         <div>
-
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
             <div className='padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
-                <p style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
+                <p style={{ color: 'black', paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
-                    <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black' }}>999 รายการ </span>
+                    <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black' }}>{count} รายการ </span>
                     <span style={{ padding: '8px' }} >
                         <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                             <img src={filer} />กรอง</button>
@@ -136,22 +290,22 @@ const Hrapprove = () => {
                             <p>บริษัท</p>
                             <Row>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >AH</Button>
+                                    <Button value='AH' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AH', filterType = 'Company')} >AH</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >AHP</Button>
+                                    <Button value='AHP' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AHP', filterType = 'Company')} >AHP</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >AHT</Button>
+                                    <Button value='AHT' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AHT', filterType = 'Company')} >AHT</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >AITS</Button>
+                                    <Button value='AITS' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AITS', filterType = 'Company')} >AITS</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >ASICO</Button>
+                                    <Button value='ASICO' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ASICO', filterType = 'Company')}>ASICO</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >อื่น ๆ</Button>
+                                    <Button value='Other' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Company')}>อื่น ๆ</Button>
                                 </Col>
 
                             </Row>
@@ -167,55 +321,55 @@ const Hrapprove = () => {
                             <p>แผนก</p>
                             <Row>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >Production</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Production', filterType = 'Department')} >Production</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >Marketing</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Marketing', filterType = 'Department')} >Marketing</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >QA & QC</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'QA & QC', filterType = 'Department')} >QA & QC</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >Personnel</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Personnel', filterType = 'Department')} >Personnel</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >IT</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'IT', filterType = 'Department')} >IT</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >Business Deverlopment</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Business Deverlopment', filterType = 'Department')} >Business Deverlopment</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >Purchasing</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Purchasing', filterType = 'Department')} >Purchasing</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >Safety</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Safety', filterType = 'Department')} >Safety</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >อื่น ๆ</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Department')} >อื่น ๆ</Button>
                                 </Col>
 
                             </Row>
 
-                            <hr />
+                            <hr style={{ marginRight: '20px' }} />
 
 
 
                             <p>เหตุผลที่ต้องการใช้รถ</p>
                             <Row>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร', filterType = 'Reason')} >ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >ส่งออก</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ส่งของ', filterType = 'Reason')}>ส่งของ</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >รับ - ส่งแขก</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'รับ - ส่งแขก', filterType = 'Reason')}>รับ - ส่งแขก</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >ติดต่อลูกค้า</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ติดต่อลูกค้า', filterType = 'Reason')}>ติดต่อลูกค้า</Button>
                                 </Col>
                                 <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <Button >อื่น ๆ</Button>
+                                    <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Reason')} >อื่น ๆ</Button>
                                 </Col>
 
                             </Row>
@@ -231,13 +385,14 @@ const Hrapprove = () => {
                             <p>วันที่</p>
                             <Row >
                                 <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                    <DatePicker ref={wrapperRef} style={{ width: '100%' }} />
+                                    <DatePicker onChange={(e) => filterBooking(filterCompany = moment(e).format('DD-MM-YYYY'), filterType = 'Date')} ref={wrapperRef} style={{ width: '100%' }} />
                                 </Col>
                             </Row>
                             <p style={{ paddingTop: '8px' }}>จังหวัด</p>
                             <Row >
                                 <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
                                     <Select
+                                        onChange={(e) => filterBooking(filterCompany = e, filterType = 'Province')}
                                         showSearch
                                         style={{ width: '100%' }}
                                         placeholder="Select a person"
@@ -247,62 +402,169 @@ const Hrapprove = () => {
                                             option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                         }
                                     >
-                                        <Option value="jack">Jack</Option>
-                                        <Option value="lucy">Lucy</Option>
-                                        <Option value="tom">Tom</Option>
+                                        {state.province}
                                     </Select>
                                 </Col>
 
                             </Row>
+                            <br />
+                            <Row >
+                                <Col span={24} style={{ textAlign: 'center' }}>
+                                    <button onClick={() => clearBtn()} style={{ border: ' 1px solid #D9D9D9', boxSizing: 'border-box', borderRadius: '24px', padding: '8px 16px', fontFamily: 'Bai Jamjuree', cursor: 'pointer' }} ><img src={clearIcon} />Clear</button>
 
+                                </Col>
+
+                            </Row>
                         </div>
                     </div>
                 </div>
             </div>
             <div className='margin hrfont'>
                 <Row gutter={{ xs: 24, sm: 24 }}>
-                    {bookingData.map(res => (
-                        <Col xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
+                    {/* filter no other */}
 
-                            <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
-                                <Card style={{
-                                    position: 'relative',
-                                    width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
-                                }}>
-                                    <div  >
-                                        <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
-                                    </div>
-                                    <div style={{ paddingTop: '4%' }} >
-                                        <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
-                                    </div>
-                                    <div style={{ paddingTop: '4%' }}>
-                                        <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
-                                    </div>
-                                    <div style={{ paddingTop: '4%' }} >
-                                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
-                                    </div>
-                                    <div style={{ paddingTop: '4%' }}>
-                                        <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
-                                    </div>
 
-                                </Card>
-                                <Row>
-                                    <Col style={{ paddingTop: '8%' }} span={4} >
-                                        <div className='cursor'>
-                                            <img onClick={() => { showData(res) }} src={hrdescription} />
-                                        </div>
-                                    </Col>
-                                    <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
-                                        <div style={{ paddingTop: '4px' }}>
-                                            <Button style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
-                                        <Button style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </Card>
+                    {bookingData.map(res =>
 
-                        </Col>
-                    ))}
+                        res.hrApprove == null && res.company == filerBooking.company
+                            || res.hrApprove == null && res.department == filerBooking.department
+                            || res.hrApprove == null && res.reason == filerBooking.reason
+                            || res.hrApprove == null && res.date == filerBooking.date
+                            || res.hrApprove == null && res.destProvince == filerBooking.province ?
+
+                            (
+
+                                <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
+
+                                    <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
+                                        <Card style={{
+                                            position: 'relative',
+                                            width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
+                                        }}>
+                                            <div  >
+                                                <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }} >
+                                                <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }}>
+                                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }} >
+                                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }}>
+                                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
+                                            </div>
+
+                                        </Card>
+                                        <Row>
+                                            <Col style={{ paddingTop: '8%' }} span={4} >
+                                                <div className='cursor'>
+                                                    <img onClick={() => { showData(res) }} src={hrdescription} />
+                                                </div>
+                                            </Col>
+                                            <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
+                                                <div style={{ paddingTop: '4px' }}>
+                                                    <Button onClick={() => { hrCancleClick(res) }} style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
+                                        <Button onClick={() => { hrApproveClick(res) }} style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+
+                                </Col>
+                            ) : res.hrApprove == null && filerBooking.search == false ? (
+                                // no filter
+                                <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
+
+                                    <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
+                                        <Card style={{
+                                            position: 'relative',
+                                            width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
+                                        }}>
+                                            <div  >
+                                                <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }} >
+                                                <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }}>
+                                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }} >
+                                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
+                                            </div>
+                                            <div style={{ paddingTop: '4%' }}>
+                                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
+                                            </div>
+
+                                        </Card>
+                                        <Row>
+                                            <Col style={{ paddingTop: '8%' }} span={4} >
+                                                <div className='cursor'>
+                                                    <img onClick={() => { showData(res) }} src={hrdescription} />
+                                                </div>
+                                            </Col>
+                                            <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
+                                                <div style={{ paddingTop: '4px' }}>
+                                                    <Button onClick={() => { hrCancleClick(res) }} style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
+                                        <Button onClick={() => { hrApproveClick(res) }} style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
+                                                </div>
+                                            </Col>
+                                        </Row>
+                                    </Card>
+
+                                </Col>
+                                // other filter
+                            ) : res.hrApprove == null && filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO'
+                                || res.hrApprove == null && filerBooking.department == 'Other' && res.department != 'Production' && res.department != 'production' && res.department != 'Marketing' && res.department != 'marketing' && res.department != 'QA & QC' && res.department != 'Personnel' && res.department != 'personnel' && res.department != 'IT' && res.department != 'it' && res.department != 'Business Deverlopment' && res.department != 'business deverlopment' && res.department != 'Purchasing' && res.department != 'purchasing' && res.department != 'Safety' && res.department != 'Safety'
+
+                                || res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า'
+
+                                    ? (
+                                        <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
+
+                                            <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
+                                                <Card style={{
+                                                    position: 'relative',
+                                                    width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
+                                                }}>
+                                                    <div  >
+                                                        <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
+                                                    </div>
+                                                    <div style={{ paddingTop: '4%' }} >
+                                                        <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
+                                                    </div>
+                                                    <div style={{ paddingTop: '4%' }}>
+                                                        <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
+                                                    </div>
+                                                    <div style={{ paddingTop: '4%' }} >
+                                                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
+                                                    </div>
+                                                    <div style={{ paddingTop: '4%' }}>
+                                                        <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
+                                                    </div>
+
+                                                </Card>
+                                                <Row>
+                                                    <Col style={{ paddingTop: '8%' }} span={4} >
+                                                        <div className='cursor'>
+                                                            <img onClick={() => { showData(res) }} src={hrdescription} />
+                                                        </div>
+                                                    </Col>
+                                                    <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
+                                                        <div style={{ paddingTop: '4px' }}>
+                                                            <Button onClick={() => { hrCancleClick(res) }} style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
+                                        <Button onClick={() => { hrApproveClick(res) }} style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            </Card>
+
+                                        </Col>
+                                    ) : null
+                    )}
 
                 </Row>
             </div>

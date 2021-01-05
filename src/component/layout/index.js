@@ -8,7 +8,7 @@ import ManageDriver from '../driver/managedriver'
 import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../login'
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Select } from 'antd';
 import { Route, Link, useLocation, useHistory, Redirect } from "react-router-dom";
 import {
     MenuUnfoldOutlined,
@@ -17,18 +17,33 @@ import {
     VideoCameraOutlined,
     UploadOutlined,
 } from '@ant-design/icons';
+import { DataContext } from "../store/store"
+
+import dataProvince from '../../province.json'
 
 const { Header, Sider, Content } = Layout;
 
 const AppLayout = () => {
     let history = useHistory();
+    const { Option } = Select;
+    const [stateProvince, setStateProvince] = React.useContext(DataContext);
+    var provinceArray = []
 
     React.useMemo(() => {
         if (!sessionStorage.getItem("user")) {
             history.push('/login')
 
         }
+        var i = 0
+        for (const data in dataProvince) {
+            provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
+            i++
+        }
+        setStateProvince({
+            ...stateProvince, province: provinceArray
+        })
     }, [])
+
     const [state, setState] = useState({
         collapsed: true,
         path: 1
