@@ -189,6 +189,7 @@ const Hrapprove = () => {
                     countBooking += 1
                 }
                 else if (res.hrApprove == null && res.date == filerBooking.date) {
+                    // console.log(res.date );
                     countBooking += 1
                 }
                 else if (res.hrApprove == null && res.destProvince == filerBooking.province) {
@@ -197,7 +198,8 @@ const Hrapprove = () => {
                 else if (filerBooking.company == 'Other' && res.hrApprove == null && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
                     countBooking += 1
                 }
-                else if (filerBooking.department == 'Other' && res.hrApprove == null && res.department != 'Production' && res.department != 'production'
+                else if (filerBooking.department == 'Other' && res.hrApprove == null
+                    && res.department != 'Production' && res.department != 'production'
                     && res.department != 'Marketing' && res.department != 'marketing'
                     && res.department != 'QA & QC'
                     && res.department != 'Personnel' && res.department != 'personnel'
@@ -205,6 +207,7 @@ const Hrapprove = () => {
                     && res.department != 'Business Deverlopment' && res.department != 'business deverlopment'
                     && res.department != 'Purchasing' && res.department != 'purchasing'
                     && res.department != 'Safety' && res.department != 'Safety') {
+                    countBooking += 1
                 } else if (res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า') {
                     countBooking += 1
 
@@ -276,9 +279,9 @@ const Hrapprove = () => {
             };
         }, [ref]);
     }
-    const showData = ({ needDriver,totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
+    const showData = ({ needDriver, totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
         // console.log(carType, comment, company, reason);
-        setModal({ needDriver,totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
+        setModal({ needDriver, totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
     }
     useOutsideAlerter(wrapperRef);
     const [count, setCount] = useState(0)
@@ -298,7 +301,7 @@ const Hrapprove = () => {
         }
         await bookingControl()
     }, [])
-console.log(modal);
+    // console.log(modal);
     return (
         <div>
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
@@ -421,7 +424,7 @@ console.log(modal);
                                         onChange={(e) => filterBooking(filterCompany = e, filterType = 'Province')}
                                         showSearch
                                         style={{ width: '100%' }}
-                                        placeholder="Select a person"
+                                        placeholder="Select province"
                                         optionFilterProp="children"
 
                                         filterOption={(input, option) =>
@@ -510,19 +513,19 @@ console.log(modal);
                                             width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
                                         }}>
                                             <div  >
-                                                <img src={user} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
+                                                <img src={user} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
                                             </div>
                                             <div style={{ paddingTop: '3%' }} >
-                                                <img src={department} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
+                                                <img src={department} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
                                             </div>
                                             <div style={{ paddingTop: '3%' }}>
-                                                <img src={calender} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
+                                                <img src={calender} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
                                             </div>
                                             <div style={{ paddingTop: '3%' }} >
-                                                <img src={location} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
+                                                <img src={location} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
                                             </div>
                                             <div style={{ paddingTop: '3%' }}>
-                                                <img src={hrmessage} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
+                                                <img src={hrmessage} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
                                             </div>
 
                                         </Card>
@@ -604,7 +607,7 @@ console.log(modal);
             >
                 <div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
 
-                    <span style={{ position: 'absolute', right: '10%' }}>  { modal.needDriver ? <img src={statusdriver2}  /> : <img src={noDriver}  />  }&nbsp;  <span style={{marginTop : '8%'}}>คนขับรถ</span>   </span>
+                    <span style={{ position: 'absolute', right: '10%' }}>  {modal.needDriver ? <img src={statusdriver2} /> : <img src={noDriver} />}&nbsp;  <span style={{ marginTop: '8%' }}>คนขับรถ</span>   </span>
                     <img src={car} /> <span style={{ paddingLeft: '4%' }} > {modal.carType}  </span>
 
                 </div>
