@@ -11,6 +11,7 @@ import calender from '../asset/hrcarender.png'
 import location from '../asset/hrlocation.png'
 import hrmessage from '../asset/hrmessage.png'
 import hrdescription from '../asset/hrdescription.png'
+import noDriver from '../asset/noDriver.png'
 import xicon from '../asset/xicon.png'
 import assignicon from '../asset/assignicon.png'
 import statusdriver2 from '../asset/statusdriver2.png'
@@ -87,17 +88,28 @@ const Hrapprove = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const status = false
+                const id = res.id
+                let name = null
                 await handleHrApprove(res.id, status).then(async () => {
-                    setBookingData(await getBooking().then(async res => {
-                        // console.log(res);
-                        return res
-                    }))
+                    await getBooking().then(async data => {
+                        data.map(booking => {
+
+                            if (booking.id == id) {
+                                name = booking.name
+                            }
+                        })
+                        Swal.fire({
+                            text: `ไม่อนุมัติคำขอของ ${name} สำเร็จ`,
+                            // text: "You won't be able to revert this!",
+                            icon: 'info',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setBookingData(data)
+                        // return res
+                    })
                 })
-                //   Swal.fire(
-                //     'Deleted!',
-                //     'Your file has been deleted.',
-                //     'success'
-                //   )
+
             }
         })
         // console.log(res);
@@ -116,30 +128,39 @@ const Hrapprove = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 const status = true
+                const id = res.id
+                let name = null
                 await handleHrApprove(res.id, status).then(async () => {
-                    setBookingData(await getBooking().then(async res => {
-                        console.log(res);
-                        return res
-                    }))
+                    await getBooking().then(async data => {
+                        data.map(booking => {
+
+                            if (booking.id == id) {
+                                name = booking.name
+                            }
+                        })
+                        Swal.fire({
+                            text: `อนุมัติคำขอของ ${name} สำเร็จ`,
+                            // text: "You won't be able to revert this!",
+                            icon: 'success',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setBookingData(data)
+                        // return res
+                    })
                 })
 
-                //   Swal.fire(
-                //     'Deleted!',
-                //     'Your file has been deleted.',
-                //     'success'
-                //   )
+
             }
         })
         // console.log(res);
     }
 
-    const [oldCount, setOldCount] = useState(0)
+
+
     const filterBooking = (dataFilter, filter) => {
-        console.log(dataFilter, filter);
-
-
+        // console.log(dataFilter, filter);
         let countBooking = 0
-        // console.log(countBooking);
         if (filter == 'Company') {
             setFilter({ ...filerBooking, search: true, company: dataFilter })
         } else if (filter == 'Department') {
@@ -151,26 +172,32 @@ const Hrapprove = () => {
         } else if (filter == 'Province') {
             setFilter({ ...filerBooking, search: true, province: dataFilter })
         }
-        // console.log(count);
-        let arr = []
-        bookingData.map(res => {
-            // console.log(res);
-            if (dataFilter != 'Other' && res.hrApprove == null && res.company == dataFilter
-                || res.hrApprove == null && res.department == dataFilter
-                || res.hrApprove == null && res.reason == dataFilter
-                || res.hrApprove == null && res.date == dataFilter
-                || res.hrApprove == null && res.destProvince == dataFilter) {
-                countBooking += 1
-                arr.push(res)
-            } else
-                if (
-                    filter == 'Company' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
-                    console.log(176);
-                    countBooking += 1
-                arr.push(res)
+    }
 
-                } else if (filter == 'Department'
-                    && res.department != 'Production' && res.department != 'production'
+
+    useEffect(() => {
+        // filter
+        if (filerBooking.search == true) {
+            let countBooking = 0
+            bookingData.map(res => {
+                // console.log(res.destProvince);
+                if (res.hrApprove == null && res.company == filerBooking.company) {
+                    countBooking += 1
+                } else if (res.hrApprove == null && res.department == filerBooking.department) {
+                    countBooking += 1
+                } else if (res.hrApprove == null && res.reason == filerBooking.reason) {
+                    countBooking += 1
+                }
+                else if (res.hrApprove == null && res.date == filerBooking.date) {
+                    countBooking += 1
+                }
+                else if (res.hrApprove == null && res.destProvince == filerBooking.province) {
+                    countBooking += 1
+                }
+                else if (filerBooking.company == 'Other' && res.hrApprove == null && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
+                    countBooking += 1
+                }
+                else if (filerBooking.department == 'Other' && res.hrApprove == null && res.department != 'Production' && res.department != 'production'
                     && res.department != 'Marketing' && res.department != 'marketing'
                     && res.department != 'QA & QC'
                     && res.department != 'Personnel' && res.department != 'personnel'
@@ -178,18 +205,17 @@ const Hrapprove = () => {
                     && res.department != 'Business Deverlopment' && res.department != 'business deverlopment'
                     && res.department != 'Purchasing' && res.department != 'purchasing'
                     && res.department != 'Safety' && res.department != 'Safety') {
+                } else if (res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า') {
                     countBooking += 1
-                    console.log(191);
-                arr.push(res)
 
                 }
-
-            console.log(arr);
+            })
+            // console.log(countBooking);
             setCount(countBooking)
-            // setOldCount(countBooking)
-        })
-    }
+        }
+    }, [filterBooking])
     // console.log(filerBooking);
+
     const clearBtn = () => {
         setFilter({
             search: false,
@@ -250,9 +276,9 @@ const Hrapprove = () => {
             };
         }, [ref]);
     }
-    const showData = ({ totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
+    const showData = ({ needDriver,totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason }) => {
         // console.log(carType, comment, company, reason);
-        setModal({ totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
+        setModal({ needDriver,totalPassenger, carType, comment, company, date, department, destProvince, destination, endTime, startTime, name, driver, reason, open: true })
     }
     useOutsideAlerter(wrapperRef);
     const [count, setCount] = useState(0)
@@ -272,7 +298,7 @@ const Hrapprove = () => {
         }
         await bookingControl()
     }, [])
-
+console.log(modal);
     return (
         <div>
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
@@ -484,19 +510,19 @@ const Hrapprove = () => {
                                             width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
                                         }}>
                                             <div  >
-                                                <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
+                                                <img src={user} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
                                             </div>
-                                            <div style={{ paddingTop: '4%' }} >
-                                                <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
+                                            <div style={{ paddingTop: '3%' }} >
+                                                <img src={department} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
                                             </div>
-                                            <div style={{ paddingTop: '4%' }}>
-                                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
+                                            <div style={{ paddingTop: '3%' }}>
+                                                <img src={calender} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
                                             </div>
-                                            <div style={{ paddingTop: '4%' }} >
-                                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
+                                            <div style={{ paddingTop: '3%' }} >
+                                                <img src={location} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
                                             </div>
-                                            <div style={{ paddingTop: '4%' }}>
-                                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
+                                            <div style={{ paddingTop: '3%' }}>
+                                                <img src={hrmessage} /> <span style={{top : '2px', position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
                                             </div>
 
                                         </Card>
@@ -578,7 +604,7 @@ const Hrapprove = () => {
             >
                 <div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
 
-                    <span style={{ position: 'absolute', right: '10%' }}>   <img src={statusdriver2} /> &nbsp; คนขับรถ  </span>
+                    <span style={{ position: 'absolute', right: '10%' }}>  { modal.needDriver ? <img src={statusdriver2}  /> : <img src={noDriver}  />  }&nbsp;  <span style={{marginTop : '8%'}}>คนขับรถ</span>   </span>
                     <img src={car} /> <span style={{ paddingLeft: '4%' }} > {modal.carType}  </span>
 
                 </div>
