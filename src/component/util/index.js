@@ -3,13 +3,14 @@ import moment from 'moment';
 
 const loginApi = 'http://10.10.10.227:1337/auth/local';
 const bookingApi = 'http://10.10.10.227:1337/bookings';
+const carApi = 'http://10.10.10.227:1337/cars'
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
         identifier,
         password
     }).then(res => {
-// console.log(res)
+        // console.log(res)
         return res;
     }).catch(err => { return { err: err } });
 }
@@ -58,3 +59,46 @@ export const getBooking = async () => {
         return res.data
     })
 }
+export const getCars = async () => {
+    return await axios.get(`${carApi}`).then(res => {
+        // console.log(res);
+        return res.data
+    })
+}
+export const addCars = async (carData) => {
+    // console.log(carData);
+    const bodyFormData = new FormData();
+    let formdata = new FormData()
+    formdata.append("files.picture", carData.imgname)
+    formdata.append("data", JSON.stringify({
+        plateNo: carData.plateNo,
+        province: carData.province,
+        model: carData.model,
+        type: carData.type,
+        mileage: carData.mileage,
+        status: 'free'
+    }))
+    return await axios.post(`${carApi}`, formdata).then(async res => {
+        return await getCars().then(data => data)
+    })
+}
+export const editCars = async (carData) => {
+    // console.log(carData.id);
+
+    let formdata = new FormData()
+    formdata.append("files.picture", carData.imgname)
+    formdata.append("data", JSON.stringify({
+        plateNo: carData.plateNo,
+        province: carData.province,
+        model: carData.model,
+        type: carData.type,
+        mileage: carData.mileage,
+        status: 'free'
+    }))
+    return await axios.put(`${carApi}/${carData.id}`, formdata).then(async res => {
+        return await getCars().then(data => data)
+
+    })
+}
+
+

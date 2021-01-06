@@ -7,58 +7,73 @@ import editdriver from '../asset/editdriver.png'
 import Swal from 'sweetalert2';
 import countRequest from '../asset/countRequest.png'
 import { IconMap } from 'antd/lib/result';
+import { addCars, getCars, editCars } from '../util/index'
+
 const ManageDriver = () => {
+    const [state, setState] = React.useContext(DataContext);
     const [carState, setcarState] = useState({
         isModalVisible: false,
         openCreateModal: false,
         carData: {
-            plate_car: null,
+            plateNo: null,
             province: null,
-            start_mileage: null,
-            type_car: null,
+            mileage: null,
+            type: null,
             model: null,
             end_mileage: null,
-        }
+        }, allCar: null
+
     });
+
     const hiddenFileInput = React.useRef(null)
     //edit img driver
     const handleCarData = e => {
-        console.log(e);
-
-        if (e.target.name == 'plate_car') {
-            setcarState({ ...carState, carData: { ...carState.carData, plate_car: e.target.value } })
+        // console.log(e);
+        if (e.target.name == 'plateNo') {
+            setcarState({ ...carState, carData: { ...carState.carData, plateNo: e.target.value } })
         }
-
-        if (e.target.name == 'start_mileage') {
-            setcarState({ ...carState, carData: { ...carState.carData, start_mileage: e.target.value } })
+        if (e.target.name == 'mileage') {
+            setcarState({ ...carState, carData: { ...carState.carData, mileage: e.target.value } })
         }
         if (e.target.name == 'img') {
-            // console.log( e.target.files[0]);
-            setcarState({ ...carState, carData: { ...carState.carData, imgname: e.target.files[0] ? e.target.files[0].name : null, img: URL.createObjectURL(e.target.files[0]) } })
+            // console.log(e);
+            console.log(e.target.files[0]);
+            setcarState({ ...carState, carData: { ...carState.carData, imgname: e.target.files[0] ? e.target.files[0] : null, img: URL.createObjectURL(e.target.files[0]) } })
         }
-
-
-
     }
-    console.log(carState);
+
     const handleClick = event => {
 
         hiddenFileInput.current.click();
     };
 
+    React.useMemo(async () => {
+        const getCardata = async () => {
+            return await getCars().then(res => res)
+        }
+        await getCardata().then(async (res) => {
+            // console.log(res);
+            setcarState({ ...carState, allCar: res })
+        })
+
+
+    }, [])
+    // console.log(carState);
+
     //
     const openEdit = (e, data) => {
-
-        setcarState({ ...carState, openCreateModal: false, isModalVisible: true, carData: { name: data } });
+        // console.log(data);
+        setcarState({ ...carState, openCreateModal: false, isModalVisible: true, carData: data });
     };
     const openCreate = (e) => {
 
         setcarState({ ...carState, openCreateModal: true, isModalVisible: true, carData: null });
     };
+    // console.log(carState);
     const handleOk = () => {
 
         if (carState.carData) {
-            if (!carState.carData.plate_car || !carState.carData.province || !carState.carData.start_mileage || !carState.carData.type_car || !carState.carData.model) {
+            if (!carState.carData.plateNo || !carState.carData.province || !carState.carData.mileage || !carState.carData.type || !carState.carData.model) {
                 Swal.fire({
 
                     icon: 'warning',
@@ -68,7 +83,7 @@ const ManageDriver = () => {
                 })
             } else {
                 Swal.fire({
-                    title: `บันทึกข้อมูลของ ${carState.carData.name}`,
+                    title: `บันทึกข้อมูลรถ ${carState.carData.plateNo}`,
                     customClass: {
                         confirmButton: 'swConfirm',
 
@@ -85,19 +100,83 @@ const ManageDriver = () => {
                     cancelButtonText: 'ไม่บันทึก',
                     reverseButtons: true,
 
-                }).then((result) => {
+                }).then(async (result) => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
-                        Swal.fire({
+                        await addCars(carState.carData).then(async res => {
 
-                            icon: 'success',
-                            title: 'บันทึกข้อมูลสำเร็จ',
-                            showConfirmButton: false,
-                            timer: 1500
-                        }).then(() => {
-                            setcarState({ ...carState, isModalVisible: false });
+                            setcarState({ ...carState, allCar: res, isModalVisible: false })
+                            Swal.fire({
 
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
                         })
+
+
+                    } else if (result.isDenied) {
+
+                        // setcarState({ ...carState, isModalVisible: false });
+                    }
+                })
+            }
+        } else {
+            Swal.fire({
+
+                icon: 'warning',
+                title: 'กรุณากรอกข้อมูลให้ครบ',
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
+    };
+    const handleEdit = () => {
+
+        if (carState.carData) {
+            if (!carState.carData.plateNo || !carState.carData.province || !carState.carData.mileage || !carState.carData.type || !carState.carData.model) {
+                Swal.fire({
+
+                    icon: 'warning',
+                    title: 'กรุณากรอกข้อมูลให้ครบ',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            } else {
+                Swal.fire({
+                    title: `บันทึกข้อมูลรถ ${carState.carData.plateNo}`,
+                    customClass: {
+                        confirmButton: 'swConfirm',
+
+                        cancelButton: 'swCancel'
+                    },
+                    focusConfirm: false,
+                    buttonsStyling: false,
+
+                    showCancelButton: true,
+                    confirmButtonText: 'บันทึก',
+                    // confirmButtonColor: '#2CC84D',
+                    // confirmButtonColor: '#2CC84D',
+
+                    cancelButtonText: 'ไม่บันทึก',
+                    reverseButtons: true,
+
+                }).then(async (result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        console.log(carState.carData);
+                        await editCars(carState.carData).then(async res => {
+                            setcarState({ ...carState, allCar: res, isModalVisible: false })
+                            Swal.fire({
+
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
+
 
                     } else if (result.isDenied) {
 
@@ -118,7 +197,7 @@ const ManageDriver = () => {
     const handleRemove = () => {
 
         Swal.fire({
-            title: `ลบข้อมูลของ ฟหกฟหด่้ฟ่`,
+            title: `ลบข้อมูลของ `,
             customClass: {
                 confirmButton: 'swRemove',
 
@@ -146,29 +225,16 @@ const ManageDriver = () => {
         // setcarState({ ...carState, isModalVisible: false });
 
     };
-
     const handleCancel = () => {
-
-
         setcarState({ ...carState, isModalVisible: false });
-
-
-
     };
-
-    const test = [0, 1, 2, 3, 4, 5, 6]
     const { Option } = Select
-
-
     const imgRef = useRef();
-    // const openEdit = (e, data) => {
-
-    //     showModal(data)
-    //     // swal(`this is click from res id : ${data}`);
-    // }
-    console.log(carState);
+    console.log(carState)
     return (
         <div>
+
+            {/* <img src={state.carData.img  || null} /> */}
             <div className=' padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p className='hrfont' style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
@@ -178,14 +244,16 @@ const ManageDriver = () => {
 
                 </div>
             </div>
+
             <div className='margin hrfont'>
 
                 <Row gutter={{ xs: 24, sm: 24 }}>
 
-                    {test.map(res =>
+                    {carState.allCar && carState.allCar.map(res => (
 
-                        <Col xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} >
-                            <div style={{ position: 'relative', textAlign: 'center', paddingTop: '16px' }}>
+                        <Col key={res.id} xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} >
+
+                            <div  key={res.id} style={{ position: 'relative', textAlign: 'center', paddingTop: '16px' }}>
                                 <div className='person'>
                                     <div className='hoverDriver'  >
                                         <img style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', cursor: 'pointer' }} src={editdriver}
@@ -193,32 +261,42 @@ const ManageDriver = () => {
                                     </div>
 
                                     <img className='driverimg'
-                                        src='https://www.autodeft.com/_uploads/images/Aston%20Martin%20Valkyrie_01.jpg' />
+                                        src={res.picture[res.picture.length - 1] ? `http://10.10.10.227:1337${res.picture[res.picture.length - 1].url}` :
+                                            'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
+                                        } />
 
                                 </div>
                             </div>
-
                         </Col>
 
-                    )}
+                    ))}
 
                 </Row>
-                <Modal title="" visible={carState.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
-                    <Row gutter={{ xs: 24, sm: 24 }} style={{ marginBottom : '8px',textAlign: 'center' }}>
+                <Modal  title="" visible={carState.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
+                    <Row gutter={{ xs: 24, sm: 24 }} style={{ marginBottom: '8px', textAlign: 'center' }}>
                         <Col span={24}>
                             {!carState.openCreateModal ? <Button key="back" style={{ backgroundColor: '#C53030', color: 'white', width: '35%' }} onClick={() => handleRemove()}>
                                 ลบ
             </Button> : ''}
-                            <Button key="submit" style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }} onClick={handleOk}>
+                            {!carState.openCreateModal ? <Button key="submit" style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }}
+                                onClick={handleEdit}>
+                                แก้ไข
+            </Button> : ''}
+                            {carState.openCreateModal ? <Button key="submit" style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }} onClick={handleOk}>
                                 บันทึก
-            </Button>
+            </Button> : ''}
+
                         </Col>
                     </Row>,
                 ]}>
                     <div className='person' style={{ textAlign: "center" }}>
-                        <img style={{ width: '183px', height: '183px' }} src={carState.carData ? carState.carData.img ? carState.carData.img : 'https://crestedcranesolutions.com/wp-content/uploads/2013/07/facebook-profile-picture-no-pic-avatar.jpg'
 
-                            : 'https://crestedcranesolutions.com/wp-content/uploads/2013/07/facebook-profile-picture-no-pic-avatar.jpg'} />
+                        <img style={{ width: '183px', height: '183px' }}
+                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData.plateNo ? carState.carData.picture[carState.carData.picture.length - 1]
+                                ? `http://10.10.10.227:1337${carState.carData.picture[carState.carData.picture.length - 1].url}`
+                                : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
+                                : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
+                                : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'} />
                         <div className='hoverCar'  >
                             <img style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', cursor: 'pointer' }} src={editdriver} onClick={() => handleClick()}
                             />
@@ -240,14 +318,14 @@ const ManageDriver = () => {
                                 <h3 style={{ fontWeight: 'bold' }}>เลขทะเบียนรถ</h3>
                                 {/* <p>{carState.carData.name}</p> */}
 
-                                <Input name='plate_car' placeholder='เลขทะเบียนรถ'
+                                <Input name='plateNo' placeholder='เลขทะเบียนรถ'
                                     style={{ width: '100%', backgroundColor: '#EDEDED' }} bordered={false}
-                                    value={carState.carData ? carState.carData.plate_car : null}
+                                    value={carState.carData ? carState.carData.plateNo : null}
                                     onChange={(e) => { handleCarData(e) }} />
                                 <h3 style={{ fontWeight: 'bold' }}>ประเภทรถ</h3>
-                                <Select value={carState.carData ? carState.carData.type_car : null} name='type_car' placeholder='ประเภทรถ' bordered={false}
+                                <Select value={carState.carData ? carState.carData.type : null} name='type' placeholder='ประเภทรถ' bordered={false}
                                     style={{ width: '100%', backgroundColor: '#EDEDED' }}
-                                    onChange={(e) => { setcarState({ ...carState, carData: { ...carState.carData, type_car: e } }) }}
+                                    onChange={(e) => { setcarState({ ...carState, carData: { ...carState.carData, type: e } }) }}
                                     showSearch
                                     optionFilterProp="children"
                                     filterOption={(input, option) =>
@@ -260,8 +338,8 @@ const ManageDriver = () => {
                                     <Option value="tom">Tom</Option>
                                 </Select>
                                 <h3 style={{ fontWeight: 'bold' }}>เลขไมล์รถ</h3>
-                                <Input name='start_mileage' placeholder='เลขไมล์รถ' style={{ width: '100%', backgroundColor: '#EDEDED' }} bordered={false} onChange={(e) => { handleCarData(e) }}
-                                    value={carState.carData ? carState.carData.start_mileage : null} />
+                                <Input name='mileage' placeholder='เลขไมล์รถ' style={{ width: '100%', backgroundColor: '#EDEDED' }} bordered={false} onChange={(e) => { handleCarData(e) }}
+                                    value={carState.carData ? carState.carData.mileage : null} />
 
                             </Col>
                             <Col span={8}>
@@ -276,9 +354,7 @@ const ManageDriver = () => {
                                     }
                                 >
 
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="tom">Tom</Option>
+                                    {state.province}
                                 </Select>
                                 <h3 style={{ fontWeight: 'bold' }}>ยี่ห้อ</h3>
                                 <Select value={carState.carData ? carState.carData.model : null} name='model' placeholder='ยี่ห้อ' bordered={false}

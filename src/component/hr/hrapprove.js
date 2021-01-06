@@ -310,7 +310,7 @@ const Hrapprove = () => {
                 <div style={{ position: 'relative' }}>
                     <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black' }}>{count} รายการ </span>
                     <span style={{ padding: '8px' }} >
-                        <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                        <button onClick={() => { toggleSidebar() }} style={{ cursor : 'pointer', padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                             <img src={filer} />กรอง</button>
                     </span>
                     <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
