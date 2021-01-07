@@ -18,8 +18,11 @@ import cleardata from '../asset/cleardata.png'
 import countRequest from '../asset/countRequest.png'
 import senddatabtn from '../asset/senddatabtn.png'
 import filer from '../asset/filer.png'
-const RequestCar = ({ test }) => {
-    // console.log(res);
+import noDriver1 from '../asset/noDriver1.png'
+
+const RequestCar = () => {
+    const [state, setState] = React.useContext(DataContext);
+    console.log(state);
 
     const { innerHeight, innerWidth } = window
     // console.log(innerHeight,innerWidth);
@@ -43,10 +46,10 @@ const RequestCar = ({ test }) => {
                             // style={getListStyle(snapshot.isDraggingOver)}
                             >
 
-                                {test.map((res, index) =>
+                                {state.booking && state.booking.map((res, index) =>
                                     <Draggable
-                                        key={res}
-                                        draggableId={`test${res}`}
+                                        key={res.id}
+                                        draggableId={`${res.id}`}
                                         index={index}
                                     >
                                         {provided => (
@@ -57,24 +60,24 @@ const RequestCar = ({ test }) => {
                                             >
                                                 <Card className='cardMobile' >
                                                     <div style={{ position: 'relative', width: 'auto' }}>
-                                                        <img src={iconCar} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res} </span>
-                                                        <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span>
-
+                                                        <img src={iconCar} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.carType} </span>
+                                                        {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
+                                                        {res.needDriver ? <img style={{ position: 'absolute', right: '40%' }} src={Statusdriver} /> : <img style={{ position: 'absolute', right: '40%' }} src={noDriver1} />} <span className='font' style={{ position: 'absolute', right: '23%', paddingLeft: '2%' }} > คนขับรถ </span>
                                                         <img src={dragicon1} className='dragicon1'   {...provided.dragHandleProps} />
                                                     </div>
                                                     <div style={{ paddingTop: '4%' }}>
-                                                        <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > นายสมชาย ชาติชาย (AH)  </span>
+                                                        <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
                                                     </div>
                                                     <div style={{ paddingTop: '4%' }}>
-                                                        <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > 10/10/2020 08:30 - 16:30  </span>
+                                                        <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date.replaceAll('-', '/')} &nbsp; {res.startTime} - {res.endTime}  </span>
                                                     </div>
                                                     <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                        <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > AHR ระยอง  </span>
+                                                        <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination} {res.destProvince}  </span>
                                                     </div>
                                                     <div style={{ paddingTop: '4%' }}>
-                                                        <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > ส่งของ  </span>
+                                                        <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}  </span>
                                                     </div>
-                                                    <div style={{ paddingTop: '4%' }}>
+                                                    <div onClick={()=>alert('see detail')} style={{ cursor : 'pointer',paddingTop: '4%' }}>
                                                         <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
                                                     </div>
 
@@ -103,12 +106,13 @@ const RequestCar = ({ test }) => {
 const Car = ({ testt }) => {
 
     const [state, setState] = React.useContext(DataContext);
+    // console.log(state);
     const { Option } = Select
     const { innerHeight, innerWidth } = window
     const [pastTest, setpastTest] = useState({ test2: state.test2, test: state.test })
     const getListStyle = isDraggingOver => ({
         height: isDraggingOver ? "auto" : "100%",
-      });
+    });
     // if (!state.test2[0]) {
     //     alert('true')
     // }
@@ -143,7 +147,7 @@ const Car = ({ testt }) => {
                         >
 
 
-                            <Card className='cardMobile' style={{paddingBottom: "16px",   backgroundColor: snapshot.isDraggingOver ? "lightblue" : "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
+                            <Card className='cardMobile' style={{ paddingBottom: "16px", backgroundColor: snapshot.isDraggingOver ? "lightblue" : "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
                                 <Row gutter={{ xs: 16, sm: 16 }}>
                                     <Col xs={{ span: 24 }} sm={{ span: 5 }} align='center'>
                                         <div className='carPos' >
@@ -153,30 +157,30 @@ const Car = ({ testt }) => {
                                     </Col>
                                     <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'>
                                         <div >
-                                            <p className='carfont text'> คนขับรถ
-                                           <span className='carfont'>
-                                                    <Select size='large'
-                                                        style={{ fontFamily: 'Bai Jamjuree' }}
-                                                        className='selectWidth'
-                                                        showSearch
-                                                        placeholder="เลือกบริษัท"
-                                                        optionFilterProp="children"
-                                                        filterOption={(input, option) =>
-                                                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                        }
-                                                    >
-                                                        <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack">Jack</Option>
-                                                        <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack" value="lucy">Lucy</Option>
-                                                        <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack" value="tom">Tom</Option>
-                                                    </Select>
+                                            <p className='carfont text'> คนขับรถ   </p>
+                                            <span className='carfont'>
+                                                <Select size='large'
+                                                    style={{ fontFamily: 'Bai Jamjuree' }}
+                                                    className='selectWidth'
+                                                    showSearch
+                                                    placeholder="เลือกบริษัท"
+                                                    optionFilterProp="children"
+                                                    filterOption={(input, option) =>
+                                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                    }
+                                                >
+                                                    <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack">Jack</Option>
+                                                    <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack" value="lucy">Lucy</Option>
+                                                    <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack" value="tom">Tom</Option>
+                                                </Select>
 
-                                                </span>
-                                            </p>
+                                            </span>
+
                                         </div>
                                     </Col>
                                     <Col xs={{ span: 24 }} sm={{ span: 7 }} >
                                         <div className='Scroll'>
-                                        {/* <div> */}
+                                            {/* <div> */}
                                             {state.test2.map((res, index) =>
                                                 <Draggable
                                                     key={(res + 10) * (res + 1) + 50}
@@ -384,9 +388,9 @@ const General = () => {
 
                             <div style={{ position: 'relative' }}>
                                 <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ
-                                 <span  style={{padding : '8px'}} >
-                                    <button onClick={() => { toggleSidebar() }} style={{padding : '4px 12px',fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px',border : '0' }}>
-                                        <img src={filer}  />กรอง</button>
+                                 <span style={{ padding: '8px' }} >
+                                    <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                                        <img src={filer} />กรอง</button>
                                 </span>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
 
@@ -527,7 +531,7 @@ const General = () => {
 
                     <Row gutter={{ xs: 16, sm: 16 }}>
                         <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                            <RequestCar test={state.test} />
+                            <RequestCar test={state} />
 
                         </Col>
                         <Col xs={{ span: 24 }} sm={{ span: 16 }}>

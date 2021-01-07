@@ -4,10 +4,11 @@ import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-
 import './formrequest.css'
 import dataProvince from '../../province.json'
 import moment from 'moment';
-import { saveBooking } from '../util/index'
+import { saveBooking,sendEmail } from '../util/index'
 import Swal from 'sweetalert2'
 import { DataContext } from "../store/store"
 const FromRequest = () => {
+
     const [form] = Form.useForm();
     const [state, setState] = React.useContext(DataContext);
     const { TextArea } = Input;

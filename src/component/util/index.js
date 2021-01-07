@@ -117,7 +117,7 @@ export const removeCars = async (carData) => {
         // type: carData.type,
         // mileage: carData.mileage,
         // status: 'free'
-        active : false
+        active: false
     }))
     return await axios.put(`${carApi}/${carData.id}`, formdata).then(async res => {
         return await getCars().then(data => {
@@ -183,6 +183,36 @@ export const addDrivers = async (d) => {
     })
 }
 
+export const getBookingDispatch = async () => {
+    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true`).then(res => {
 
+        return res.data
+    })
+}
 
+export const sendEmail = async () => {
+    var myHeaders = new Headers();
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("form", "Nissan-e-Photo@aapico.com");
+    urlencoded.append("formdetail", "Nissan-e-Photo System Notification");
+    urlencoded.append("to", "pokkate.e@aapico.com");
+    urlencoded.append("cc", "");
+    urlencoded.append("bcc", "");
+    urlencoded.append("subject", "Nissan-e-Photo IPO Delivery Order Time");
+    urlencoded.append("body", "<html><body>\n<b style='color:#00004d;font-size:22px;'>This is an automatic e-mail that you have informed to Nissan e-Photo System</b><br><br>\n\n\n</body></html>");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+
+    fetch("http://ahappl04.aapico.com/Api/email", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+}
