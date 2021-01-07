@@ -1,9 +1,10 @@
 import axios from 'axios';
 import moment from 'moment';
-
+import _ from 'lodash';
 const loginApi = 'http://10.10.10.227:1337/auth/local';
 const bookingApi = 'http://10.10.10.227:1337/bookings';
 const carApi = 'http://10.10.10.227:1337/cars'
+const driverApi = 'http://10.10.10.227:1337/vehicles'
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
@@ -60,9 +61,9 @@ export const getBooking = async () => {
     })
 }
 export const getCars = async () => {
-    return await axios.get(`${carApi}`).then(res => {
+    return await axios.get(`${carApi}?active=true`).then(res => {
         // console.log(res);
-        return res.data
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
 }
 export const addCars = async (carData) => {
@@ -79,7 +80,9 @@ export const addCars = async (carData) => {
         status: 'free'
     }))
     return await axios.post(`${carApi}`, formdata).then(async res => {
-        return await getCars().then(data => data)
+        return await getCars().then(data => {
+            return data
+        })
     })
 }
 export const editCars = async (carData) => {
@@ -93,12 +96,93 @@ export const editCars = async (carData) => {
         model: carData.model,
         type: carData.type,
         mileage: carData.mileage,
-        status: 'free'
+        // status: 'free'
     }))
     return await axios.put(`${carApi}/${carData.id}`, formdata).then(async res => {
-        return await getCars().then(data => data)
+        return await getCars().then(data => {
+            return data
+        })
 
     })
 }
+export const removeCars = async (carData) => {
+
+
+    let formdata = new FormData()
+    // formdata.append("files.picture", carData.imgname)
+    formdata.append("data", JSON.stringify({
+        // plateNo: carData.plateNo,
+        // province: carData.province,
+        // model: carData.model,
+        // type: carData.type,
+        // mileage: carData.mileage,
+        // status: 'free'
+        active : false
+    }))
+    return await axios.put(`${carApi}/${carData.id}`, formdata).then(async res => {
+        return await getCars().then(data => {
+            return data
+        })
+
+    })
+}
+export const getDrivers = async () => {
+    return await axios.get(`${driverApi}?active=true`).then(res => {
+        // console.log(res);
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
+
+export const editDriver = async (d) => {
+    let formdata = new FormData()
+    formdata.append("files.picture", d.imgname)
+    formdata.append("data", JSON.stringify({
+        name: d.name,
+        lastname: d.lastname,
+        emp_id: d.emp_id,
+        tel: d.tel,
+    }))
+    return await axios.put(`${driverApi}/${d.id}`, formdata).then(async res => {
+        return await getDrivers().then(data => data)
+
+    })
+}
+export const removeDriver = async (d) => {
+    let formdata = new FormData()
+    // formdata.append("files.picture", d.imgname)
+    formdata.append("data", JSON.stringify({
+        // name: d.name,
+        // lastname: d.lastname,
+        // emp_id: d.emp_id,
+        // tel: d.tel,
+        active: false
+    }))
+    return await axios.put(`${driverApi}/${d.id}`, formdata).then(async res => {
+        return await getDrivers().then(data => data)
+
+    })
+}
+
+export const addDrivers = async (d) => {
+    // console.log(d);
+    let formdata = new FormData()
+    formdata.append("files.picture", d.imgname)
+    formdata.append("data", JSON.stringify({
+        name: d.name,
+        lastname: d.lastname,
+        status: 'free',
+        emp_id: d.emp_id,
+        tel: d.tel,
+
+        // username: d.username
+    }))
+    return await axios.post(`${driverApi}`, formdata).then(async res => {
+        return await getDrivers().then(data => {
+            return data
+        })
+    })
+}
+
+
 
 

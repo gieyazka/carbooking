@@ -1,13 +1,12 @@
 import React, { useState, useRef, useReducer } from 'react'
 import { DataContext } from "../store/store"
 import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert';
-import { Modal, Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
+import { Modal, Form, Input, Row, Col, Select, Button } from 'antd';
 import editdriver from '../asset/editdriver.png'
 import Swal from 'sweetalert2';
 import countRequest from '../asset/countRequest.png'
 import { IconMap } from 'antd/lib/result';
-import { addCars, getCars, editCars } from '../util/index'
+import { addCars, getCars, editCars ,removeCars} from '../util/index'
 
 const ManageDriver = () => {
     const [state, setState] = React.useContext(DataContext);
@@ -37,8 +36,10 @@ const ManageDriver = () => {
         }
         if (e.target.name == 'img') {
             // console.log(e);
-            console.log(e.target.files[0]);
-            setcarState({ ...carState, carData: { ...carState.carData, imgname: e.target.files[0] ? e.target.files[0] : null, img: URL.createObjectURL(e.target.files[0]) } })
+            // console.log(e.target.files[0]);
+            if (e.target.files[0]) {
+                setcarState({ ...carState, carData: { ...carState.carData, imgname: e.target.files[0] ? e.target.files[0] : null, img: URL.createObjectURL(e.target.files[0]) } })
+            }
         }
     }
 
@@ -58,7 +59,6 @@ const ManageDriver = () => {
 
 
     }, [])
-    // console.log(carState);
 
     //
     const openEdit = (e, data) => {
@@ -214,23 +214,34 @@ const ManageDriver = () => {
             cancelButtonText: 'ไม่บันทึก',
             reverseButtons: true,
 
-        }).then((result) => {
+        }).then(async(result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                Swal.fire('Saved!', '', 'success')
+                await removeCars(carState.carData).then(async res => {
+                    setcarState({ ...carState, allCar: res, isModalVisible: false })
+                    Swal.fire({
+
+                        icon: 'success',
+                        title: 'ลบข้อมูลสำเร็จ',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                })
             } else if (result.isDenied) {
-                Swal.fire('Changes are not saved', '', 'info')
+                // Swal.fire('Changes are not saved', '', 'info')
             }
         })
         // setcarState({ ...carState, isModalVisible: false });
 
     };
     const handleCancel = () => {
+        // console.log(hiddenFileInput.current.value);
+        hiddenFileInput.current.value = null
         setcarState({ ...carState, isModalVisible: false });
     };
     const { Option } = Select
     const imgRef = useRef();
-    console.log(carState)
+    // console.log(carState)
     return (
         <div>
 
@@ -238,7 +249,7 @@ const ManageDriver = () => {
             <div className=' padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p className='hrfont' style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
-                    <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black', paddingRight: '8px' }}> <span style={{ paddingRight: '8px' }}>999 รายการ </span>
+                    <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black', paddingRight: '8px' }}> <span style={{ paddingRight: '8px' }}>{carState.allCar && carState.allCar.length || 0} รายการ </span>
                         <button onClick={(e) => openCreate(e)} style={{ border: '0', padding: '4px 16px', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '24px' }}>+ เพิ่มรถ</button>
                     </span>
 
@@ -253,7 +264,7 @@ const ManageDriver = () => {
 
                         <Col key={res.id} xs={{ span: 24 }} sm={{ span: 12 }} md={{ span: 12 }} lg={{ span: 6 }} >
 
-                            <div  key={res.id} style={{ position: 'relative', textAlign: 'center', paddingTop: '16px' }}>
+                            <div key={res.id} style={{ position: 'relative', textAlign: 'center', paddingTop: '16px' }}>
                                 <div className='person'>
                                     <div className='hoverDriver'  >
                                         <img style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', cursor: 'pointer' }} src={editdriver}
@@ -272,13 +283,13 @@ const ManageDriver = () => {
                     ))}
 
                 </Row>
-                <Modal  title="" visible={carState.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
+                <Modal title="" visible={carState.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
                     <Row gutter={{ xs: 24, sm: 24 }} style={{ marginBottom: '8px', textAlign: 'center' }}>
                         <Col span={24}>
                             {!carState.openCreateModal ? <Button key="back" style={{ backgroundColor: '#C53030', color: 'white', width: '35%' }} onClick={() => handleRemove()}>
                                 ลบ
             </Button> : ''}
-                            {!carState.openCreateModal ? <Button key="submit" style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }}
+                            {!carState.openCreateModal ? <Button key="edit" style={{ backgroundColor: '#2CC84D', color: 'white', width: '35%' }}
                                 onClick={handleEdit}>
                                 แก้ไข
             </Button> : ''}
@@ -292,7 +303,7 @@ const ManageDriver = () => {
                     <div className='person' style={{ textAlign: "center" }}>
 
                         <img style={{ width: '183px', height: '183px' }}
-                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData.plateNo ? carState.carData.picture[carState.carData.picture.length - 1]
+                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData && carState.carData.plateNo ? carState.carData.picture[carState.carData.picture.length - 1]
                                 ? `http://10.10.10.227:1337${carState.carData.picture[carState.carData.picture.length - 1].url}`
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
