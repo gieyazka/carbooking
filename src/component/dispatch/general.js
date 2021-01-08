@@ -30,7 +30,7 @@ import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 const RequestCar = () => {
     const [state, setState] = React.useContext(DataContext);
-    console.log(state);
+    // console.log(state);
     const [modal, setModal] = useState(false)
     const [bookingData, setbookingData] = useState({})
     const { innerHeight, innerWidth } = window
@@ -421,10 +421,26 @@ const General = () => {
 
                             <div style={{ position: 'relative' }}>
                                 <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ
-                                 <span style={{ padding: '8px' }} >
-                                    <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
-                                        <img src={filer} />กรอง</button>
-                                </span>
+                                 
+                                
+                            </div>
+                        </div>
+                    </div>
+                </Col>
+
+            </Row>
+            <div className='margin font'>
+                <DragDropContext onDragEnd={onDragEnd}>
+
+                    <Row gutter={{ xs: 16, sm: 16 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 8 }}>
+                            <div style={{ position: 'relative' }}>
+                                <div style={{textAlign:'right',marginBottom : '4px'}}>
+                                    <span style={{ cursor:'pointer',padding: '8px', textAlign: 'right' }} >
+                                        <button onClick={() => { toggleSidebar() }} style={{ padding: '8px 16px', fontSize: '1.3em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                                            <img src={filer} />กรอง</button>
+                                    </span>
+                                </div>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
 
                                     <div style={{ position: 'absolute', color: 'black', top: '120px', left: '8%', fontFamily: 'Bai Jamjuree' }}>
@@ -553,17 +569,7 @@ const General = () => {
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </Col>
 
-            </Row>
-            <div className='margin font'>
-                <DragDropContext onDragEnd={onDragEnd}>
-
-
-                    <Row gutter={{ xs: 16, sm: 16 }}>
-                        <Col xs={{ span: 24 }} sm={{ span: 8 }}>
                             <RequestCar test={state} />
 
                         </Col>
