@@ -5,6 +5,7 @@ const loginApi = 'http://10.10.10.227:1337/auth/local';
 const bookingApi = 'http://10.10.10.227:1337/bookings';
 const carApi = 'http://10.10.10.227:1337/cars'
 const driverApi = 'http://10.10.10.227:1337/vehicles'
+const tripApi = 'http://10.10.10.227:1337/requests'
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
@@ -54,7 +55,12 @@ export const saveBooking = async (formData) => {
 
     })
 }
-
+export const getTrips = async () => {
+    return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+        // console.log(res);
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
 export const getBooking = async () => {
     return await axios.get(`${bookingApi}`).then(res => {
         return res.data
@@ -189,6 +195,12 @@ export const getBookingDispatch = async () => {
         return res.data
     })
 }
+// export const getBookingDispatch = async () => {
+//     return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true`).then(res => {
+
+//         return res.data
+//     })
+// }
 
 export const sendEmail = async () => {
     var myHeaders = new Headers();

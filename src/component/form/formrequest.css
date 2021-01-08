@@ -15,8 +15,15 @@
     color: #fff;
     font-size: 1.0625em;
 }
-
-
+.imgCar{
+    width: 16vw;
+     height: 12vh ;
+}
+.cardBooking{
+    padding: 4px;
+    border: 0.5px solid black ;
+     border-radius: 24px 
+}
 .swCancel{
     margin-right: 8px;
     font-family:  'Bai Jamjuree';
@@ -268,7 +275,7 @@ color: rgba(0, 0, 0, 0.6);
     /* margin-top : 20px; */
     width: 100%;
     height: calc(90vh - 72px );
-    overflow: auto;
+    /* overflow: auto; */
 }
 
 .sideFilter.isactive {
@@ -312,6 +319,17 @@ color: rgba(0, 0, 0, 0.6);
         height : 240px ;
         object-fit : cover ;
     } */
+    .cardBooking{
+        padding: 4px;
+        border: 0.5px solid black ;
+         border-radius: 24px ;
+         overflow: inherit ;
+         width: max-content ;
+    }
+    .imgCar{
+        width: 24vw;
+         height: 18vh ;
+    }
     .jobView{
         margin-left: 30px;
     }
@@ -369,6 +387,7 @@ color: rgba(0, 0, 0, 0.6);
     .carfont{
         font-size: 2vh;
         padding-left: 8px;
+        
     }
 
     .dragicon1{
@@ -377,7 +396,7 @@ color: rgba(0, 0, 0, 0.6);
 
     }
     .dragRequest{
-        display: flex;
+        display: inline-flex;
     /* right: '0%'; */
     }
     .carPos{
@@ -395,7 +414,7 @@ color: rgba(0, 0, 0, 0.6);
     }
     
     .ScrollCar {
-        /* margin-top : 20px; */
+        margin-top : 8px;
         width: 100%;
         height: auto;
     }

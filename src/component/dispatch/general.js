@@ -2,13 +2,14 @@ import React, { useState, useEffect, useRef } from 'react'
 
 import { DataContext } from "../store/store"
 import moment from 'moment'
-import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
+import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card, Modal } from 'antd';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import iconCar from '../asset/iconcar.png'
 import Statusdriver from '../asset/statusdriver.png'
 import user from '../asset/user.png'
 import calender from '../asset/calender.png'
 import location from '../asset/location.png'
+import location1 from '../asset/hrlocation.png'
 import message from '../asset/message.png'
 import detail from '../asset/detail.png'
 import mockCar from '../asset/mockCar.png'
@@ -19,11 +20,19 @@ import countRequest from '../asset/countRequest.png'
 import senddatabtn from '../asset/senddatabtn.png'
 import filer from '../asset/filer.png'
 import noDriver1 from '../asset/noDriver1.png'
+import noDriver from '../asset/noDriver.png'
 
+import car from '../asset/carblack.png'
+import hrmessage from '../asset/hrmessage.png'
+import people from '../asset/people.png'
+import statusdriver2 from '../asset/statusdriver2.png'
+import user1 from '../asset/hruser.png'
+import calender1 from '../asset/hrcarender.png'
 const RequestCar = () => {
     const [state, setState] = React.useContext(DataContext);
     console.log(state);
-
+    const [modal, setModal] = useState(false)
+    const [bookingData, setbookingData] = useState({})
     const { innerHeight, innerWidth } = window
     // console.log(innerHeight,innerWidth);
     if (innerWidth <= 575) {
@@ -31,73 +40,123 @@ const RequestCar = () => {
     } else {
         var device = 'vertical'
     }
+    const showData = (d) => {
+        console.log(d);
+        if (d.booking) {
+            setbookingData(d.booking)
+        } else {
+            setbookingData(d)
 
+        }
+        setModal(true)
+
+    }
     return (
 
         <div >
             <div className="horizonScroll" >
                 <div className='ScrollCar'>
-                    <Droppable droppableId="droppable1" direction={`${device}`}>
-                        {(provided, snapshot) => (
+                    {state.booking[0] ? <div className='cardBooking'>
+                        <Droppable droppableId="droppable1" direction={`${device}`}>
+                            {(provided, snapshot) => (
 
-                            <div
-                                className='dragRequest'
-                                ref={provided.innerRef}
-                            // style={getListStyle(snapshot.isDraggingOver)}
-                            >
+                                <div
+                                    className='dragRequest'
+                                    ref={provided.innerRef}
+                                // style={getListStyle(snapshot.isDraggingOver)}
+                                >
 
-                                {state.booking && state.booking.map((res, index) =>
-                                    <Draggable
-                                        key={res.id}
-                                        draggableId={`${res.id}`}
-                                        index={index}
-                                    >
-                                        {provided => (
-                                            <div
-                                                // style={{ width: '100%' }}
-                                                ref={provided.innerRef}
-                                                {...provided.draggableProps}
-                                            >
-                                                <Card className='cardMobile' >
-                                                    <div style={{ position: 'relative', width: 'auto' }}>
-                                                        <img src={iconCar} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.carType} </span>
-                                                        {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
-                                                        {res.needDriver ? <img style={{ position: 'absolute', right: '40%' }} src={Statusdriver} /> : <img style={{ position: 'absolute', right: '40%' }} src={noDriver1} />} <span className='font' style={{ position: 'absolute', right: '23%', paddingLeft: '2%' }} > คนขับรถ </span>
-                                                        <img src={dragicon1} className='dragicon1'   {...provided.dragHandleProps} />
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }}>
-                                                        <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }}>
-                                                        <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date.replaceAll('-', '/')} &nbsp; {res.startTime} - {res.endTime}  </span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                        <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination} {res.destProvince}  </span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }}>
-                                                        <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}  </span>
-                                                    </div>
-                                                    <div onClick={()=>alert('see detail')} style={{ cursor : 'pointer',paddingTop: '4%' }}>
-                                                        <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
-                                                    </div>
+                                    {state.booking && state.booking.map((res, index) =>
+                                        <Draggable
+                                            key={res.id}
+                                            draggableId={`${res.id}`}
+                                            index={index}
+                                        >
+                                            {provided => (
+                                                <div
+                                                    // style={{ width: '100%' }}
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                >
+                                                    <Card className='cardMobile' >
+                                                        <div style={{ position: 'relative', width: 'auto' }}>
+                                                            <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
+                                                            {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
+                                                            <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
+                                                                <img src={dragicon1}    {...provided.dragHandleProps} />
 
-                                                </Card>
-                                            </div>
-                                        )}
-                                    </Draggable>
+                                                            </div>
+                                                        </div>
+                                                        <div style={{ paddingTop: '4%' }}>
+                                                            <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name || res.booking.nae} ({res.company || res.booking.company})  </span>
+                                                        </div>
+                                                        <div style={{ paddingTop: '4%' }}>
+                                                            <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date && res.date.replaceAll('-', '/') || res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime || res.booking.startTime} - {res.endTime || res.booking.endTime}  </span>
+                                                        </div>
+                                                        <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
+                                                            <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination || res.booking.destination} {res.destProvince || res.booking.destProvince}  </span>
+                                                        </div>
+                                                        <div style={{ paddingTop: '4%' }}>
+                                                            <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason || res.booking.reason}  </span>
+                                                        </div>
+                                                        <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
+                                                            <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
+                                                        </div>
 
-                                )}
+                                                    </Card>
+                                                </div>
+                                            )}
+                                        </Draggable>
 
-                                {provided.placeholder}
-                            </div>
-                        )}
+                                    )}
 
-                    </Droppable>
+                                    {provided.placeholder}
+                                </div>
+                            )}
+
+                        </Droppable>
+                    </div> : null}
                 </div>
 
             </div>
 
+            <Modal
+                visible={modal}
+                // onOk={handleOk}
+                onCancel={() => { setModal(false) }}
+                footer={[
 
+                ]}
+            >
+                <div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
+
+                    <span style={{ position: 'absolute', right: '10%' }}>  {bookingData.needDriver ? <img src={statusdriver2} /> : <img src={noDriver} />} &nbsp; คนขับรถ  </span>
+                    <img src={car} /> <span style={{ paddingLeft: '4%' }} > {bookingData.carType}  </span>
+
+                </div>
+                <div style={{ paddingTop: '4%' }} >
+                    <img src={user1} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {bookingData.name} ({bookingData.company})  </span>
+                </div>
+
+                <div style={{ paddingTop: '4%' }}>
+                    <img src={calender1} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {bookingData.date && bookingData.date.replaceAll('-', '/')} &nbsp; {bookingData.startTime} - {bookingData.endTime}</span>
+                </div>
+                <div style={{ paddingTop: '4%' }} >
+                    <img src={location1} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {bookingData.destination} {bookingData.destProvince}  </span>
+                </div>
+                <div style={{ paddingTop: '4%' }}>
+                    <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {bookingData.reason}</span>
+                </div>
+                <div style={{ paddingTop: '4%' }}>
+                    <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {bookingData.totalPassenger} คน</span>
+                </div>
+                <div style={{ paddingTop: '4%' }}>
+                    <p>เหตุผลที่ต้องการใช้รถ  : {bookingData.reason}</p>
+                </div>
+                <div >
+                    <p>รายละเอียดอื่น ๆ   : {bookingData.comment || '-'}</p>
+                </div>
+            </Modal>
         </div>
 
     )
@@ -109,23 +168,21 @@ const Car = ({ testt }) => {
     // console.log(state);
     const { Option } = Select
     const { innerHeight, innerWidth } = window
-    const [pastTest, setpastTest] = useState({ test2: state.test2, test: state.test })
+    const [pastTest, setpastTest] = useState({ ...state })
     const getListStyle = isDraggingOver => ({
         height: isDraggingOver ? "auto" : "100%",
     });
-    // if (!state.test2[0]) {
-    //     alert('true')
-    // }
-    // React.useEffect(()=>{
-    //      pastTest = state.test2
+    const clearData = (data, id) => {
+        let clearTrips = state.booking
+        let trips = data
+        data.map((d, index) => {
+            if (id == d.destCarId) {
+                clearTrips.push(d)
+            }
+        })
+        const filter = data.filter(res => res.destCarId != id)
+        setState({ ...state, booking: clearTrips, trips: filter });
 
-    // },[])
-    const clearData = () => {
-        console.log('click clear Data');
-        // setState({ ...state, test2: [] });
-        setState({ ...state, test: pastTest.test, test2: pastTest.test2 });
-        console.log(pastTest);
-        console.log(state.test2);
     }
 
     if (innerWidth <= 575) {
@@ -136,96 +193,101 @@ const Car = ({ testt }) => {
     return (
         <div className='horizonScroll'>
             <div className='ScrollCar'>
+                {state.cars.map((res, index) =>
+                    <Droppable key={index} droppableId={`${res.id}`}>
+                        {(provided, snapshot) => (
 
-                <Droppable droppableId="droppable2">
-                    {(provided, snapshot) => (
-
-                        <div
-                            className='dragRequest'
-                            ref={provided.innerRef}
-                        // style={getListStyle(snapshot.isDraggingOver)}
-                        >
+                            <div
+                                className='dragRequest'
+                                ref={provided.innerRef}
+                            // style={getListStyle(snapshot.isDraggingOver)}
+                            >
 
 
-                            <Card className='cardMobile' style={{ paddingBottom: "16px", backgroundColor: snapshot.isDraggingOver ? "lightblue" : "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
-                                <Row gutter={{ xs: 16, sm: 16 }}>
-                                    <Col xs={{ span: 24 }} sm={{ span: 5 }} align='center'>
-                                        <div className='carPos' >
-                                            <img src={mockCar} style={{ width: 'auto' }} />
-                                            <p className='carfont' style={{ paddingTop: '2px' }}> บย-1568 ชลบุรี</p>
-                                        </div>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'>
-                                        <div >
-                                            <p className='carfont text'> คนขับรถ   </p>
-                                            <span className='carfont'>
-                                                <Select size='large'
-                                                    style={{ fontFamily: 'Bai Jamjuree' }}
-                                                    className='selectWidth'
-                                                    showSearch
-                                                    placeholder="เลือกบริษัท"
-                                                    optionFilterProp="children"
-                                                    filterOption={(input, option) =>
-                                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                                    }
-                                                >
-                                                    <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack">Jack</Option>
-                                                    <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack" value="lucy">Lucy</Option>
-                                                    <Option style={{ fontSize: '1vw', padding: '4px' }} value="jack" value="tom">Tom</Option>
-                                                </Select>
+                                <Card className='cardMobile' style={{ backgroundColor: snapshot.isDraggingOver ? "lightblue" : "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
+                                    <Row gutter={{ xs: 16, sm: 16 }}>
+                                        <Col xs={{ span: 24 }} sm={{ span: 8 }} align='center'>
+                                            <div className='carPos' >
+                                                <img src={res.picture[res.picture.length - 1] ? `http://10.10.10.227:1337${res.picture[res.picture.length - 1].url}` :
+                                                    'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
+                                                } className='imgCar' />
+                                                <p className='carfont' style={{ paddingTop: '2px', height: '100%' }}> {res.plateNo} {res.province}</p>
+                                            </div>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'>
+                                            <div style={{ position: 'relative' }} >
+                                                <p className='carfont text'> คนขับรถ   </p>
+                                                <span className='carfont'>
+                                                    <Select size='large'
+                                                        style={{ fontFamily: 'Bai Jamjuree', width: '100%' }}
+                                                        className='selectWidth'
+                                                        showSearch
+                                                        placeholder="เลือกคนขับรถ"
+                                                        optionFilterProp="children"
+                                                        filterOption={(input, option) =>
+                                                            option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                                        }
+                                                    >
+                                                        {state.drivers}
+                                                    </Select>
 
-                                            </span>
+                                                </span>
 
-                                        </div>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 7 }} >
-                                        <div className='Scroll'>
-                                            {/* <div> */}
-                                            {state.test2.map((res, index) =>
-                                                <Draggable
-                                                    key={(res + 10) * (res + 1) + 50}
-                                                    draggableId={`test${res + 1 * res + 10 + 5}`}
-                                                    index={index}
-                                                >
-                                                    {provided => (
-                                                        <div
-                                                            // style={{ width: '100%' }}
-                                                            ref={provided.innerRef}
-                                                            {...provided.draggableProps}
+                                            </div>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 6 }} >
+                                            <div className='Scroll'>
+                                                {/* <div> */}
+                                                {state.trips.map((data, index) =>
+
+                                                    data.car && data.car.id == res.id
+                                                        || data.destCarId && res.id == data.destCarId
+                                                        ?
+                                                        <Draggable
+                                                            key={data.id}
+                                                            draggableId={`trip${data.id}`}
+                                                            index={index}
                                                         >
-                                                            <div className='font' style={{ position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
-                                                                <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-                                                                <p>AHR ระยอง</p>
-                                                                <p>8:30 - 16:30</p>
-                                                            </div>
+                                                            {provided => (
+                                                                <div
+                                                                    // style={{ width: '100%' }}
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                >
+                                                                    <div className='font' style={{ position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                        <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
+                                                                        <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
+                                                                        <p>{data.booking && data.booking.startTime || data.startTime} - {data.booking && data.booking.endTime || data.endTime}</p>
+                                                                    </div>
 
 
-                                                        </div>
-                                                    )}
-                                                </Draggable>
-                                            )}
+                                                                </div>
+                                                            )}
+                                                        </Draggable>
+                                                        : null
+                                                )}
 
-                                        </div>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 7 }}  >
-                                        <div className='posGeneralBtn'  >
-                                            <span>  <Button className='fontGeneralBtn' onClick={() => clearData()} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button> &nbsp;
-                          <Button className='fontGeneralBtn' style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button></span>
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </Card>
-
-
-
-
-                            {provided.placeholder}
-                        </div>
-                    )}
-                </Droppable>
+                                            </div>
+                                        </Col>
+                                        <Col xs={{ span: 24 }} sm={{ span: 5 }}  >
+                                            <div className='posGeneralBtn'  >
+                                                <Button className='fontGeneralBtn' style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button>
+                                                <Button className='fontGeneralBtn' onClick={(e) => clearData(state.trips, res.id)} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button>โ
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </Card>
 
 
 
+
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+
+
+                )}
 
             </div>
         </div>
@@ -236,89 +298,60 @@ const General = () => {
     const [state, setState] = React.useContext(DataContext);
     const [sidebar, setSidebar] = useState(true)
     const wrapperRef = useRef(null);
-
-    // const [test2, setTest2] = useState([0, 1, 2])
     const move = (source, destination, droppableSource, droppableDestination) => {
         const sourceClone = Array.from(source);
-
-        const destClone = Array.from(destination);
-        const [removed] = sourceClone.splice(droppableSource.index, 1);
-        // console.log(removed);
-        destClone.splice(droppableDestination.index, 0, removed);
         const result = {};
-        result[droppableSource.droppableId] = sourceClone;
-        result[droppableDestination.droppableId] = destClone;
-        // console.log(result);
+        const destClone = Array.from(destination);
+        let [removed] = sourceClone.splice(droppableSource.index, 1);
+        if (droppableDestination.droppableId != 'droppable1') {
+            removed = { ...removed, destCarId: droppableDestination.droppableId }
+            destClone.splice(droppableDestination.index, 0, removed);
+            result['droppableId1'] = sourceClone;
+            result['trips'] = destClone;
+        } else {
+            destClone.splice(droppableDestination.index, 0, removed);
+            result['trips'] = sourceClone;
+            result['droppableId1'] = destClone;
+        }
         return { result, removed };
     };
-
     const getList = id => {
-        console.log(id);
-        if (id == 'droppable1') return state.test //return state from component
-        else return state.test2
+        if (id == 'droppable1') return state.booking //return state from component
+        else return state.trips
     }
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
-
-        console.log(result);
         const [removed] = result.splice(startIndex, 1);
-        console.log(removed);
         result.splice(endIndex, 0, removed);
-        console.log(result);
         return result;
     };
     const onDragEnd = result => {
-        // console.log(result);
         const { source, destination } = result;
-        // console.log(source, destination);
-        // dropped outside the list
         if (!destination) {
             return;
         }
         if (source.droppableId === destination.droppableId) {
-            console.log(getList(source.droppableId),
-                source.index,
-                destination.index);
             const items = reorder(
                 getList(source.droppableId),
                 source.index,
                 destination.index
             );
-            console.log(items);
+            // console.log(items);
             if (source.droppableId === 'droppable1') {
-                setState({ ...state, test: items })
+                setState({ ...state, booking: items })
             }
-            // if (source.droppableId === 'droppable2') {
-            //     // setRick(items)
-            // }
         }
         else {
-            console.log(source, destination);
-            console.log(getList(source.droppableId),
-                getList(destination.droppableId),
-                source,
-                destination);
             const { result, removed } = move(
                 getList(source.droppableId),
                 getList(destination.droppableId),
                 source,
                 destination
             );
-            console.log(result);
-            console.log(removed);
-            // if (destination.droppableId != 'droppable1') {
-            // socket.emit(removed.username, removed);
-            // }
-            console.log('result', result.droppable1, result.droppable2);
-            setState({ test2: result.droppable2, test: result.droppable1 })
-            // setTest(result.droppable1)
-            // setTest2(result.droppable2)
-            // setMorty(result.droppable1)
-            // setRick(result.droppable2)
-
+            setState({ ...state, booking: result['droppableId1'], trips: result['trips'] })
         }
     };
-    // console.log(state);
+
     const toggleSidebar = () => {
         setSidebar(!sidebar)
     }
