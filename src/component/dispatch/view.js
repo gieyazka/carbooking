@@ -14,11 +14,12 @@ import car from '../asset/carblack.png'
 import hrmessage from '../asset/hrmessage.png'
 import people from '../asset/people.png'
 import statusdriver2 from '../asset/statusdriver2.png'
-
+import noDriver from '../asset/noDriver.png'
+import clearIcon from '../asset/clearIcon.png'
 const App = () => {
     const [state, setState] = React.useContext(DataContext);
     const [sidebar, setSidebar] = useState(true)
-    const [modal, setModal] = useState(false)
+    const [modal, setModal] = useState({ open: false })
     const wrapperRef = useRef(null);
 
     // const [test2, setTest2] = useState([0, 1, 2])
@@ -31,11 +32,12 @@ const App = () => {
         setSidebar(true)
     }
 
-    const showData = () => {
-        setModal(true)
+    const showData = (d) => {
+        // console.log(d);
+        setModal({ ...modal, open: true, booking: d.booking })
 
     }
-
+    // console.log(modal);
     function useOutsideAlerter(ref) {
         useEffect(() => {
             /**
@@ -78,6 +80,102 @@ const App = () => {
         }, [ref]);
     }
 
+    let filterCompany = null
+    let filterType = null
+    const [filerBooking, setFilter] = useState({
+        search: false,
+        company: null,
+        department: null,
+        reason: null,
+        date: null,
+        province: null
+    })
+    const [count, setCount] = useState(0)
+    const filterBooking = (dataFilter, filter) => {
+        // console.log(dataFilter, filter);
+        let countBooking = 0
+        if (filter == 'Company') {
+            setFilter({ ...filerBooking, search: true, company: dataFilter })
+        } else if (filter == 'Department') {
+            setFilter({ ...filerBooking, search: true, department: dataFilter })
+        } else if (filter == 'Reason') {
+            setFilter({ ...filerBooking, search: true, reason: dataFilter })
+        } else if (filter == 'Date') {
+            setFilter({ ...filerBooking, search: true, date: dataFilter })
+        } else if (filter == 'Province') {
+            setFilter({ ...filerBooking, search: true, province: dataFilter })
+        }
+    }
+    useEffect(() => {
+        // filter
+        if (filerBooking.search == true) {
+            let countBooking = 0
+            state.trips.map(d => {
+                // console.log(res.destProvince);
+                const res = d.booking
+                console.log(res);
+                if (res.company == filerBooking.company) {
+                    countBooking += 1
+                } else if (res.department == filerBooking.department) {
+                    countBooking += 1
+                } else if (res.reason == filerBooking.reason) {
+                    countBooking += 1
+                }
+                else if (res.date == filerBooking.date) {
+                    // console.log(res.date );
+                    countBooking += 1
+                }
+                else if (res.destProvince == filerBooking.province) {
+                    countBooking += 1
+                }
+                else if (filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
+                    countBooking += 1
+                }
+                else if (filerBooking.department == 'Other'
+                    && res.department != 'Production' && res.department != 'production'
+                    && res.department != 'Marketing' && res.department != 'marketing'
+                    && res.department != 'QA & QC'
+                    && res.department != 'Personnel' && res.department != 'personnel'
+                    && res.department != 'IT' && res.department != 'it'
+                    && res.department != 'Business Deverlopment' && res.department != 'business deverlopment'
+                    && res.department != 'Purchasing' && res.department != 'purchasing'
+                    && res.department != 'Safety' && res.department != 'Safety') {
+                    countBooking += 1
+                } else if (filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า') {
+                    countBooking += 1
+
+                }
+            })
+            // console.log(countBooking);
+            setCount(countBooking)
+        }
+    }, [filerBooking])
+
+    React.useMemo(async () => {
+        const countTrip = async () => {
+            // console.log(state.trips.length);
+            let countData = 0
+            state.trips.map(data => {
+                
+                countData += 1
+            })
+        console.log(countData);
+            setCount(countData)
+            // console.log(res);
+        }
+        await countTrip()
+    }, [])
+    const clearBtn = () => {
+        setFilter({
+            search: false,
+            company: null,
+            department: null,
+            reason: null,
+            date: null,
+            province: null
+        })
+        let countData = 0
+    }
     useOutsideAlerter(wrapperRef);
     const { Option } = Select;
     const { innerHeight, innerWidth } = window
@@ -87,6 +185,7 @@ const App = () => {
     } else {
         var device = 'vertical'
     }
+    // console.log(state.trips);
     return (
         <div>
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
@@ -100,7 +199,7 @@ const App = () => {
 
 
                             <div style={{ position: 'relative' }}>
-                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ
+                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> {count} รายการ
                                  <span style={{ padding: '8px' }} >
                                     <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                                         <img src={filer} />กรอง</button>
@@ -111,22 +210,22 @@ const App = () => {
                                         <p>บริษัท</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AH</Button>
+                                                <Button value='AH' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AH', filterType = 'Company')} >AH</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AHP</Button>
+                                                <Button value='AHP' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AHP', filterType = 'Company')} >AHP</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AHT</Button>
+                                                <Button value='AHT' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AHT', filterType = 'Company')} >AHT</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AITS</Button>
+                                                <Button value='AITS' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AITS', filterType = 'Company')} >AITS</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ASICO</Button>
+                                                <Button value='ASICO' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ASICO', filterType = 'Company')}>ASICO</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >อื่น ๆ</Button>
+                                                <Button value='Other' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Company')}>อื่น ๆ</Button>
                                             </Col>
 
                                         </Row>
@@ -142,55 +241,55 @@ const App = () => {
                                         <p>แผนก</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Production</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Production', filterType = 'Department')} >Production</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Marketing</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Marketing', filterType = 'Department')} >Marketing</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >QA & QC</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'QA & QC', filterType = 'Department')} >QA & QC</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Personnel</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Personnel', filterType = 'Department')} >Personnel</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >IT</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'IT', filterType = 'Department')} >IT</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Business Deverlopment</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Business Deverlopment', filterType = 'Department')} >Business Deverlopment</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Purchasing</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Purchasing', filterType = 'Department')} >Purchasing</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Safety</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Safety', filterType = 'Department')} >Safety</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >อื่น ๆ</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Department')} >อื่น ๆ</Button>
                                             </Col>
 
                                         </Row>
 
-                                        <hr />
+                                        <hr style={{ marginRight: '20px' }} />
 
 
 
                                         <p>เหตุผลที่ต้องการใช้รถ</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร', filterType = 'Reason')} >ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ส่งออก</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ส่งของ', filterType = 'Reason')}>ส่งของ</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >รับ - ส่งแขก</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'รับ - ส่งแขก', filterType = 'Reason')}>รับ - ส่งแขก</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ติดต่อลูกค้า</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ติดต่อลูกค้า', filterType = 'Reason')}>ติดต่อลูกค้า</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >อื่น ๆ</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Reason')} >อื่น ๆ</Button>
                                             </Col>
 
                                         </Row>
@@ -206,30 +305,36 @@ const App = () => {
                                         <p>วันที่</p>
                                         <Row >
                                             <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <DatePicker ref={wrapperRef} style={{ width: '100%' }} />
+                                                <DatePicker onChange={(e) => filterBooking(filterCompany = moment(e).format('DD-MM-YYYY'), filterType = 'Date')} ref={wrapperRef} style={{ width: '100%' }} />
                                             </Col>
                                         </Row>
                                         <p style={{ paddingTop: '8px' }}>จังหวัด</p>
                                         <Row >
                                             <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
                                                 <Select
+                                                    onChange={(e) => filterBooking(filterCompany = e, filterType = 'Province')}
                                                     showSearch
                                                     style={{ width: '100%' }}
-                                                    placeholder="Select a person"
+                                                    placeholder="Select province"
                                                     optionFilterProp="children"
 
                                                     filterOption={(input, option) =>
                                                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                     }
                                                 >
-                                                    <Option value="jack">Jack</Option>
-                                                    <Option value="lucy">Lucy</Option>
-                                                    <Option value="tom">Tom</Option>
+                                                    {state.province}
                                                 </Select>
                                             </Col>
 
                                         </Row>
+                                        <br />
+                                        <Row >
+                                            <Col span={24} style={{ textAlign: 'center' }}>
+                                                <button onClick={() => clearBtn()} style={{ border: ' 1px solid #D9D9D9', boxSizing: 'border-box', borderRadius: '24px', padding: '8px 16px', fontFamily: 'Bai Jamjuree', cursor: 'pointer' }} ><img src={clearIcon} />Clear</button>
 
+                                            </Col>
+
+                                        </Row>
                                     </div>
                                 </div>
                             </div>
@@ -244,99 +349,134 @@ const App = () => {
                     <div className='ScrollCar'>
 
 
+                        {state.cars.map((res, index) =>
+
+                            <Card key={res.id} className='cardMobile' style={{ paddingBottom: "16px", backgroundColor: "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
+                                <Row gutter={{ xs: 16, sm: 16 }}>
+                                    <Col xs={{ span: 24 }} sm={{ span: 5 }} align='center'>
+                                        <div className='carPos' >
+                                            <img src={res.picture[res.picture.length - 1] ? `http://10.10.10.227:1337${res.picture[res.picture.length - 1].url}` :
+                                                'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
+                                            } className='imgCar' style={{ width: 'auto' }} />
+                                            <p className='carfont' style={{ paddingTop: '2px' }}> บย-1568 ชลบุรี</p>
+                                        </div>
+                                    </Col>
+                                    <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'>
+                                        <div >
+                                            <p className='carfont text'> คนขับรถ </p>
+
+                                            <p className='carfont text'>กี้เอง <br /> 0955120247</p>
+                                            {/* <p className='carfont text'></p> */}
 
 
-                        <Card className='cardMobile' style={{ paddingBottom: "16px", backgroundColor: "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
-                            <Row gutter={{ xs: 16, sm: 16 }}>
-                                <Col xs={{ span: 24 }} sm={{ span: 5 }} align='center'>
-                                    <div className='carPos' >
-                                        <img src={mockCar} style={{ width: 'auto' }} />
-                                        <p className='carfont' style={{ paddingTop: '2px' }}> บย-1568 ชลบุรี</p>
-                                    </div>
-                                </Col>
-                                <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'>
-                                    <div >
-                                        <p className='carfont text'> คนขับรถ </p>
+                                        </div>
+                                    </Col>
+                                    <Col xs={{ span: 24 }} sm={{ span: 14 }} >
+                                        <div className='Scroll'>
+                                            {/* <div> */}
 
-                                        <p className='carfont text'>กี้เอง <br /> 0955120247</p>
-                                        {/* <p className='carfont text'></p> */}
+                                            <Row >
+                                                {state.trips.map((d, index) =>
+
+                                                    d.car && d.car.id == res.id
+                                                        && d.booking.company == filerBooking.company
+                                                        || d.booking.department == filerBooking.department
+                                                        || d.booking.reason == filerBooking.reason
+                                                        || d.booking.date == filerBooking.date
+                                                        || d.booking.destProvince == filerBooking.province
+
+                                                        ?
+                                                        <Col key={d.id} className='jobView'>
+                                                            <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                <p>{d.booking.startTime} - {d.booking.endTime}</p>
+                                                            </div>
+
+                                                        </Col>
+                                                        :
+
+                                                        filerBooking.search == false && d.car && d.car.id == res.id ?
+                                                            <Col key={d.id} className='jobView'>
+                                                                <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                    <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                    <p>{d.booking.startTime} - {d.booking.endTime}</p>
+
+                                                                </div>
+
+                                                            </Col>
+                                                            :
+                                                            d.car && d.car.id == res.id && filerBooking.company == 'Other'
+                                                                && d.booking.company != 'AH' && d.booking.company != 'AHP' && d.booking.company != 'AHT' && d.booking.company != 'AITS' && d.booking.company != 'ASICO'
+                                                                || filerBooking.department == 'Other' && d.car.id == res.id && d.booking.department != 'Production' && d.booking.department != 'production' && d.booking.department != 'Marketing' && d.booking.department != 'marketing' && d.booking.department != 'QA & QC' && d.booking.department != 'Personnel' && d.booking.department != 'personnel' && d.booking.department != 'IT' && d.booking.department != 'it' && d.booking.department != 'Business Deverlopment' && d.booking.department != 'business deverlopment' && d.booking.department != 'Purchasing' && d.booking.department != 'purchasing' && d.booking.department != 'Safety' && d.booking.department != 'Safety'
+
+                                                                || filerBooking.reason == 'Other' && d.car.id == res.id && d.booking.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && d.booking.reason != 'ส่งของ' && d.booking.reason != 'รับ - ส่งแขก' && d.booking.reason != 'ติดต่อลูกค้า'
+                                                                ? <Col key={d.id} className='jobView'>
+                                                                    <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                        <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                        <p>{d.booking.startTime} - {d.booking.endTime}</p>
+
+                                                                    </div>
+
+                                                                </Col> : null
+
+                                                )}
+
+                                            </Row>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Card>
 
 
-                                    </div>
-                                </Col>
-                                <Col xs={{ span: 24 }} sm={{ span: 14 }} >
-                                    <div className='Scroll'>
-                                        {/* <div> */}
-
-                                        <Row >
-                                            {state.trips.map((res, index) =>
-
-                                                <Col className='jobView'>
-                                                    <div onClick={() => { showData() }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
-                                                        <p>AHR ระยอง</p>
-                                                        <p>8:30 - 16:30</p>
-                                                    </div>
-
-                                                </Col>
-
-
-                                            )}
-
-                                        </Row>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Card>
 
 
 
-
-
-
+                        )}
 
 
                     </div>
                 </div>
             </div>
+            {modal.booking ?
+                <Modal
+                    visible={modal.open}
+                    // onOk={handleOk}
+                    onCancel={() => { setModal({ ...modal, open: false }) }}
+                    footer={[
 
-            <Modal
-                visible={modal}
-                // onOk={handleOk}
-                onCancel={() => { setModal(false) }}
-                footer={[
+                    ]}
+                >
+                    <div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
 
-                ]}
-            >
-                <div style={{ position: 'relative' ,fontFamily: 'Bai Jamjuree',fontStyle : 'normal',fontWeight: '500',fontSize: '16px',lineHeight: '140%' }}  >
+                        <span style={{ position: 'absolute', right: '10%' }}>   {modal.booking.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  &nbsp; คนขับรถ  </span>
+                        <img src={car} /> <span style={{ paddingLeft: '4%' }} > {modal.booking.carType}   </span>
 
-                    <span style={{ position: 'absolute', right: '10%' }}>   <img  src={statusdriver2} /> &nbsp; คนขับรถ  </span>
-                    <img src={car} /> <span style={{ paddingLeft: '4%' }} > รถเก๋ง  </span>
+                    </div>
+                    <div style={{ paddingTop: '4%' }} >
+                        <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.name} ({modal.booking.company})  </span>
+                    </div>
 
-                </div>
-                <div style={{ paddingTop: '4%' }} >
-                    <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > นายสมชาย ชาติชาย (AH)  </span>
-                </div>
-             
-                <div style={{ paddingTop: '4%' }}>
-                    <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > 10-10-2020    08:30-19:30</span>
-                </div>
-                <div style={{ paddingTop: '4%' }} >
-                    <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > AHR ระยอง</span>
-                </div>
-                <div style={{ paddingTop: '4%' }}>
-                    <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > ส่งของ</span>
-                </div>
-                <div style={{ paddingTop: '4%' }}>
-                    <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  2 คน</span>
-                </div>
-                <div style={{ paddingTop: '4%' }}>
-                   <p>เหตุผลที่ต้องการใช้รถ  : Meeting AHR</p>
-                </div>
-                <div >
-                   <p>รายละเอียดอื่น ๆ   : -</p>
-                </div>
-            </Modal>
+                    <div style={{ paddingTop: '4%' }}>
+                        <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.date}    {modal.booking.startTime} - {modal.booking.endTime}</span>
+                    </div>
+                    <div style={{ paddingTop: '4%' }} >
+                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.destination} {modal.booking.destProvince}</span>
+                    </div>
+                    <div style={{ paddingTop: '4%' }}>
+                        <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modal.booking.totalPassenger} คน</span>
+                    </div>
+                    <div style={{ paddingTop: '4%' }}>
+                        <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.reason}</span>
+                    </div>
 
+                    {/* <div style={{ paddingTop: '4%' }}>
+                        <p>เหตุผลที่ต้องการใช้รถ  : Meeting AHR</p>
+                    </div> */}
+                    <div style={{ paddingTop: '4%' }}>
+                        <p>รายละเอียดอื่น ๆ   : {modal.booking.comment || '-'}</p>
+                    </div>
+                </Modal>
+                : null}
         </div>
 
     )

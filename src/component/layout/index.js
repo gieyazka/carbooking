@@ -49,6 +49,16 @@ const AppLayout = () => {
         sessionStorage.clear();
         history.push('/login')
     }
+    // const [loginState, setLogin] = useState()
+    React.useMemo(() => {
+        const loginData = JSON.parse(sessionStorage.getItem('user'));
+        // setLogin(loginData);
+        if (!loginData) {
+            sessionStorage.clear();
+            history.push('/login')
+        }
+    }, [])
+    // console.log(loginState);
 
     return (
 

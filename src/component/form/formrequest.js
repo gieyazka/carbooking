@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-
 import './formrequest.css'
 import dataProvince from '../../province.json'
 import moment from 'moment';
-import { saveBooking,sendEmail } from '../util/index'
+import { saveBooking, sendEmail } from '../util/index'
 import Swal from 'sweetalert2'
 import { DataContext } from "../store/store"
 const FromRequest = () => {
@@ -100,7 +100,11 @@ const FromRequest = () => {
 
         return current && current < moment().subtract('1', 'days').endOf('day');
     }
-    const loginData = JSON.parse(sessionStorage.getItem('user'));
+    var loginData = { user : 'test'}
+    if (sessionStorage.getItem('user')) {
+        loginData = JSON.parse(sessionStorage.getItem('user'));
+
+    }
 
     return (
         <div>
@@ -108,7 +112,7 @@ const FromRequest = () => {
             <div className='margin fontForm'>
                 <Row justify='center'> <h2 style={{ marginTop: '8px', paddingTop: '8px', fontSize: '22px' }}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
-                    initialValues={{ driver: true, company: loginData.company }}
+                    initialValues={{ driver: true, company: loginData.company || 'null' }}
                 >
                     {/* <Row gutter={[24,12]} justify='center'> */}
                     <Row gutter={{ xs: 16, sm: 24 }} justify='center'>

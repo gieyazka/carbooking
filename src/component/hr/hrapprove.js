@@ -160,7 +160,7 @@ const Hrapprove = () => {
 
     const filterBooking = (dataFilter, filter) => {
         // console.log(dataFilter, filter);
-        let countBooking = 0
+     
         if (filter == 'Company') {
             setFilter({ ...filerBooking, search: true, company: dataFilter })
         } else if (filter == 'Department') {
