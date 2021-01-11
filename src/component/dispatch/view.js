@@ -269,7 +269,7 @@ const App = () => {
                                         {/* <div> */}
 
                                         <Row >
-                                            {state.test2.map((res, index) =>
+                                            {state.trips.map((res, index) =>
 
                                                 <Col className='jobView'>
                                                     <div onClick={() => { showData() }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >

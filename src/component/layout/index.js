@@ -25,24 +25,8 @@ const { Header, Sider, Content } = Layout;
 
 const AppLayout = () => {
     let history = useHistory();
-    const { Option } = Select;
-    const [stateProvince, setStateProvince] = React.useContext(DataContext);
-    var provinceArray = []
 
-    React.useMemo(() => {
-        if (!sessionStorage.getItem("user")) {
-            history.push('/login')
 
-        }
-        var i = 0
-        for (const data in dataProvince) {
-            provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
-            i++
-        }
-        setStateProvince({
-            ...stateProvince, province: provinceArray
-        })
-    }, [])
 
     const [state, setState] = useState({
         collapsed: true,

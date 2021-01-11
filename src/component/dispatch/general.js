@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-
+import Swal from 'sweetalert2';
 import { DataContext } from "../store/store"
 import moment from 'moment'
 import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card, Modal } from 'antd';
@@ -28,7 +28,10 @@ import people from '../asset/people.png'
 import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
-const RequestCar = () => {
+import clearIcon from '../asset/clearIcon.png'
+import { addTrips, getBooking, getBookingDispatch } from '../util/index'
+const RequestCar = ({ filerBooking }) => {
+    // console.log(filerBooking);
     const [state, setState] = React.useContext(DataContext);
     // console.log(state);
     const [modal, setModal] = useState(false)
@@ -67,46 +70,140 @@ const RequestCar = () => {
                                 >
 
                                     {state.booking && state.booking.map((res, index) =>
-                                        <Draggable
-                                            key={res.id}
-                                            draggableId={`${res.id}`}
-                                            index={index}
-                                        >
-                                            {provided => (
-                                                <div
-                                                    // style={{ width: '100%' }}
-                                                    ref={provided.innerRef}
-                                                    {...provided.draggableProps}
-                                                >
-                                                    <Card className='cardMobile' >
-                                                        <div style={{ position: 'relative', width: 'auto' }}>
-                                                            <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
-                                                            {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
-                                                            <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
-                                                                <img src={dragicon1}    {...provided.dragHandleProps} />
+                                        res.company == filerBooking.company
+                                            || res.department == filerBooking.department
+                                            || res.reason == filerBooking.reason
+                                            || res.date == filerBooking.date
+                                            || res.destProvince == filerBooking.province
+                                            ?
+                                            <Draggable
+                                                key={res.id}
+                                                draggableId={`${res.id}`}
+                                                index={index}
+                                            >
+                                                {provided => (
+                                                    <div
+                                                        // style={{ width: '100%' }}
+                                                        ref={provided.innerRef}
+                                                        {...provided.draggableProps}
+                                                    >
+                                                        <Card className='cardMobile' >
+                                                            <div style={{ position: 'relative', width: 'auto' }}>
+                                                                <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
+                                                                {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
+                                                                <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
+                                                                    <img src={dragicon1}    {...provided.dragHandleProps} />
 
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                        <div style={{ paddingTop: '4%' }}>
-                                                            <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name || res.booking.nae} ({res.company || res.booking.company})  </span>
-                                                        </div>
-                                                        <div style={{ paddingTop: '4%' }}>
-                                                            <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date && res.date.replaceAll('-', '/') || res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime || res.booking.startTime} - {res.endTime || res.booking.endTime}  </span>
-                                                        </div>
-                                                        <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                            <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination || res.booking.destination} {res.destProvince || res.booking.destProvince}  </span>
-                                                        </div>
-                                                        <div style={{ paddingTop: '4%' }}>
-                                                            <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason || res.booking.reason}  </span>
-                                                        </div>
-                                                        <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
-                                                            <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
-                                                        </div>
+                                                            <div style={{ paddingTop: '4%' }}>
+                                                                <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name || res.booking.nae} ({res.company || res.booking.company})  </span>
+                                                            </div>
+                                                            <div style={{ paddingTop: '4%' }}>
+                                                                <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date && res.date.replaceAll('-', '/') || res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime || res.booking.startTime} - {res.endTime || res.booking.endTime}  </span>
+                                                            </div>
+                                                            <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
+                                                                <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination || res.booking.destination} {res.destProvince || res.booking.destProvince}  </span>
+                                                            </div>
+                                                            <div style={{ paddingTop: '4%' }}>
+                                                                <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason || res.booking.reason}  </span>
+                                                            </div>
+                                                            <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
+                                                                <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
+                                                            </div>
 
-                                                    </Card>
-                                                </div>
-                                            )}
-                                        </Draggable>
+                                                        </Card>
+                                                    </div>
+                                                )}
+                                            </Draggable>
+                                            :
+                                            filerBooking.search == false ?
+                                                <Draggable
+                                                    key={res.id}
+                                                    draggableId={`${res.id}`}
+                                                    index={index}
+                                                >
+                                                    {provided => (
+                                                        <div
+                                                            // style={{ width: '100%' }}
+                                                            ref={provided.innerRef}
+                                                            {...provided.draggableProps}
+                                                        >
+                                                            <Card className='cardMobile' >
+                                                                <div style={{ position: 'relative', width: 'auto' }}>
+                                                                    <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
+                                                                    {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
+                                                                    <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
+                                                                        <img src={dragicon1}    {...provided.dragHandleProps} />
+
+                                                                    </div>
+                                                                </div>
+                                                                <div style={{ paddingTop: '4%' }}>
+                                                                    <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name || res.booking.nae} ({res.company || res.booking.company})  </span>
+                                                                </div>
+                                                                <div style={{ paddingTop: '4%' }}>
+                                                                    <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date && res.date.replaceAll('-', '/') || res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime || res.booking.startTime} - {res.endTime || res.booking.endTime}  </span>
+                                                                </div>
+                                                                <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
+                                                                    <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination || res.booking.destination} {res.destProvince || res.booking.destProvince}  </span>
+                                                                </div>
+                                                                <div style={{ paddingTop: '4%' }}>
+                                                                    <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason || res.booking.reason}  </span>
+                                                                </div>
+                                                                <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
+                                                                    <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
+                                                                </div>
+
+                                                            </Card>
+                                                        </div>
+                                                    )}
+                                                </Draggable>
+                                                : filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO'
+                                                    || filerBooking.department == 'Other' && res.department != 'Production' && res.department != 'production' && res.department != 'Marketing' && res.department != 'marketing' && res.department != 'QA & QC' && res.department != 'Personnel' && res.department != 'personnel' && res.department != 'IT' && res.department != 'it' && res.department != 'Business Deverlopment' && res.department != 'business deverlopment' && res.department != 'Purchasing' && res.department != 'purchasing' && res.department != 'Safety' && res.department != 'Safety'
+
+                                                    || filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า'
+                                                    ?
+                                                    <Draggable
+                                                        key={res.id}
+                                                        draggableId={`${res.id}`}
+                                                        index={index}
+                                                    >
+                                                        {provided => (
+                                                            <div
+                                                                // style={{ width: '100%' }}
+                                                                ref={provided.innerRef}
+                                                                {...provided.draggableProps}
+                                                            >
+                                                                <Card className='cardMobile' >
+                                                                    <div style={{ position: 'relative', width: 'auto' }}>
+                                                                        <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
+                                                                        {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
+                                                                        <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
+                                                                            <img src={dragicon1}    {...provided.dragHandleProps} />
+
+                                                                        </div>
+                                                                    </div>
+                                                                    <div style={{ paddingTop: '4%' }}>
+                                                                        <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name || res.booking.nae} ({res.company || res.booking.company})  </span>
+                                                                    </div>
+                                                                    <div style={{ paddingTop: '4%' }}>
+                                                                        <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date && res.date.replaceAll('-', '/') || res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime || res.booking.startTime} - {res.endTime || res.booking.endTime}  </span>
+                                                                    </div>
+                                                                    <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
+                                                                        <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination || res.booking.destination} {res.destProvince || res.booking.destProvince}  </span>
+                                                                    </div>
+                                                                    <div style={{ paddingTop: '4%' }}>
+                                                                        <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason || res.booking.reason}  </span>
+                                                                    </div>
+                                                                    <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
+                                                                        <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
+                                                                    </div>
+
+                                                                </Card>
+                                                            </div>
+                                                        )}
+                                                    </Draggable>
+                                                    : null
 
                                     )}
 
@@ -177,6 +274,9 @@ const Car = ({ testt }) => {
         let trips = data
         data.map((d, index) => {
             if (id == d.destCarId) {
+            // console.log(d);
+                delete d.destCarId
+                // console.log(d);
                 clearTrips.push(d)
             }
         })
@@ -184,7 +284,63 @@ const Car = ({ testt }) => {
         setState({ ...state, booking: clearTrips, trips: filter });
 
     }
+    const changeDriver = (value, carId) => {
 
+        // console.log(value, carId);
+        let arr = state.selectCar || []
+        arr.push({ value, carId })
+        console.log(arr);
+        setState({ ...state, selectCar: arr })
+    }
+    // console.log(state);
+    const saveDispatch = async (data, carData) => {
+        // console.log(data, carData);
+        var driverName = null
+
+        let disatchInsertById = []
+        data.map(async (d, index) => {
+            if (state.selectCar) {
+                for (const nameDriver of state.selectCar) {
+                    console.log(nameDriver);
+                    if (nameDriver.carId == d.destCarId) {
+                        driverName = nameDriver.value
+                    }
+                }
+            }
+            // console.log(driverName);
+            if (carData.id == d.destCarId) {
+                const insertData = {
+                    user: d.user,
+                    status: 'free',
+                    car: parseInt(d.destCarId),
+                    driver: driverName,
+                    booking: d.id
+                }
+                // disatchInsertById.push(d)
+                // console.log(d);
+                let bookingId = d.id
+                console.log(insertData);
+                await addTrips(insertData, bookingId).then(async res => {
+                    // console.log(res);
+                    let newTrip = res, newBooking
+
+                    await getBookingDispatch().then(d => {
+                        newBooking = d
+                    })
+                    console.log(newTrip, newBooking)
+                    setState({ ...state, trips: newTrip, booking: newBooking })
+                    Swal.fire({
+
+                        icon: 'success',
+                        title: 'บันทึกข้อมูลสำเร็จ',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                })
+            }
+        })
+        // console.log(disatchInsertById);
+    }
     if (innerWidth <= 575) {
         var device = 'horizontal'
     } else {
@@ -200,6 +356,7 @@ const Car = ({ testt }) => {
                             <div
                                 className='dragRequest'
                                 ref={provided.innerRef}
+
                             // style={getListStyle(snapshot.isDraggingOver)}
                             >
 
@@ -218,9 +375,13 @@ const Car = ({ testt }) => {
                                             <div style={{ position: 'relative' }} >
                                                 <p className='carfont text'> คนขับรถ   </p>
                                                 <span className='carfont'>
-                                                    <Select size='large'
+                                                    <Select key={res.id}
+                                                        size='large'
                                                         style={{ fontFamily: 'Bai Jamjuree', width: '100%' }}
                                                         className='selectWidth'
+                                                        onChange={(e) => {
+                                                            changeDriver(e, res.id, res);
+                                                        }}
                                                         showSearch
                                                         placeholder="เลือกคนขับรถ"
                                                         optionFilterProp="children"
@@ -247,16 +408,18 @@ const Car = ({ testt }) => {
                                                             key={data.id}
                                                             draggableId={`trip${data.id}`}
                                                             index={index}
+                                                            isDragDisabled={!data.destCarId}
                                                         >
                                                             {provided => (
                                                                 <div
                                                                     // style={{ width: '100%' }}
                                                                     ref={provided.innerRef}
+
                                                                     {...provided.draggableProps}
                                                                 >
                                                                     <div className='font' style={{ position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
-                                                                        <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-                                                                        <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
+                                                                    {data.destCarId ?  <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
+                                                              : null }  <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
                                                                         <p>{data.booking && data.booking.startTime || data.startTime} - {data.booking && data.booking.endTime || data.endTime}</p>
                                                                     </div>
 
@@ -271,7 +434,7 @@ const Car = ({ testt }) => {
                                         </Col>
                                         <Col xs={{ span: 24 }} sm={{ span: 5 }}  >
                                             <div className='posGeneralBtn'  >
-                                                <Button className='fontGeneralBtn' style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button>
+                                                <Button className='fontGeneralBtn' onClick={() => { saveDispatch(state.trips, res) }} style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button>
                                                 <Button className='fontGeneralBtn' onClick={(e) => clearData(state.trips, res.id)} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button>โ
                                             </div>
                                         </Col>
@@ -295,20 +458,51 @@ const Car = ({ testt }) => {
 }
 
 const General = () => {
+    let filterCompany = null
+    let filterType = null
+    const [filerBooking, setFilter] = useState({
+        search: false,
+        company: null,
+        department: null,
+        reason: null,
+        date: null,
+        province: null
+    })
     const [state, setState] = React.useContext(DataContext);
+    // console.log(state);
     const [sidebar, setSidebar] = useState(true)
     const wrapperRef = useRef(null);
+
+
     const move = (source, destination, droppableSource, droppableDestination) => {
+        console.log(source, destination, droppableSource, droppableDestination);
         const sourceClone = Array.from(source);
         const result = {};
+        let removed = {}
         const destClone = Array.from(destination);
-        let [removed] = sourceClone.splice(droppableSource.index, 1);
+        // console.log(sourceClone);
+        // console.log(droppableDestination.index, droppableSource.index);
         if (droppableDestination.droppableId != 'droppable1') {
-            removed = { ...removed, destCarId: droppableDestination.droppableId }
-            destClone.splice(droppableDestination.index, 0, removed);
-            result['droppableId1'] = sourceClone;
-            result['trips'] = destClone;
+            let [removed] = sourceClone.splice(droppableSource.index, 1);
+            if (!removed.destCarId) {
+                console.log(484);
+                removed = { ...removed, destCarId: droppableDestination.droppableId }
+                destClone.splice(droppableDestination.index, 0, removed); // insert to state
+                result['droppableId1'] = sourceClone;
+                result['trips'] = destClone;
+            } else {
+                destination.map(res => {
+                    if (res.id == removed.id) {
+                        removed.destCarId = droppableDestination.droppableId
+                    }
+                })
+                result['droppableId1'] = state.booking;
+                result['trips'] = destClone;
+            }
+
         } else {
+            let [removed] = sourceClone.splice(droppableSource.index, 1);
+
             destClone.splice(droppableDestination.index, 0, removed);
             result['trips'] = sourceClone;
             result['droppableId1'] = destClone;
@@ -405,7 +599,83 @@ const General = () => {
 
     useOutsideAlerter(wrapperRef);
     const { Option } = Select;
+    const filterBooking = (dataFilter, filter) => {
+        // console.log(dataFilter, filter);
+        let countBooking = 0
+        if (filter == 'Company') {
+            setFilter({ ...filerBooking, search: true, company: dataFilter })
+        } else if (filter == 'Department') {
+            setFilter({ ...filerBooking, search: true, department: dataFilter })
+        } else if (filter == 'Reason') {
+            setFilter({ ...filerBooking, search: true, reason: dataFilter })
+        } else if (filter == 'Date') {
+            setFilter({ ...filerBooking, search: true, date: dataFilter })
+        } else if (filter == 'Province') {
+            setFilter({ ...filerBooking, search: true, province: dataFilter })
+        }
+    }
+    useEffect(() => {
+        // filter
+        let countBooking = 0
 
+        if (filerBooking.search == true) {
+            state.booking.map(res => {
+                // console.log(res.destProvince);
+                if (res.company == filerBooking.company) {
+                    countBooking += 1
+                } else if (res.department == filerBooking.department) {
+                    countBooking += 1
+                } else if (res.reason == filerBooking.reason) {
+                    countBooking += 1
+                }
+                else if (res.date == filerBooking.date) {
+                    // console.log(res.date );
+                    countBooking += 1
+                }
+                else if (res.destProvince == filerBooking.province) {
+                    countBooking += 1
+                }
+                else if (filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
+                    countBooking += 1
+                }
+                else if (filerBooking.department == 'Other' && res.hrApprove == null
+                    && res.department != 'Production' && res.department != 'production'
+                    && res.department != 'Marketing' && res.department != 'marketing'
+                    && res.department != 'QA & QC'
+                    && res.department != 'Personnel' && res.department != 'personnel'
+                    && res.department != 'IT' && res.department != 'it'
+                    && res.department != 'Business Deverlopment' && res.department != 'business deverlopment'
+                    && res.department != 'Purchasing' && res.department != 'purchasing'
+                    && res.department != 'Safety' && res.department != 'Safety') {
+                    countBooking += 1
+                } else if (filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า') {
+                    countBooking += 1
+
+                }
+            })
+            // console.log(countBooking);
+            setState({ ...state, count: countBooking })
+
+        }
+
+    }, [filerBooking])
+    const clearBtn = () => {
+        setFilter({
+            search: false,
+            company: null,
+            department: null,
+            reason: null,
+            date: null,
+            province: null
+        })
+        let countData = 0
+        state.booking.map(data => {
+            if (data.hrApprove == null) {
+                countData += 1
+            }
+        })
+        setState({ ...state, count: countData })
+    }
     // console.log(test);
     return (
         <div >
@@ -420,9 +690,9 @@ const General = () => {
 
 
                             <div style={{ position: 'relative' }}>
-                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> 999 รายการ
-                                 
-                                
+                                <img style={{ height: '16px', width: '16px' }} src={countRequest} /> {state.count} รายการ
+
+
                             </div>
                         </div>
                     </div>
@@ -435,8 +705,8 @@ const General = () => {
                     <Row gutter={{ xs: 16, sm: 16 }}>
                         <Col xs={{ span: 24 }} sm={{ span: 8 }}>
                             <div style={{ position: 'relative' }}>
-                                <div style={{textAlign:'right',marginBottom : '4px'}}>
-                                    <span style={{ cursor:'pointer',padding: '8px', textAlign: 'right' }} >
+                                <div style={{ textAlign: 'right', marginBottom: '4px' }}>
+                                    <span style={{ cursor: 'pointer', padding: '8px', textAlign: 'right' }} >
                                         <button onClick={() => { toggleSidebar() }} style={{ padding: '8px 16px', fontSize: '1.3em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                                             <img src={filer} />กรอง</button>
                                     </span>
@@ -447,22 +717,22 @@ const General = () => {
                                         <p>บริษัท</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AH</Button>
+                                                <Button value='AH' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AH', filterType = 'Company')} >AH</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AHP</Button>
+                                                <Button value='AHP' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AHP', filterType = 'Company')} >AHP</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AHT</Button>
+                                                <Button value='AHT' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AHT', filterType = 'Company')} >AHT</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >AITS</Button>
+                                                <Button value='AITS' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'AITS', filterType = 'Company')} >AITS</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ASICO</Button>
+                                                <Button value='ASICO' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ASICO', filterType = 'Company')}>ASICO</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >อื่น ๆ</Button>
+                                                <Button value='Other' className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Company')}>อื่น ๆ</Button>
                                             </Col>
 
                                         </Row>
@@ -478,55 +748,55 @@ const General = () => {
                                         <p>แผนก</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Production</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Production', filterType = 'Department')} >Production</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Marketing</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Marketing', filterType = 'Department')} >Marketing</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >QA & QC</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'QA & QC', filterType = 'Department')} >QA & QC</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Personnel</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Personnel', filterType = 'Department')} >Personnel</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >IT</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'IT', filterType = 'Department')} >IT</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Business Deverlopment</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Business Deverlopment', filterType = 'Department')} >Business Deverlopment</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Purchasing</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Purchasing', filterType = 'Department')} >Purchasing</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >Safety</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Safety', filterType = 'Department')} >Safety</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >อื่น ๆ</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Department')} >อื่น ๆ</Button>
                                             </Col>
 
                                         </Row>
 
-                                        <hr />
+                                        <hr style={{ marginRight: '20px' }} />
 
 
 
                                         <p>เหตุผลที่ต้องการใช้รถ</p>
                                         <Row>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร', filterType = 'Reason')} >ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ส่งออก</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ส่งของ', filterType = 'Reason')}>ส่งของ</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >รับ - ส่งแขก</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'รับ - ส่งแขก', filterType = 'Reason')}>รับ - ส่งแขก</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >ติดต่อลูกค้า</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'ติดต่อลูกค้า', filterType = 'Reason')}>ติดต่อลูกค้า</Button>
                                             </Col>
                                             <Col style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <Button >อื่น ๆ</Button>
+                                                <Button className='filterbgColor' onClick={(e) => filterBooking(filterCompany = 'Other', filterType = 'Reason')} >อื่น ๆ</Button>
                                             </Col>
 
                                         </Row>
@@ -542,35 +812,41 @@ const General = () => {
                                         <p>วันที่</p>
                                         <Row >
                                             <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
-                                                <DatePicker ref={wrapperRef} style={{ width: '100%' }} />
+                                                <DatePicker onChange={(e) => filterBooking(filterCompany = moment(e).format('DD-MM-YYYY'), filterType = 'Date')} ref={wrapperRef} style={{ width: '100%' }} />
                                             </Col>
                                         </Row>
                                         <p style={{ paddingTop: '8px' }}>จังหวัด</p>
                                         <Row >
                                             <Col sm={{ span: 22 }} xs={{ span: 22 }} style={{ paddingLeft: '4px', paddingRight: '4px', paddingBottom: '4px' }}>
                                                 <Select
+                                                    onChange={(e) => filterBooking(filterCompany = e, filterType = 'Province')}
                                                     showSearch
                                                     style={{ width: '100%' }}
-                                                    placeholder="Select a person"
+                                                    placeholder="Select province"
                                                     optionFilterProp="children"
 
                                                     filterOption={(input, option) =>
                                                         option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                                     }
                                                 >
-                                                    <Option value="jack">Jack</Option>
-                                                    <Option value="lucy">Lucy</Option>
-                                                    <Option value="tom">Tom</Option>
+                                                    {state.province}
                                                 </Select>
                                             </Col>
 
                                         </Row>
+                                        <br />
+                                        <Row >
+                                            <Col span={24} style={{ textAlign: 'center' }}>
+                                                <button onClick={() => clearBtn()} style={{ border: ' 1px solid #D9D9D9', boxSizing: 'border-box', borderRadius: '24px', padding: '8px 16px', fontFamily: 'Bai Jamjuree', cursor: 'pointer' }} ><img src={clearIcon} />Clear</button>
 
+                                            </Col>
+
+                                        </Row>
                                     </div>
                                 </div>
                             </div>
 
-                            <RequestCar test={state} />
+                            <RequestCar filerBooking={filerBooking} />
 
                         </Col>
                         <Col xs={{ span: 24 }} sm={{ span: 16 }}>

@@ -216,7 +216,7 @@ const Hrapprove = () => {
             // console.log(countBooking);
             setCount(countBooking)
         }
-    }, [filterBooking])
+    }, [filerBooking])
     // console.log(filerBooking);
 
     const clearBtn = () => {
@@ -310,7 +310,7 @@ const Hrapprove = () => {
                 <div style={{ position: 'relative' }}>
                     <img style={{ height: '16px', width: '16px' }} src={countRequest} /> <span style={{ color: 'black' }}>{count} รายการ </span>
                     <span style={{ padding: '8px' }} >
-                        <button onClick={() => { toggleSidebar() }} style={{ cursor : 'pointer', padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                        <button onClick={() => { toggleSidebar() }} style={{ cursor: 'pointer', padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                             <img src={filer} />กรอง</button>
                     </span>
                     <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
@@ -546,10 +546,11 @@ const Hrapprove = () => {
 
                                 </Col>
                                 // other filter
-                            ) : res.hrApprove == null && filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO'
-                                || res.hrApprove == null && filerBooking.department == 'Other' && res.department != 'Production' && res.department != 'production' && res.department != 'Marketing' && res.department != 'marketing' && res.department != 'QA & QC' && res.department != 'Personnel' && res.department != 'personnel' && res.department != 'IT' && res.department != 'it' && res.department != 'Business Deverlopment' && res.department != 'business deverlopment' && res.department != 'Purchasing' && res.department != 'purchasing' && res.department != 'Safety' && res.department != 'Safety'
+                            )
+                                : res.hrApprove == null && filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO'
+                                    || res.hrApprove == null && filerBooking.department == 'Other' && res.department != 'Production' && res.department != 'production' && res.department != 'Marketing' && res.department != 'marketing' && res.department != 'QA & QC' && res.department != 'Personnel' && res.department != 'personnel' && res.department != 'IT' && res.department != 'it' && res.department != 'Business Deverlopment' && res.department != 'business deverlopment' && res.department != 'Purchasing' && res.department != 'purchasing' && res.department != 'Safety' && res.department != 'Safety'
 
-                                || res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า'
+                                    || res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า'
 
                                     ? (
                                         <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
