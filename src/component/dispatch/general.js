@@ -54,7 +54,7 @@ const RequestCar = ({ filerBooking }) => {
         setModal(true)
 
     }
-    sendEmail()
+    // sendEmail()z
     return (
 
         <div >

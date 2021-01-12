@@ -175,6 +175,7 @@ const ManageDriver = () => {
 
 
     };
+    
     const handleRemove = () => {
 
         Swal.fire({
@@ -273,7 +274,7 @@ const ManageDriver = () => {
     const handleEdit = () => {
 
         if (driverstate.driverData) {
-            if (!driverstate.driverData.name || !driverstate.driverData.lastname || !driverstate.driverData.emp_id || !driverstate.driverData.tel || !driverstate.driverData.username) {
+            if (!driverstate.driverData.name || !driverstate.driverData.lastname || !driverstate.driverData.emp_id || !driverstate.driverData.tel) {
                 Swal.fire({
 
                     icon: 'warning',
@@ -446,7 +447,7 @@ const ManageDriver = () => {
                             <Col span={24}>
                              
                                 <h3 style={{ fontWeight: 'bold' }}>รหัสพนักงาน</h3>
-                                <Input disabled={!driverstate.openCreateModal ? true : false}  style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='รหัสพนักงาน' name='emp_id' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.emp_id : null} />
+                                <Input readOnly={!driverstate.openCreateModal ? true : false}  style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='รหัสพนักงาน' name='emp_id' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.emp_id : null} />
                                 <h3 style={{ fontWeight: 'bold' }} >เบอร์โทรศัพท์</h3>
                                 <Input style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='เบอร์โทรศัพท์' name='tel' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.tel : null} />
                                 {/* <h3 style={{ fontWeight: 'bold' }}>ชื่อบัญชีผู้ใช้</h3>

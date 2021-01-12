@@ -1,4 +1,7 @@
-
+.imgCar{
+    width: 16vw;
+     height: 16vh ;
+}
 .swConfirm{
     font-family:  'Bai Jamjuree';
     background-color: #2CC84D;
@@ -15,10 +18,7 @@
     color: #fff;
     font-size: 1.0625em;
 }
-.imgCar{
-    width: 16vw;
-     height: 12vh ;
-}
+
 .cardBooking{
     background :  #E3E3E3;
 
@@ -261,6 +261,7 @@ color: rgba(0, 0, 0, 0.6);
     height: auto ;
 }
 .posGeneralBtn  {
+    /* margin-top : 50%; */
     position: absolute ; 
     top: 50% ;
   
@@ -316,6 +317,10 @@ color: rgba(0, 0, 0, 0.6);
 
 
 @media only screen and (max-width: 600px) {
+    .imgCar{
+        width: 30vw;
+         /* height: 24vh ; */
+    }
     /* .driverimg{
         width : 240px ;
         height : 240px ;
@@ -329,10 +334,7 @@ color: rgba(0, 0, 0, 0.6);
          overflow: inherit ;
          width: max-content ;
     }
-    .imgCar{
-        width: 30vw;
-         height: 24vh ;
-    }
+   
     .jobView{
         margin-left: 30px;
     }
@@ -400,6 +402,7 @@ color: rgba(0, 0, 0, 0.6);
     }
     .dragRequest{
         display: inline-flex;
+        margin-right: 20px;
     /* right: '0%'; */
     }
     .carPos{
@@ -413,11 +416,12 @@ color: rgba(0, 0, 0, 0.6);
     .posGeneralBtn  {
         margin-top: 8px;
         position: relative ; 
-        text-align: left;
+        text-align: center;
     }
     
     .ScrollCar {
         margin-top : 8px;
+        margin-right : 8px ;
         width: 100%;
         height: auto;
     }
@@ -426,7 +430,10 @@ color: rgba(0, 0, 0, 0.6);
   
   /* tablet or pc */
   @media only screen and (min-width: 1367px) {
-   
+    .imgCar{
+        width: 20vw;
+         height: 16vh ;
+    }
     .margin {
         margin-left: 120px ;
         margin-right: 120px 
@@ -447,10 +454,7 @@ color: rgba(0, 0, 0, 0.6);
     }
   }
   @media only screen and (max-width: 1367px) {
-    .imgCar{
-        width: 16vw;
-         height: 16vh ;
-    }
+  
     .margin {
         margin-left: 40px ;
         margin-right: 40px 

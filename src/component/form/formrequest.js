@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-
 import './formrequest.css'
 import dataProvince from '../../province.json'
 import moment from 'moment';
-import { saveBooking, sendEmail } from '../util/index'
+import { saveBooking, sendEmail, getDepartment, getManagerEmail } from '../util/index'
 import Swal from 'sweetalert2'
 import { DataContext } from "../store/store"
 const FromRequest = () => {
@@ -15,29 +15,40 @@ const FromRequest = () => {
     const { RangePicker } = TimePicker;
     const { Option } = Select;
     const [comment, setComment] = React.useState(true);
-    // const [formDropdown, setFormDropdown] = React.useState({
-    //     province: []
-    // });
-    // const [state, setState] = useState({
-    //     companyphone: '0877565422',
-    //     mobilephone: null,
-    //     radiocheck: 'yes'
-    // });
-    // var provinceArray = []
-    // React.useMemo(() => {
-    //     var i = 0
-    //     for (const data in dataProvince) {
-    //         provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
-    //         i++
-    //     }
+    const [formDropdown, setFormDropdown] = React.useState({
+        department: [],
+        managerEmail: null,
 
-    //     // setFormDropdown({
-    //     //     ...formDropdown, province: provinceArray
-    //     // })
-    //     setState({
-    //         ...formDropdown, province: provinceArray
-    //     })
-    // }, [])
+    });
+
+
+    // const [loginData, setLoginData] = useState({ user: 'test' })
+    React.useMemo(async () => {
+        let arr = []
+        var i = 0
+
+        // if (sessionStorage.getItem('user')) {
+        //     setLoginData(JSON.parse(sessionStorage.getItem('user')))
+
+        // }
+        // console.log(loginData);
+        await getDepartment(JSON.parse(sessionStorage.getItem('user')).company).then(r => {
+            r.map(res => {
+                // console.log(res);
+                arr.push(<Option key={i} value={res}>{res}</Option>);
+                i++
+            })
+
+        })
+
+        // console.log(arr);
+        setFormDropdown({
+            ...formDropdown, department: arr
+        })
+        // setState({
+        //     ...formDropdown, province: provinceArray
+        // })
+    }, [])
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -72,6 +83,19 @@ const FromRequest = () => {
     function onChange(date, dateString) {
         console.log(date, dateString);
     }
+    const handleCompanyChange = async (department) => {
+        // console.log(JSON.parse(sessionStorage.getItem('user')).company);
+        // console.log(department);
+        await getManagerEmail(JSON.parse(sessionStorage.getItem('user')).company, department)
+            .then(res => {
+                // console.log(res[0].Approver)
+                let managerName = res[0].Approver.split("|");
+                // console.log(`${managerName[0]}@aapico.com`);
+
+                setFormDropdown({ ...formDropdown, managerEmail: `${managerName[0]}@aapico.com` })
+            })
+    }
+    console.log(formDropdown);
     const onFinish = async (values) => {
         // console.log(values);
         if (values.purpos == 'Other') {
@@ -100,19 +124,20 @@ const FromRequest = () => {
 
         return current && current < moment().subtract('1', 'days').endOf('day');
     }
-    var loginData = { user : 'test'}
-    if (sessionStorage.getItem('user')) {
-        loginData = JSON.parse(sessionStorage.getItem('user'));
 
-    }
-
+    React.useEffect(() => {
+        form.setFieldsValue({
+            manager_email: formDropdown.managerEmail
+        });
+    }, [formDropdown]);
     return (
         <div>
+
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
             <div className='margin fontForm'>
                 <Row justify='center'> <h2 style={{ marginTop: '8px', paddingTop: '8px', fontSize: '22px' }}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
-                    initialValues={{ driver: true, company: loginData.company || 'null' }}
+                    initialValues={{ driver: true, company: JSON.parse(sessionStorage.getItem('user')).company || 'null' }}
                 >
                     {/* <Row gutter={[24,12]} justify='center'> */}
                     <Row gutter={{ xs: 16, sm: 24 }} justify='center'>
@@ -126,7 +151,8 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'กรุณาเลือกบริษัท',
                                     },]} >
-                                <Select
+                                <Input readOnly={true} placeholder="บริษัท (Company)" style={{ width: '100%' }} placeholder="ชื่อ - นามสกุล (Full Name)" />
+                                {/* <Select
                                     showSearch
                                     style={{ width: '100%' }}
                                     placeholder="บริษัท (Company)"
@@ -154,7 +180,7 @@ const FromRequest = () => {
                                     <Option value="NESC">NESC</Option>
                                     <Option value="AF APC">AF APC</Option>
 
-                                </Select>
+                                </Select> */}
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
@@ -244,9 +270,22 @@ const FromRequest = () => {
                                     {
                                         required: true, message: 'กรุณาเลือกแผนก',
                                     },]} >
-                                <Input placeholder="เลือกแผนก" style={{ width: '100%' }} onChange={handleChange} >
+                                {/* <Input placeholder="เลือกแผนก" style={{ width: '100%' }} onChange={handleChange} > */}
 
-                                </Input>
+                                {/* </Input> */}
+                                <Select
+                                    showSearch
+                                    onChange={(e) => handleCompanyChange(e)}
+                                    style={{ width: '100%' }}
+                                    placeholder="เลือกแผนก"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                    }
+                                >
+
+                                    {formDropdown.department}
+                                </Select>
                             </Form.Item>
                             <p className='fontForm'>โทรศัพท์ภายใน (Telephone Number)</p>
                             <Form.Item
@@ -299,6 +338,7 @@ const FromRequest = () => {
                                         message: 'require',
                                     },]} >
                                 <Select
+                                    autoComplete="none"
                                     showSearch
                                     style={{ width: '100%' }}
                                     placeholder="จังหวัด (Province)"
@@ -339,6 +379,7 @@ const FromRequest = () => {
                             <p className='fontForm'>อีเมลล์ของหัวหน้า (Manager's Email)</p>
                             <Form.Item
                                 name="manager_email"
+
                                 rules={[
                                     {
                                         required: true,
@@ -347,7 +388,7 @@ const FromRequest = () => {
                                         pattern: new RegExp(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/),
                                         message: 'Email invalid',
                                     }]}>
-                                <Input placeholder="อีเมลล์ของหัวหน้า (Manager's Email)" style={{ width: '100%' }} onChange={handleChange} >
+                                <Input readOnly={true} placeholder="อีเมลล์ของหัวหน้า (Manager's Email)" style={{ width: '100%' }} onChange={handleChange} >
 
                                 </Input>
                             </Form.Item>

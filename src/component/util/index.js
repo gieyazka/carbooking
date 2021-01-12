@@ -35,9 +35,10 @@ export const handleHrApprove = async (id, status) => {
 }
 
 export const saveBooking = async (formData) => {
-    console.log((formData));
+    // console.log((formData));
     const loginData = JSON.parse(sessionStorage.getItem('user'));
-    return await axios.post(`${bookingApi}`, {
+
+    await axios.post(`${bookingApi}`, {
         user: loginData.username,
         name: formData.fullname,
         department: formData.department,
@@ -56,6 +57,9 @@ export const saveBooking = async (formData) => {
         managerEmail: formData.manager_email,
         comment: formData.comment || null
 
+
+    }).then(async res => {
+        await sendEmail(formData)
 
     })
 }
@@ -263,19 +267,153 @@ export const getBookingDispatch = async () => {
 //     })
 // }
 
-export const sendEmail = async () => {
+
+
+
+export const getDepartment = (e) => {
+    var headers = new Headers();
+    headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("company", e);
+    urlencoded.append("documenttype", "IT-Requisition");
+
+    var requestOptions = {
+        method: 'POST',
+        headers: headers,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+
+    return fetch("https://ess.aapico.com/flow/department", requestOptions)
+        .then(response => {
+            // console.log(response);
+            return response.json()
+        })
+        .then(result => {
+            // console.log(result);
+            return result
+            // setValue("department", null)
+            // setDepartments(result)
+        })
+        .catch(error => console.log('error', error));
+}
+
+export const getManagerEmail = (company, department) => {
+    // console.log(company, department);
+    var headers = new Headers();
+
+    headers.append("Content-Type", "application/x-www-form-urlencoded");
+
+    var urlencoded = new URLSearchParams();
+    urlencoded.append("company", company);
+    urlencoded.append("documenttype", "IT-Requisition");
+    urlencoded.append("department", department);
+
+    var requestOptions = {
+        method: 'POST',
+        headers: headers,
+        body: urlencoded,
+        redirect: 'follow'
+    };
+
+    return fetch("https://ess.aapico.com/flow/master", requestOptions)
+        .then(response => {
+            // console.log(response);
+            return response.json()
+        })
+        .then(result => {
+            // console.log(result);
+            return result
+
+        })
+        .catch(error => console.log('error', error));
+}
+
+
+export const sendEmail = async (d) => {
+    console.log(d);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-
+    // myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+    if(d.other_purpos == null){
+        d.other_purpos = '-';
+    }
     var urlencoded = new URLSearchParams();
     urlencoded.append("form", "pokkate.e@aapico.com");
     urlencoded.append("formdetail", "Please approve car bookoing request");
     urlencoded.append("to", "pokkate.e@aapico.com");
     urlencoded.append("cc", "");
-    urlencoded.append("bcc", "");
-    urlencoded.append("subject", "Carbooking request ทดสอบ");
-    urlencoded.append("body", "<html><body><b style='color:#00004d;font-size:22px;'>This is an automatic e-mail that you have informed to Nissan e-Photo System</b><br><br></body></html>");
+    urlencoded.append("bcc ", "");
+    urlencoded.append("subject", "Carbooking request");
+    urlencoded.append("body",
+        `<html>
+        <link
+        href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
+        rel="stylesheet">   
+      <body style='font-family : Bai Jamjuree ;'>
+<table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+  <tr>
+      <td style="   
+                 background : #1D366D   ;
+                 padding : 40px;
+                 font-size : 3em ;
+                 text-align :center ;
+                 color : #FFF
+                 ">
+          <p style="margin: 0;">Car Booking System </p>
+      </td>
+  </tr>
+  <tr>
+      <td style="   
+                 background : #FFF   ;
+                 padding : 20px;
+                 text-align :center ;
+                 color : #121212
+                 ">
+          <p style="margin: 0 0 20 0;font-size : 2.5em;">ข้อมูลการจองรถ</p>
+        <table align="center" border="1" cellpadding="0" cellspacing="0" width="400"> 
+          <tr> 
+            <td style='padding : 4px 0px ; text-align :center ;'>ขื่อ </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${d.fullname} </td>
+          </tr>
+           <tr> 
+            <td style='padding : 4px 0px ; text-align :center ;'>วันที่ </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${moment(d.date).format('DD-MM-yyyy')}  ${moment(d.time[0]).format('h:mm')}
+              ${moment(d.time[1]).format('h:mm')} </td>
+          </tr>
+           <tr> 
+            <td style='padding : 4px 0px ; text-align :center ;'>สถานที่ไป </td>
+              <td style='padding : 4px 0px ;  text-align :center ;'>${d.place} ${d.province} </td>
+          </tr>
+           <tr> 
+            <td style='padding : 4px 0px ; text-align :center ;'>เหตุผล </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${d.purpos} </td>
+          </tr>
+           <tr> 
+            <td style='padding : 4px 0px ; text-align :center ;'>รายละเอียดอื่น ๆ </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${d.other_purpos || '-'} </td>
+          </tr>
+        </table>
+      </td>
+      
+  </tr>
+  <tr>
+      <td  style="   
+                 background : #1D366D   ;
+                 padding : 20px;
+                 text-align :center ;
+                 color : #FFF
+                 ">
+          <p style="margin: 0;"> Copyright &copy; AAIPICO HITECH 2021</p>
+      </td>
+  </tr>
+</table>
+
+</body>
+  
+</html>`
+    );
 
     var requestOptions = {
         method: 'POST',
@@ -284,8 +422,8 @@ export const sendEmail = async () => {
         redirect: 'follow'
     };
 
-    axios({ method: 'post', url: "http://ahappl04.aapico.com/Api/email", data: urlencoded, headers: myHeaders })
-    // .then(response => response.text())
-    // .then(result => console.log(result))
-    // .catch(error => console.log('error', error));
+    fetch("https://ess.aapico.com/email", requestOptions)
+        .then(response => response.json())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
 }
