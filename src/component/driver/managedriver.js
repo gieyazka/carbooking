@@ -8,8 +8,10 @@ import Swal from 'sweetalert2';
 import countRequest from '../asset/countRequest.png'
 import { IconMap } from 'antd/lib/result';
 import { getDrivers, editDriver, addDrivers, removeDriver } from '../util/index'
-
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
+import Loader from "react-loader-spinner";
 const ManageDriver = () => {
+    const [loader, setLoader] = useState(false)
     const [driverstate, setDriverstate] = useState({
         isModalVisible: false,
         openCreateModal: false,
@@ -54,7 +56,28 @@ const ManageDriver = () => {
     };
     const handleOk = () => {
         // console.log(driverstate.driverData);
+        let exist = null
 
+        if (driverstate.allDriver) {
+            driverstate.allDriver.map(result => {
+                console.log(result.emp_id, driverstate.driverData.emp_id);
+                if (driverstate.driverData.emp_id == result.emp_id) {
+                    // status = false
+                    Swal.fire({
+
+                        icon: 'warning',
+                        title: 'มีรหัสพนักงานนี้ในระบบแล้ว',
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    exist = 'exit'
+
+                }
+            })
+        }
+        if (exist != null) {
+            return
+        }
         if (driverstate.driverData) {
             let telReg = /^[0-9]{10}$/;
             if (!telReg.test(driverstate.driverData.tel)) {
@@ -83,22 +106,8 @@ const ManageDriver = () => {
                 //         timer: 1500
                 //     })
             } else {
-                // let status = true
-                // driverstate.allDriver.map(result => {
-                //     console.log(result.username, driverstate.driverData.username);
-                //     if (driverstate.driverData.username == result.username) {
-                //         status = false
-                //         Swal.fire({
 
-                //             icon: 'warning',
-                //             title: 'มี username นี้ในระบบแล้ว',
-                //             showConfirmButton: false,
-                //             timer: 1500
-                //         })
 
-                //     }
-                // })
-                // if (status == true) {
                 Swal.fire({
                     title: `บันทึกข้อมูลของ ${driverstate.driverData.name}`,
                     customClass: {
@@ -118,16 +127,30 @@ const ManageDriver = () => {
                     reverseButtons: true,
 
                 }).then(async (result) => {
+                    setLoader(true)
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
-                        await addDrivers(driverstate.driverData).then(async res => {
-                            setDriverstate({ ...driverstate, allDriver: res, isModalVisible: false })
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลสำเร็จ',
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
+                        await addDrivers(driverstate.driverData).then(async (res) => {
+                            console.log(res);
+                            if (res.status) {
+                                setDriverstate({
+                                    ...driverstate, allDriver: res.driver
+
+                                })
+                            } else {
+                                setDriverstate({
+                                    ...driverstate, allDriver: res
+                                    , isModalVisible: false
+                                })
+                            }
+
+                            setLoader(false)
+                            // Swal.fire({
+                            //     icon: 'success',
+                            //     title: 'บันทึกข้อมูลสำเร็จ',
+                            //     showConfirmButton: false,
+                            //     timer: 1500
+                            // })
                         })
 
 
@@ -216,7 +239,7 @@ const ManageDriver = () => {
     // const imgRef = useRef();
 
     const handleDriverData = e => {
-        console.log(e.target, e.target.name);
+        // console.log(e.target, e.target.name);
         if (e.target.name == 'name') {
             setDriverstate({ ...driverstate, driverData: { ...driverstate.driverData, name: e.target.value } })
         }
@@ -311,11 +334,22 @@ const ManageDriver = () => {
             })
         }
     };
-    // console.log(driverstate);
+    console.log(driverstate);
     const [form] = Form.useForm();
     return (
         <div>
-
+            <Loader
+                style={{
+                    position: 'absolute', top: '50%', zIndex: '5'
+                    , left: '50%', transform: 'translate(-50%, -50%)'
+                }}
+                visible={loader}
+                type="Watch"
+                color="#1D366D"
+                height={100}
+                width={100}
+            // timeout={3000}
+            />
             <div className=' padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p className='hrfont' style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
@@ -353,7 +387,7 @@ const ManageDriver = () => {
 
                 </Row>
 
-                <Modal title="" visible={driverstate.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
+                <Modal style={loader ? { display: 'none' } : null} title="" visible={driverstate.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
                     <Row gutter={{ xs: 24, sm: 24 }} style={{ textAlign: 'center' }}>
                         <Col span={24}>
                             {!driverstate.openCreateModal ? <Button key="back" style={{ backgroundColor: '#C53030', color: 'white', width: '35%' }} onClick={() => handleRemove()}>
@@ -410,8 +444,9 @@ const ManageDriver = () => {
                                 <Input style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='นามสกุล' bordered={false} name='lastname' onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.lastname : null} />
                             </Col>
                             <Col span={24}>
+                             
                                 <h3 style={{ fontWeight: 'bold' }}>รหัสพนักงาน</h3>
-                                <Input style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='รหัสพนักงาน' name='emp_id' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.emp_id : null} />
+                                <Input disabled={!driverstate.openCreateModal ? true : false}  style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='รหัสพนักงาน' name='emp_id' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.emp_id : null} />
                                 <h3 style={{ fontWeight: 'bold' }} >เบอร์โทรศัพท์</h3>
                                 <Input style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='เบอร์โทรศัพท์' name='tel' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.tel : null} />
                                 {/* <h3 style={{ fontWeight: 'bold' }}>ชื่อบัญชีผู้ใช้</h3>
@@ -432,6 +467,7 @@ const ManageDriver = () => {
 
                 </Modal>
             </div>
+
 
         </div>
     )

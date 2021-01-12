@@ -29,7 +29,7 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { addTrips, getBooking, getBookingDispatch } from '../util/index'
+import { addTrips, getBooking, getBookingDispatch,sendEmail } from '../util/index'
 const RequestCar = ({ filerBooking }) => {
     // console.log(filerBooking);
     const [state, setState] = React.useContext(DataContext);
@@ -54,6 +54,7 @@ const RequestCar = ({ filerBooking }) => {
         setModal(true)
 
     }
+    sendEmail()
     return (
 
         <div >

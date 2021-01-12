@@ -447,7 +447,10 @@ color: rgba(0, 0, 0, 0.6);
     }
   }
   @media only screen and (max-width: 1367px) {
-   
+    .imgCar{
+        width: 16vw;
+         height: 16vh ;
+    }
     .margin {
         margin-left: 40px ;
         margin-right: 40px 

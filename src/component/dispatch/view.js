@@ -16,6 +16,8 @@ import people from '../asset/people.png'
 import statusdriver2 from '../asset/statusdriver2.png'
 import noDriver from '../asset/noDriver.png'
 import clearIcon from '../asset/clearIcon.png'
+import { getTrips } from '../util/index'
+
 const App = () => {
     const [state, setState] = React.useContext(DataContext);
     const [sidebar, setSidebar] = useState(true)
@@ -113,7 +115,7 @@ const App = () => {
             state.trips.map(d => {
                 // console.log(res.destProvince);
                 const res = d.booking
-                console.log(res);
+                // console.log(res);s
                 if (res.company == filerBooking.company) {
                     countBooking += 1
                 } else if (res.department == filerBooking.department) {
@@ -151,16 +153,13 @@ const App = () => {
         }
     }, [filerBooking])
 
-    React.useMemo(async () => {
+    React.useEffect(async () => {
         const countTrip = async () => {
-            // console.log(state.trips.length);
-            let countData = 0
-            state.trips.map(data => {
-                
-                countData += 1
-            })
-        console.log(countData);
-            setCount(countData)
+         const test = await getTrips().then(res=>{
+            setCount(res.length)
+         })
+    
+            // setCount(countData)
             // console.log(res);
         }
         await countTrip()
@@ -379,12 +378,12 @@ const App = () => {
                                                 {state.trips.map((d, index) =>
 
                                                     d.car && d.car.id == res.id
-                                                        && d.booking.company == filerBooking.company
-                                                        || d.booking.department == filerBooking.department
-                                                        || d.booking.reason == filerBooking.reason
-                                                        || d.booking.date == filerBooking.date
-                                                        || d.booking.destProvince == filerBooking.province
-
+                                                        && d.booking.company == filerBooking.company  && d.car.id == res.id
+                                                        || d.booking.department == filerBooking.department && d.car.id == res.id
+                                                        || d.booking.reason == filerBooking.reason && d.car.id == res.id
+                                                        || d.booking.date == filerBooking.date && d.car.id == res.id
+                                                        || d.booking.destProvince == filerBooking.province && d.car.id == res.id
+                                                        
                                                         ?
                                                         <Col key={d.id} className='jobView'>
                                                             <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >

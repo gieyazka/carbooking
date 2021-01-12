@@ -1,11 +1,14 @@
 import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
+import Swal from 'sweetalert2';
+
 const loginApi = 'http://10.10.10.227:1337/auth/local';
 const bookingApi = 'http://10.10.10.227:1337/bookings';
 const carApi = 'http://10.10.10.227:1337/cars'
 const driverApi = 'http://10.10.10.227:1337/vehicles'
 const tripApi = 'http://10.10.10.227:1337/requests'
+const employeeApi = 'http://10.10.10.227:1337/users'
 
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
@@ -196,8 +199,51 @@ export const addDrivers = async (d) => {
 
         // username: d.username
     }))
+    // console.log(d.emp_id);
+    let idEmployee = null, oldRole
+    await axios.get(`${employeeApi}?_limit=-1`).then(async res => {
+        // console.log(res.data);
+
+        for (const data of res.data) {
+            // console.log(data.emp_id);
+            if (d.emp_id == data.empID) {
+                // console.log(data);
+                idEmployee = data.id
+
+                // console.log(data.custom_role);
+                oldRole = {
+                    ...data.custom_role,
+                    car_role: 'driver'
+                }
+                break;
+            }
+        }
+
+
+    })
+    if (idEmployee == null) {
+        Swal.fire({
+
+            icon: 'warning',
+            title: 'รหัสพนักงานไม่ถูกต้อง',
+            showConfirmButton: false,
+            timer: 1500
+        })
+        let failed = 'fail'
+        return await getDrivers().then(data => ({ driver: data, status: failed }))
+    }
+
+    await axios.put(`${employeeApi}/${idEmployee}`, {
+        custom_role: { ...oldRole }
+    })
     return await axios.post(`${driverApi}`, formdata).then(async res => {
         return await getDrivers().then(data => {
+            Swal.fire({
+                icon: 'success',
+                title: 'บันทึกข้อมูลสำเร็จ',
+                showConfirmButton: false,
+                timer: 1500
+            })
             return data
         })
     })
@@ -223,13 +269,13 @@ export const sendEmail = async () => {
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
 
     var urlencoded = new URLSearchParams();
-    urlencoded.append("form", "Nissan-e-Photo@aapico.com");
-    urlencoded.append("formdetail", "Nissan-e-Photo System Notification");
+    urlencoded.append("form", "pokkate.e@aapico.com");
+    urlencoded.append("formdetail", "Please approve car bookoing request");
     urlencoded.append("to", "pokkate.e@aapico.com");
     urlencoded.append("cc", "");
     urlencoded.append("bcc", "");
-    urlencoded.append("subject", "Nissan-e-Photo IPO Delivery Order Time");
-    urlencoded.append("body", "<html><body>\n<b style='color:#00004d;font-size:22px;'>This is an automatic e-mail that you have informed to Nissan e-Photo System</b><br><br>\n\n\n</body></html>");
+    urlencoded.append("subject", "Carbooking request ทดสอบ");
+    urlencoded.append("body", "<html><body><b style='color:#00004d;font-size:22px;'>This is an automatic e-mail that you have informed to Nissan e-Photo System</b><br><br></body></html>");
 
     var requestOptions = {
         method: 'POST',
@@ -238,8 +284,8 @@ export const sendEmail = async () => {
         redirect: 'follow'
     };
 
-    fetch("http://ahappl04.aapico.com/Api/email", requestOptions)
-        .then(response => response.text())
-        .then(result => console.log(result))
-        .catch(error => console.log('error', error));
+    axios({ method: 'post', url: "http://ahappl04.aapico.com/Api/email", data: urlencoded, headers: myHeaders })
+    // .then(response => response.text())
+    // .then(result => console.log(result))
+    // .catch(error => console.log('error', error));
 }
