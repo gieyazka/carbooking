@@ -2,7 +2,8 @@ import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
-
+import { Redirect, useHistory, useLocation } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 const loginApi = 'http://10.10.10.227:1337/auth/local';
 const bookingApi = 'http://10.10.10.227:1337/bookings';
 const carApi = 'http://10.10.10.227:1337/cars'
@@ -33,6 +34,20 @@ export const handleHrApprove = async (id, status) => {
     }
 
 }
+export const checkBookingById = async (id) => {
+    return await axios.get(`${bookingApi}?id=${id}`).then(res => {
+        //   console.log(res);
+        return res
+    })
+}
+export const updateManangerStatus = async (id) => {
+    return await axios.put(`${bookingApi}/${id}`, {
+        managerApprove: true
+    }).then(res => {
+        //   console.log(res);
+        return res
+    }).catch(err => err)
+}
 
 export const saveBooking = async (formData) => {
     // console.log((formData));
@@ -46,8 +61,8 @@ export const saveBooking = async (formData) => {
         mobile: formData.mobile_phone,
         tel: formData.company_phone,
         date: moment(formData.date).format('DD-MM-yyyy'),
-        startTime: moment(formData.time[0]).format('h:mm'),
-        endTime: moment(formData.time[1]).format('h:mm'),
+        startTime: moment(formData.time[0]).format('HH:mm'),
+        endTime: moment(formData.time[1]).format('HH:mm'),
         carType: formData.car_type,
         totalPassenger: formData.amout,
         destination: formData.place,
@@ -55,11 +70,11 @@ export const saveBooking = async (formData) => {
         needDriver: formData.driver,
         reason: formData.purpos,
         managerEmail: formData.manager_email,
-        comment: formData.comment || null
-
+        comment: formData.comment || null ,
+        uuid : uuidv4()
 
     }).then(async res => {
-        await sendEmail(formData)
+        await sendEmail(res)
 
     })
 }
@@ -87,30 +102,60 @@ export const getBooking = async () => {
         return res.data
     })
 }
+export const getBookingHr = async () => {
+    return await axios.get(`${bookingApi}?hrApprove_null=true&managerApprove=true`).then(res => {
+        return res.data
+    })
+}
 export const getCars = async () => {
     return await axios.get(`${carApi}?active=true`).then(res => {
         // console.log(res);
         return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
 }
+export const getCarbyPlate = async (plate) => {
+    return await axios.get(`${carApi}?plateNo=${plate}`).then(res => {
+        console.log(res.data[0]);
+        return res.data[0]
+    })
+}
 export const addCars = async (carData) => {
     // console.log(carData);
-    const bodyFormData = new FormData();
-    let formdata = new FormData()
-    formdata.append("files.picture", carData.imgname)
-    formdata.append("data", JSON.stringify({
-        plateNo: carData.plateNo,
-        province: carData.province,
-        model: carData.model,
-        type: carData.type,
-        mileage: carData.mileage,
-        status: 'free'
-    }))
-    return await axios.post(`${carApi}`, formdata).then(async res => {
+    return await getCarbyPlate(carData.plateNo).then(async res => {
+        if (res) {
+            // console.log(carData.imgname.name);
+            carData.imgname.name = "car"
+            const bodyFormData = new FormData();
+            let formdata = new FormData()
+            formdata.append("files.picture", carData.imgname)
+            formdata.append("data", JSON.stringify({
+                active: true,
+                province: carData.province,
+                model: carData.model,
+                type: carData.type,
+                mileage: carData.mileage,
+                status: 'free'
+            }))
+            // await axios.put(`${carApi}/${res.id}`, formdata)
+        } else {
+            const bodyFormData = new FormData();
+            let formdata = new FormData()
+            formdata.append("files.picture", carData.imgname)
+            formdata.append("data", JSON.stringify({
+                plateNo: carData.plateNo,
+                province: carData.province,
+                model: carData.model,
+                type: carData.type,
+                mileage: carData.mileage,
+                status: 'free'
+            }))
+            await axios.post(`${carApi}`, formdata)
+        }
         return await getCars().then(data => {
             return data
         })
     })
+
 }
 export const editCars = async (carData) => {
     // console.log(carData.id);
@@ -205,26 +250,19 @@ export const addDrivers = async (d) => {
     }))
     // console.log(d.emp_id);
     let idEmployee = null, oldRole
-    await axios.get(`${employeeApi}?_limit=-1`).then(async res => {
-        // console.log(res.data);
+    await axios.get(`${employeeApi}?empID=${d.emp_id}`).then(async res => {
+        console.log(res.data);
+        if (res.data[0]) {
+            idEmployee = res.data[0].id
 
-        for (const data of res.data) {
-            // console.log(data.emp_id);
-            if (d.emp_id == data.empID) {
-                // console.log(data);
-                idEmployee = data.id
-
-                // console.log(data.custom_role);
-                oldRole = {
-                    ...data.custom_role,
-                    car_role: 'driver'
-                }
-                break;
+            // console.log(data.custom_role);
+            oldRole = {
+                ...res.data[0].custom_role,
+                car_role: 'driver'
             }
         }
-
-
     })
+    console.log(oldRole);
     if (idEmployee == null) {
         Swal.fire({
 
@@ -254,7 +292,7 @@ export const addDrivers = async (d) => {
 }
 
 export const getBookingDispatch = async () => {
-    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=false`).then(res => {
+    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch_null=true`).then(res => {
 
         return res.data
     })
@@ -331,17 +369,15 @@ export const getManagerEmail = (company, department) => {
 }
 
 
-export const sendEmail = async (d) => {
-    console.log(d);
+export const sendEmail = async (booking) => {
+    console.log(booking.data);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     // myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
-    if(d.other_purpos == null){
-        d.other_purpos = '-';
-    }
+    const path = window.location.origin;
     var urlencoded = new URLSearchParams();
-    urlencoded.append("form", "pokkate.e@aapico.com");
-    urlencoded.append("formdetail", "Please approve car bookoing request");
+    // urlencoded.append("form", "sudarat.t@aapico.com");
+    urlencoded.append("formdetail", "Carbooking System");
     urlencoded.append("to", "pokkate.e@aapico.com");
     urlencoded.append("cc", "");
     urlencoded.append("bcc ", "");
@@ -351,8 +387,8 @@ export const sendEmail = async (d) => {
         <link
         href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet">   
-      <body style='font-family : Bai Jamjuree ;'>
-<table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
+      <body >
+<table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="style='border-collapse: collapse;">
   <tr>
       <td style="   
                  background : #1D366D   ;
@@ -361,43 +397,57 @@ export const sendEmail = async (d) => {
                  text-align :center ;
                  color : #FFF
                  ">
-          <p style="margin: 0;">Car Booking System </p>
+          <p style="font-family : Bai Jamjuree ;margin: 0;">Car Booking System </p>
       </td>
   </tr>
-  <tr>
+  <tr style='text-align : center ;  '>
       <td style="   
                  background : #FFF   ;
                  padding : 20px;
                  text-align :center ;
                  color : #121212
                  ">
-          <p style="margin: 0 0 20 0;font-size : 2.5em;">ข้อมูลการจองรถ</p>
-        <table align="center" border="1" cellpadding="0" cellspacing="0" width="400"> 
+          <p style="font-family: Arial ;margin: 0 0 16 0;font-size : 2em;">ข้อมูลการจองรถ</p>
+        <table align="center" border="1" cellpadding="0" cellspacing="0" width="400" style='font-family : Bai Jamjuree ;font-size : 16px ;'> 
           <tr> 
-            <td style='padding : 4px 0px ; text-align :center ;'>ขื่อ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${d.fullname} </td>
+            <td style='padding : 4px 0px ; text-align :center ;'>ชื่อ </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.name} </td>
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>วันที่ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${moment(d.date).format('DD-MM-yyyy')}  ${moment(d.time[0]).format('h:mm')}
-              ${moment(d.time[1]).format('h:mm')} </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.date}  ${booking.data.startTime} -
+              ${booking.data.endTime} </td>
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>สถานที่ไป </td>
-              <td style='padding : 4px 0px ;  text-align :center ;'>${d.place} ${d.province} </td>
+              <td style='padding : 4px 0px ;  text-align :center ;'>${booking.data.destination} ${booking.data.destProvince} </td>
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>เหตุผล </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${d.purpos} </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.reason} </td>
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>รายละเอียดอื่น ๆ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${d.other_purpos || '-'} </td>
+              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.comment || '-'} </td>
+          </tr>
+    </table>
+    <br>
+    <table align='center' width="100%" border="0" cellspacing="0" cellpadding="0" >
+    <tr style='margin-top : 8px ;'>
+      <td>
+        <table align='center' border="0" cellspacing="0" cellpadding="0">
+          <tr>
+            <td align="center" style="border: 1px solid #1D366D; border-radius: 8px;" bgcolor="#1D366D">
+            <a href="${path}/approve/${booking.data.id}/${booking.data.uuid}" target="_blank" style="font-size: 16px; font-family: Bai Jamjuree; color: #ffffff; text-decoration: none; text-decoration: none;border-radius: 8px; padding: 12px 18px; border: 1px solid #1D366D; display: inline-block;">APPROVE</a>
+            </td>
           </tr>
         </table>
       </td>
-      
-  </tr>
+    </tr>
+  </table>
+    </td>
+    </tr>
+
   <tr>
       <td  style="   
                  background : #1D366D   ;

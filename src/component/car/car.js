@@ -303,7 +303,8 @@ const ManageDriver = () => {
                     <div className='person' style={{ textAlign: "center" }}>
 
                         <img style={{ width: '183px', height: '183px' }}
-                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData && carState.carData.plateNo ? carState.carData.picture[carState.carData.picture.length - 1]
+                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData && carState.carData.plateNo 
+                                ? carState.carData.picture && carState.carData.picture[carState.carData.picture.length - 1]
                                 ? `http://10.10.10.227:1337${carState.carData.picture[carState.carData.picture.length - 1].url}`
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'

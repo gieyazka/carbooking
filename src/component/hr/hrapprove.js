@@ -23,7 +23,7 @@ import Swal from 'sweetalert2'
 // import statusdriver2 from '../asset/statusdriver2.png'
 
 import filer from '../asset/filer.png'
-import { getBooking, handleHrApprove } from '../util/index'
+import { getBookingHr, handleHrApprove } from '../util/index'
 
 const Hrapprove = () => {
     const TestBtn = Button
@@ -91,7 +91,7 @@ const Hrapprove = () => {
                 const id = res.id
                 let name = null
                 await handleHrApprove(res.id, status).then(async () => {
-                    await getBooking().then(async data => {
+                    await getBookingHr().then(async data => {
                         data.map(booking => {
 
                             if (booking.id == id) {
@@ -131,7 +131,7 @@ const Hrapprove = () => {
                 const id = res.id
                 let name = null
                 await handleHrApprove(res.id, status).then(async () => {
-                    await getBooking().then(async data => {
+                    await getBookingHr().then(async data => {
                         data.map(booking => {
 
                             if (booking.id == id) {
@@ -287,7 +287,7 @@ const Hrapprove = () => {
     const [count, setCount] = useState(0)
     React.useMemo(async () => {
         const bookingControl = async () => {
-            setBookingData(await getBooking().then(async res => {
+            setBookingData(await getBookingHr().then(async res => {
                 let countData = 0
                 res.map(data => {
                     if (data.hrApprove == null) {

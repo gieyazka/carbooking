@@ -131,7 +131,7 @@ const ManageDriver = () => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         await addDrivers(driverstate.driverData).then(async (res) => {
-                            console.log(res);
+                            // console.log(res);
                             if (res.status) {
                                 setDriverstate({
                                     ...driverstate, allDriver: res.driver
@@ -335,7 +335,7 @@ const ManageDriver = () => {
             })
         }
     };
-    console.log(driverstate);
+    // console.log(driverstate);
     const [form] = Form.useForm();
     return (
         <div>

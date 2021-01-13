@@ -31,7 +31,6 @@ const Login = () => {
     }
     // console.log(data)
     let history = useHistory();
-
     const onLogin = (e) => {
         e.preventDefault();
         loginCheck(data.username, data.password).then(res => {
