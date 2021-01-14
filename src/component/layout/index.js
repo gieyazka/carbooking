@@ -72,7 +72,7 @@ const AppLayout = () => {
 
         <Layout >
             <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
-                <div className="logo" />
+                <div className="logo" style={{fontSize : '1.5em',textAlign : 'center' ,width : 'auto' ,color : '#FFF'}}>  Car Booking </div>
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<FormOutlined />}>
                         Request form<Link to="/user" />

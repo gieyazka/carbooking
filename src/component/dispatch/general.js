@@ -728,7 +728,7 @@ const General = () => {
                             <div style={{ position: 'relative' }}>
                                 <div style={{ textAlign: 'right', marginBottom: '4px' }}>
                                     <span style={{ cursor: 'pointer', padding: '8px', textAlign: 'right' }} >
-                                        <button onClick={() => { toggleSidebar() }} style={{ padding: '8px 16px', fontSize: '1.3em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                                        <button onClick={() => { toggleSidebar() }} style={{ cursor: 'pointer', padding: '8px 16px', fontSize: '1.3em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                                             <img src={filer} />กรอง</button>
                                     </span>
                                 </div>
