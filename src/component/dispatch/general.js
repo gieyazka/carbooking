@@ -29,7 +29,7 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { addTrips, getBooking, getBookingDispatch,sendEmail } from '../util/index'
+import { addTrips, getBooking, getBookingDispatch, sendEmail } from '../util/index'
 const RequestCar = ({ filerBooking }) => {
     // console.log(filerBooking);
     const [state, setState] = React.useContext(DataContext);
@@ -275,7 +275,7 @@ const Car = ({ testt }) => {
         let trips = data
         data.map((d, index) => {
             if (id == d.destCarId) {
-            // console.log(d);
+                // console.log(d);
                 delete d.destCarId
                 // console.log(d);
                 clearTrips.push(d)
@@ -302,7 +302,6 @@ const Car = ({ testt }) => {
         data.map(async (d, index) => {
             if (state.selectCar) {
                 for (const nameDriver of state.selectCar) {
-                    console.log(nameDriver);
                     if (nameDriver.carId == d.destCarId) {
                         driverName = nameDriver.value
                     }
@@ -323,13 +322,34 @@ const Car = ({ testt }) => {
                 console.log(insertData);
                 await addTrips(insertData, bookingId).then(async res => {
                     // console.log(res);
-                    let newTrip = res, newBooking
-
+                    let newTrip = res, newBooking, countData = 0
                     await getBookingDispatch().then(d => {
+
+                        d.map(data => {
+                            countData += 1
+                        })
+
                         newBooking = d
                     })
-                    console.log(newTrip, newBooking)
-                    setState({ ...state, trips: newTrip, booking: newBooking })
+
+
+                    let clearTrips = state.booking
+                    // let trips = data
+                    data.map((d, index) => {
+                        console.log(d.destCarId , carData.id);
+                        if (d.destCarId && d.destCarId != carData.id) {
+                            console.log(d);
+                            // delete d.destCarId
+                            // console.log(d);
+                            newTrip.push(d)
+                        }
+                    })
+                    console.log(newTrip);
+      
+
+
+                    setState({ ...state, trips: newTrip, booking: clearTrips, count: countData })
+                    // setState({ ...state, trips: newTrip, booking: newBooking , count: countData })
                     Swal.fire({
 
                         icon: 'success',
@@ -419,8 +439,8 @@ const Car = ({ testt }) => {
                                                                     {...provided.draggableProps}
                                                                 >
                                                                     <div className='font' style={{ position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
-                                                                    {data.destCarId ?  <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-                                                              : null }  <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
+                                                                        {data.destCarId ? <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
+                                                                            : null}  <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
                                                                         <p>{data.booking && data.booking.startTime || data.startTime} - {data.booking && data.booking.endTime || data.endTime}</p>
                                                                     </div>
 
@@ -602,7 +622,7 @@ const General = () => {
     const { Option } = Select;
     const filterBooking = (dataFilter, filter) => {
         // console.log(dataFilter, filter);
-       
+
         if (filter == 'Company') {
             setFilter({ ...filerBooking, search: true, company: dataFilter })
         } else if (filter == 'Department') {

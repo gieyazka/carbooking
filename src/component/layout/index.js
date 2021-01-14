@@ -9,13 +9,15 @@ import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../login'
 import { Layout, Menu, Select } from 'antd';
-import { Route, Link, useLocation, useHistory, Redirect } from "react-router-dom";
+import { Route, Link, useLocation, useHistory, Redirect,Switch } from "react-router-dom";
 import {
+    FormOutlined,
+    SelectOutlined,
     MenuUnfoldOutlined,
     MenuFoldOutlined,
     UserOutlined,
-    VideoCameraOutlined,
-    UploadOutlined,
+    FolderViewOutlined,
+    SettingOutlined,
 } from '@ant-design/icons';
 import { DataContext } from "../store/store"
 
@@ -49,16 +51,21 @@ const AppLayout = () => {
         sessionStorage.clear();
         history.push('/login')
     }
-    // const [loginState, setLogin] = useState()
+    const [loginState, setLogin] = useState()
+
+
     React.useMemo(() => {
         const loginData = JSON.parse(sessionStorage.getItem('user'));
-        // setLogin(loginData);
+        setLogin(loginData);
         if (!loginData) {
             sessionStorage.clear();
             history.push('/login')
         }
     }, [])
-    // console.log(loginState);
+    console.log(loginState);
+    // console.log(loginData.role);
+
+    // console.log(JSON.parse(sessionStorage.getItem('user')))
 
     return (
 
@@ -67,24 +74,24 @@ const AppLayout = () => {
             <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
                 <div className="logo" />
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
-                    <Menu.Item key="requestform" icon={<UserOutlined />}>
+                    <Menu.Item key="requestform" icon={<FormOutlined />}>
                         Request form<Link to="/user" />
                     </Menu.Item>
-                    <Menu.Item key="dispatch" icon={<VideoCameraOutlined />}>
+                    {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="dispatch" icon={<SelectOutlined />}>
                         dispatch<Link to="/user/dispatch" />
-                    </Menu.Item>
-                    <Menu.Item key="view" icon={<VideoCameraOutlined />}>
+                    </Menu.Item> : null}
+                    {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="view" icon={<FolderViewOutlined />}>
                         View Job<Link to="/user/view" />
-                    </Menu.Item>
-                    <Menu.Item key="he" icon={<UploadOutlined />}>
+                    </Menu.Item> : null}
+                    {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Menu.Item key="he" icon={<SettingOutlined />}>
                         Hr Approve<Link to="/user/hr" />
-                    </Menu.Item>
-                    <Menu.Item key="driver" icon={<UploadOutlined />}>
+                    </Menu.Item> : null}
+                    {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="driver" icon={<SettingOutlined />}>
                         Manage driver<Link to="/user/driver" />
-                    </Menu.Item>
-                    <Menu.Item key="car" icon={<UploadOutlined />}>
+                    </Menu.Item> : null}
+                    {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="car" icon={<SettingOutlined />}>
                         Manage car<Link to="/user/car" />
-                    </Menu.Item>
+                    </Menu.Item> : null}
                 </Menu>
             </Sider>
             <Layout className="site-layout" style={{ position: 'relative' }}>
@@ -104,13 +111,17 @@ const AppLayout = () => {
                 >
 
                     {/* <Route exact path="/" component={Dashboard} /> */}
-                    <Route path="/user/view" component={View} />
-                    <Route path="/user/dispatch" component={Dispatch} />
-                    <Route path="/user/hr" component={Hrapprove} />
-                    <Route path="/user/driver" component={ManageDriver} />
-                    <Route path="/user/car" component={Car} />
-                    <Route exact path="/user" component={Formrequest} />
 
+                    {/* <Route path="/user/view" component={View} /> */}
+                    <Switch>
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/view" component={View} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/dispatch" component={Dispatch} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/driver" component={ManageDriver} /> : null}
+                        {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/user/hr" component={Hrapprove} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/car" component={Car} /> : null}
+                        <Route exact path="/user" component={Formrequest} />
+                        <Route  path="*" component={Formrequest} />
+                    </Switch>
                     {/* <Formrequest /> */}
                 </Content>
             </Layout>

@@ -35,11 +35,17 @@ const App = () => {
     }
 
     const showData = (d) => {
-        // console.log(d);
-        setModal({ ...modal, open: true, booking: d.booking })
+        // console.log(d.driver.name);
+        if(!d.driver){
+            setModal({ ...modal, open: true, booking: d.booking  })
+
+        }else{
+        setModal({ ...modal, open: true, booking: d.booking ,driver : d.driver.name })
+
+        }
 
     }
-    // console.log(modal);
+    console.log(modal);
     function useOutsideAlerter(ref) {
         useEffect(() => {
             /**
@@ -200,7 +206,7 @@ const App = () => {
                             <div style={{ position: 'relative' }}>
                                 <img style={{ height: '16px', width: '16px' }} src={countRequest} /> {count} รายการ
                                  <span style={{ padding: '8px' }} >
-                                    <button onClick={() => { toggleSidebar() }} style={{ padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                                    <button onClick={() => { toggleSidebar() }} style={{ cursor : 'pointer' ,padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                                         <img src={filer} />กรอง</button>
                                 </span>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
@@ -360,22 +366,22 @@ const App = () => {
                                             <p className='carfont' style={{ paddingTop: '2px' }}> บย-1568 ชลบุรี</p>
                                         </div>
                                     </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'>
-                                        <div >
-                                            <p className='carfont text'> คนขับรถ </p>
+                                    {/* <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'> */}
+                                        {/* <div > */}
+                                            {/* <p className='carfont text'> คนขับรถ </p> */}
 
-                                            <p className='carfont text'>กี้เอง <br /> 0955120247</p>
+                                            {/* <p className='carfont text'>กี้เอง <br /> 0955120247</p> */}
                                             {/* <p className='carfont text'></p> */}
 
 
-                                        </div>
-                                    </Col>
-                                    <Col xs={{ span: 24 }} sm={{ span: 14 }} >
+                                        {/* </div> */}
+                                    {/* </Col> */}
+                                    <Col xs={{ span: 24 }} sm={{ span: 19 }} >
                                         <div className='Scroll'>
                                             {/* <div> */}
 
                                             <Row >
-                                                {state.trips.map((d, index) =>
+                                                {state.trips ? state.trips.map((d, index) =>
 
                                                     d.car && d.car.id == res.id
                                                         && d.booking.company == filerBooking.company  && d.car.id == res.id
@@ -386,7 +392,7 @@ const App = () => {
                                                         
                                                         ?
                                                         <Col key={d.id} className='jobView'>
-                                                            <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                            <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
                                                                 <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                 <p>{d.booking.startTime} - {d.booking.endTime}</p>
                                                             </div>
@@ -396,7 +402,7 @@ const App = () => {
 
                                                         filerBooking.search == false && d.car && d.car.id == res.id ?
                                                             <Col key={d.id} className='jobView'>
-                                                                <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
                                                                     <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                     <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
@@ -410,7 +416,7 @@ const App = () => {
 
                                                                 || filerBooking.reason == 'Other' && d.car.id == res.id && d.booking.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && d.booking.reason != 'ส่งของ' && d.booking.reason != 'รับ - ส่งแขก' && d.booking.reason != 'ติดต่อลูกค้า'
                                                                 ? <Col key={d.id} className='jobView'>
-                                                                    <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '184px', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                    <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
                                                                         <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                         <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
@@ -418,7 +424,7 @@ const App = () => {
 
                                                                 </Col> : null
 
-                                                )}
+                                                ) : null}
 
                                             </Row>
                                         </div>
@@ -440,7 +446,7 @@ const App = () => {
                 <Modal
                     visible={modal.open}
                     // onOk={handleOk}
-                    onCancel={() => { setModal({ ...modal, open: false }) }}
+                    onCancel={() => { setModal({ open: false }) }}
                     footer={[
 
                     ]}
@@ -448,7 +454,7 @@ const App = () => {
                     <div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
 
                         <span style={{ position: 'absolute', right: '10%' }}>   {modal.booking.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  &nbsp; คนขับรถ  </span>
-                        <img src={car} /> <span style={{ paddingLeft: '4%' }} > {modal.booking.carType}   </span>
+                        <img src={car} /> <span style={{ paddingLeft: '4%' }} > {modal.driver && modal.driver} {modal.booking.carType}   </span>
 
                     </div>
                     <div style={{ paddingTop: '4%' }} >

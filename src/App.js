@@ -6,6 +6,7 @@ import DataContextProvider from './component/store/store'
 
 import Login from './component/login'
 import Approve from './component/approve'
+import Flow from './component/flow'
 
 // import FromRequest from './component/form/formrequest'
 // import Genaral from './component/general'
@@ -21,6 +22,7 @@ function App() {
             <Route path="/login" component={Login} />
             <Route path="/approve/:id/:uuid" component={Approve} />
             <Route path="/user" component={Layout} />
+            <Route path="/flow" component={Flow} />
             <Route path="*" component={Layout} />
           </Switch>
         </Router>

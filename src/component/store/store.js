@@ -32,12 +32,9 @@ export default props => {
       i++
     }
     await getBookingDispatch().then(res => {
-
-
       res.map(data => {
         countData += 1
       })
-
       booking = res
     })
     await getCars().then(res => {

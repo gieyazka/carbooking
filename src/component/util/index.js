@@ -22,15 +22,15 @@ export const loginCheck = async (identifier, password) => {
     }).catch(err => { return { err: err } });
 }
 export const handleHrApprove = async (id, status) => {
-    console.log(id, status);
+    // console.log(id, status);
     if (status == false) {
         return await axios.put(`${bookingApi}/${id}`, {
             hrApprove: false
-        })
+        }).then(res=> res)
     } else {
         return await axios.put(`${bookingApi}/${id}`, {
             hrApprove: true
-        })
+        }).then(res=> res)
     }
 
 }
@@ -70,8 +70,8 @@ export const saveBooking = async (formData) => {
         needDriver: formData.driver,
         reason: formData.purpos,
         managerEmail: formData.manager_email,
-        comment: formData.comment || null ,
-        uuid : uuidv4()
+        comment: formData.comment || null,
+        uuid: uuidv4()
 
     }).then(async res => {
         await sendEmail(res)
@@ -122,12 +122,16 @@ export const getCarbyPlate = async (plate) => {
 export const addCars = async (carData) => {
     // console.log(carData);
     return await getCarbyPlate(carData.plateNo).then(async res => {
+        let newCarsImg = new File([carData.imgname], 'Cars', {
+            type: carData.imgname.type,
+            lastModified: carData.imgname.lastModified,
+        });
+
         if (res) {
-            // console.log(carData.imgname.name);
-            carData.imgname.name = "car"
-            const bodyFormData = new FormData();
+
+
             let formdata = new FormData()
-            formdata.append("files.picture", carData.imgname)
+            formdata.append("files.picture", newCarsImg)
             formdata.append("data", JSON.stringify({
                 active: true,
                 province: carData.province,
@@ -136,11 +140,11 @@ export const addCars = async (carData) => {
                 mileage: carData.mileage,
                 status: 'free'
             }))
-            // await axios.put(`${carApi}/${res.id}`, formdata)
+            await axios.put(`${carApi}/${res.id}`, formdata)
         } else {
-            const bodyFormData = new FormData();
+
             let formdata = new FormData()
-            formdata.append("files.picture", carData.imgname)
+            formdata.append("files.picture", newCarsImg)
             formdata.append("data", JSON.stringify({
                 plateNo: carData.plateNo,
                 province: carData.province,
@@ -159,9 +163,13 @@ export const addCars = async (carData) => {
 }
 export const editCars = async (carData) => {
     // console.log(carData.id);
+    let newCarsImg = new File([carData.imgname], 'Cars', {
+        type: carData.imgname.type,
+        lastModified: carData.imgname.lastModified,
+    });
 
     let formdata = new FormData()
-    formdata.append("files.picture", carData.imgname)
+    formdata.append("files.picture", newCarsImg)
     formdata.append("data", JSON.stringify({
         plateNo: carData.plateNo,
         province: carData.province,
@@ -206,8 +214,12 @@ export const getDrivers = async () => {
 }
 
 export const editDriver = async (d) => {
+    let newDriverImg = new File([d.imgname], 'Cars', {
+        type: d.imgname.type,
+        lastModified: d.imgname.lastModified,
+    });
     let formdata = new FormData()
-    formdata.append("files.picture", d.imgname)
+    formdata.append("files.picture", newDriverImg)
     formdata.append("data", JSON.stringify({
         name: d.name,
         lastname: d.lastname,
@@ -237,17 +249,13 @@ export const removeDriver = async (d) => {
 
 export const addDrivers = async (d) => {
     // console.log(d);
+    let newDriverImg = new File([d.imgname], 'Drivers', {
+        type: d.imgname.type,
+        lastModified: d.imgname.lastModified,
+    });
     let formdata = new FormData()
-    formdata.append("files.picture", d.imgname)
-    formdata.append("data", JSON.stringify({
-        name: d.name,
-        lastname: d.lastname,
-        status: 'free',
-        emp_id: d.emp_id,
-        tel: d.tel,
+    formdata.append("files.picture", newDriverImg)
 
-        // username: d.username
-    }))
     // console.log(d.emp_id);
     let idEmployee = null, oldRole
     await axios.get(`${employeeApi}?empID=${d.emp_id}`).then(async res => {
@@ -278,21 +286,63 @@ export const addDrivers = async (d) => {
     await axios.put(`${employeeApi}/${idEmployee}`, {
         custom_role: { ...oldRole }
     })
-    return await axios.post(`${driverApi}`, formdata).then(async res => {
+
+
+    // return await axios.post(`${driverApi}`, formdata).then(async res => {
+    //     return await getDrivers().then(data => {
+    //         Swal.fire({
+    //             icon: 'success',
+    //             title: 'บันทึกข้อมูลสำเร็จ',
+    //             showConfirmButton: false,
+    //             timer: 1500
+    //         })
+    //         return data
+    //     })
+    // })
+
+
+
+    return await getDriverbyempId(d.emp_id).then(async res => {
+      
+        if (res) {
+            formdata.append("data", JSON.stringify({
+                active: true,
+                name: d.name,
+                lastname: d.lastname,
+                status: 'free',
+                emp_id: d.emp_id,
+                tel: d.tel,
+                // username: d.username
+            }))
+            await axios.put(`${driverApi}/${res.id}`, formdata)
+        } else {
+            formdata.append("data", JSON.stringify({
+                name: d.name,
+                lastname: d.lastname,
+                status: 'free',
+                emp_id: d.emp_id,
+                tel: d.tel,
+
+                // username: d.username
+            }))
+            await axios.post(`${driverApi}`, formdata)
+        }
         return await getDrivers().then(data => {
-            Swal.fire({
-                icon: 'success',
-                title: 'บันทึกข้อมูลสำเร็จ',
-                showConfirmButton: false,
-                timer: 1500
-            })
             return data
         })
     })
-}
 
+
+
+}
+export const getDriverbyempId = async (id) => {
+    return await axios.get(`${driverApi}?emp_id=${id}`).then(res => {
+        // console.log(res.data[0]);
+        return res.data[0]
+    })
+}
 export const getBookingDispatch = async () => {
-    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch_null=true`).then(res => {
+    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=false`).then(res => {
 
         return res.data
     })

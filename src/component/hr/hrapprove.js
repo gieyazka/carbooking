@@ -90,7 +90,7 @@ const Hrapprove = () => {
                 const status = false
                 const id = res.id
                 let name = null
-                await handleHrApprove(res.id, status).then(async () => {
+                await handleHrApprove(res.id, status).then(async (d) => {
                     await getBookingHr().then(async data => {
                         data.map(booking => {
 
@@ -99,7 +99,7 @@ const Hrapprove = () => {
                             }
                         })
                         Swal.fire({
-                            text: `ไม่อนุมัติคำขอของ ${name} สำเร็จ`,
+                            text: `ไม่อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
                             // text: "You won't be able to revert this!",
                             icon: 'info',
                             showConfirmButton: false,
@@ -130,16 +130,20 @@ const Hrapprove = () => {
                 const status = true
                 const id = res.id
                 let name = null
-                await handleHrApprove(res.id, status).then(async () => {
+                await handleHrApprove(res.id, status).then(async (d) => {
                     await getBookingHr().then(async data => {
                         data.map(booking => {
 
                             if (booking.id == id) {
                                 name = booking.name
+                                // console.log( booking.name);
                             }
                         })
+                  
+                        // console.log(d);
+
                         Swal.fire({
-                            text: `อนุมัติคำขอของ ${name} สำเร็จ`,
+                            text: `อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
                             // text: "You won't be able to revert this!",
                             icon: 'success',
                             showConfirmButton: false,

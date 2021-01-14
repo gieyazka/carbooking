@@ -97,21 +97,18 @@ const FromRequest = () => {
     }
     console.log(formDropdown);
     const onFinish = async (values) => {
-        // console.log(values);
         if (values.purpos == 'Other') {
             values.purpos = values.other_purpos
         }
-
         values.mobile_phone = values.mobile_phone.replaceAll('-', '')
-        // console.log(values.purpos);
-        // console.log('Success:', values);
         const saveForm = await saveBooking(values).then(res => {
             Swal.fire({
-
                 icon: 'success',
                 title: 'บันทึกสำเร็จ',
                 showConfirmButton: false,
                 timer: 1500
+            }).then(() => {
+                form.resetFields()
             })
         })
     };
@@ -132,7 +129,6 @@ const FromRequest = () => {
     }, [formDropdown]);
     return (
         <div>
-
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
             <div className='margin fontForm'>
                 <Row justify='center'> <h2 style={{ marginTop: '8px', paddingTop: '8px', fontSize: '22px' }}>Car Booking</h2>  </Row>
