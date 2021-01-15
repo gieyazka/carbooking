@@ -262,12 +262,16 @@ color: rgba(0, 0, 0, 0.6);
     height: auto ;
 }
 .posGeneralBtn  {
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    flex-direction: column;
     /* margin-top : 50%; */
-    position: absolute ; 
-    top: 50% ;
-  
+    /* position: absolute ;  */
+    /* top: 50% ; */
+  height : 100%;
     /* left : 50% ; */
-    transform: translate(0%,-50%)  ;
+    /* transform: translate(0%,50%)  ; */
 }
 .Scroll {
     /* margin-top : 20px; */
