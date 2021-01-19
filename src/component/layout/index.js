@@ -5,6 +5,7 @@ import Dispatch from '../dispatch/general'
 import View from '../dispatch/view'
 import Hrapprove from '../hr/hrapprove'
 import ManageDriver from '../driver/managedriver'
+import Trip from '../driver/driverTrip'
 import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../login'
@@ -18,6 +19,7 @@ import {
     UserOutlined,
     FolderViewOutlined,
     SettingOutlined,
+    CarOutlined
 } from '@ant-design/icons';
 import { DataContext } from "../store/store"
 
@@ -62,7 +64,7 @@ const AppLayout = () => {
             history.push('/login')
         }
     }, [])
-    console.log(loginState);
+    // console.log(loginState);
     // console.log(loginData.role);
 
     // console.log(JSON.parse(sessionStorage.getItem('user')))
@@ -89,8 +91,13 @@ const AppLayout = () => {
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="driver" icon={<SettingOutlined />}>
                         Manage driver<Link to="/user/driver" />
                     </Menu.Item> : null}
-                    {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="car" icon={<SettingOutlined />}>
+                    {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="car" icon={<CarOutlined
+ />}>
                         Manage car<Link to="/user/car" />
+                    </Menu.Item> : null}
+                    {loginState && loginState.role == 'driver' || loginState && loginState.role == 'admin' ? <Menu.Item key="trip" icon={<CarOutlined
+ />}>
+                       Trips<Link to="/user/trip" />
                     </Menu.Item> : null}
                 </Menu>
             </Sider>
@@ -118,6 +125,7 @@ const AppLayout = () => {
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/dispatch" component={Dispatch} /> : null}
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/driver" component={ManageDriver} /> : null}
                         {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/user/hr" component={Hrapprove} /> : null}
+                        {loginState && loginState.role == 'driver' || loginState && loginState.role == 'admin' ? <Route path="/user/trip" component={Trip} /> : null}
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/car" component={Car} /> : null}
                         <Route exact path="/user" component={Formrequest} />
                         <Route  path="*" component={Formrequest} />

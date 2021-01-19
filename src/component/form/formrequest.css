@@ -2,7 +2,30 @@
     width: 16vw;
      height: 16vh ;
 }
-
+.driverCalendar {
+    position: relative;
+    margin: 16px 10vh ;
+    background: #1D366D ;
+    border-radius: 8px;
+}
+.rbc-day-bg{
+    background-color : #fff;
+}
+.rbc-header {
+    background-color: #FFF;
+    height:  50px;
+     position: relative;
+ 
+}
+.rbc-header > span {
+    font-family: Bai Jamjuree;
+    font-size: 18px;
+     position: absolute;
+    top: 50%;    
+    left: 50%;    
+    /* z-index: 5;                      */
+    transform: translate(-50%, -50%) ;
+}
 .swConfirm{
     font-family:  'Bai Jamjuree';
     background-color: #2CC84D;
@@ -322,6 +345,9 @@ color: rgba(0, 0, 0, 0.6);
 
 
 @media only screen and (max-width: 600px) {
+    .driverCalendar {
+        margin: 16px 8px ;
+    }
     .imgCar{
         width: 30vw;
          /* height: 24vh ; */

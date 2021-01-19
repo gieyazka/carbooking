@@ -363,7 +363,7 @@ const App = () => {
                                             <img src={res.picture[res.picture.length - 1] ? `http://10.10.10.227:1337${res.picture[res.picture.length - 1].url}` :
                                                 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                             } className='imgCar' style={{ width: 'auto' }} />
-                                            <p className='carfont' style={{ paddingTop: '2px' }}> บย-1568 ชลบุรี</p>
+                                            <p className='carfont' style={{ paddingTop: '2px' }}> {res.plateNo} {res.province}</p>
                                         </div>
                                     </Col>
                                     {/* <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'> */}

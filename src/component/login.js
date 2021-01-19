@@ -34,27 +34,26 @@ const Login = () => {
     const onLogin = (e) => {
         e.preventDefault();
         loginCheck(data.username, data.password).then(res => {
-           
+
             if (res.err) {
                 Swal.fire({
 
                     icon: 'error',
-                    title:  language == 'TH' ? 'เข้าสู้ระบบไม่สำเร็จ' : 'Login Failed',
-                    text :  language == 'TH' ? 'กรุณาตรวจสอบ username และ password' : 'Please check your username and password',
+                    title: language == 'TH' ? 'เข้าสู้ระบบไม่สำเร็จ' : 'Login Failed',
+                    text: language == 'TH' ? 'กรุณาตรวจสอบ username และ password' : 'Please check your username and password',
                     showConfirmButton: false,
                     timer: 1500
                 })
             } else {
-                console.log( res.data.user);
+
                 const user = {
                     username: res.data.user.username,
-                    company : res.data.user.company,
-
+                    company: res.data.user.company,
+                    emp_id: res.data.user.empID,
                     role: res.data.user.custom_role.car_role
                 }
                 sessionStorage.setItem('user', JSON.stringify(user));
                 Swal.fire({
-
                     icon: 'success',
                     title: language == 'TH' ? 'เข้าสู่ระบบสำเร็จ' : 'Login Success',
                     showConfirmButton: false,
@@ -69,7 +68,6 @@ const Login = () => {
     React.useMemo(() => {
         if (sessionStorage.getItem("user")) {
             history.push('/user')
-
         }
     }, [])
     function getWindowDimensions() {
@@ -98,7 +96,7 @@ const Login = () => {
         return (
 
             <div >
-     
+
                 <div >
                     <Row style={{ fontFamily: "Bai Jamjuree" }}>
                         <Col>
@@ -108,7 +106,7 @@ const Login = () => {
                                 <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} />
                             </div>
                         </Col>
-                        <div style={{ position : 'absolute' , right: '0' , backgroundColor: '#1D366D', height: '100vh', width: '25vw' }}></div>
+                        <div style={{ position: 'absolute', right: '0', backgroundColor: '#1D366D', height: '100vh', width: '25vw' }}></div>
 
                         <Card style={{ boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), -4px -4px 4px rgba(0, 0, 0, 0.05)', position: 'fixed', right: '12.5vw', top: '12vh', width: '24vw', paddingBottom: '20vh' }}>
                             <h1 style={{ textAlign: 'center', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
@@ -136,9 +134,9 @@ const Login = () => {
                                     iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                                 />
                                 <div style={{ marginTop: '24px', textAlign: 'right' }}>
-                                    <button type='button' onClick={()=>{window.open('https://ess.aapico.com/#/register')}} style={{ cursor : 'pointer', border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
+                                    <button type='button' onClick={() => { window.open('https://ess.aapico.com/#/register') }} style={{ cursor: 'pointer', border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
 
-                                    <button type="submit" onClick={(e) => onLogin(e)} style={{  cursor : 'pointer' ,marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
+                                    <button type="submit" onClick={(e) => onLogin(e)} style={{ cursor: 'pointer', marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
 
                                 </div>
                             </form>

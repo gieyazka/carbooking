@@ -42,7 +42,7 @@ const ManageDriver = () => {
     //edit img driver
 
     const handleClick = event => {
-        console.log('clickedit');
+        // console.log('clickedit');
         hiddenFileInput.current.click();
     };
     //

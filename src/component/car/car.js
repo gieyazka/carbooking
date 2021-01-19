@@ -6,7 +6,7 @@ import editdriver from '../asset/editdriver.png'
 import Swal from 'sweetalert2';
 import countRequest from '../asset/countRequest.png'
 import { IconMap } from 'antd/lib/result';
-import { addCars, getCars, editCars ,removeCars} from '../util/index'
+import { addCars, getCars, editCars, removeCars } from '../util/index'
 
 const ManageDriver = () => {
     const [state, setState] = React.useContext(DataContext);
@@ -214,7 +214,7 @@ const ManageDriver = () => {
             cancelButtonText: 'ไม่บันทึก',
             reverseButtons: true,
 
-        }).then(async(result) => {
+        }).then(async (result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
                 await removeCars(carState.carData).then(async res => {
@@ -303,10 +303,10 @@ const ManageDriver = () => {
                     <div className='person' style={{ textAlign: "center" }}>
 
                         <img style={{ width: '183px', height: '183px' }}
-                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData && carState.carData.plateNo 
+                            src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData && carState.carData.plateNo
                                 ? carState.carData.picture && carState.carData.picture[carState.carData.picture.length - 1]
-                                ? `http://10.10.10.227:1337${carState.carData.picture[carState.carData.picture.length - 1].url}`
-                                : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
+                                    ? `http://10.10.10.227:1337${carState.carData.picture[carState.carData.picture.length - 1].url}`
+                                    : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'} />
                         <div className='hoverCar'  >
@@ -344,10 +344,7 @@ const ManageDriver = () => {
                                         option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
                                     }
                                 >
-
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="tom">Tom</Option>
+                                    {state.typeCar}
                                 </Select>
                                 <h3 style={{ fontWeight: 'bold' }}>เลขไมล์รถ</h3>
                                 <Input name='mileage' placeholder='เลขไมล์รถ' style={{ width: '100%', backgroundColor: '#EDEDED' }} bordered={false} onChange={(e) => { handleCarData(e) }}
@@ -379,9 +376,7 @@ const ManageDriver = () => {
                                     }
                                 >
 
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-                                    <Option value="tom">Tom</Option>
+{state.brandCar}
                                 </Select>
                             </Col>
                             {/* <Col span={4}></Col> */}

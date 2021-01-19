@@ -4,11 +4,11 @@ import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-
 import './formrequest.css'
 import dataProvince from '../../province.json'
 import moment from 'moment';
-import { saveBooking, sendEmail, getDepartment, getManagerEmail } from '../util/index'
+import { saveBooking, sendEmail, getDepartment, getManagerEmail, getEmployeeById } from '../util/index'
 import Swal from 'sweetalert2'
 import { DataContext } from "../store/store"
 const FromRequest = () => {
-
+    const { Search } = Input;
     const [form] = Form.useForm();
     const [state, setState] = React.useContext(DataContext);
     const { TextArea } = Input;
@@ -23,32 +23,32 @@ const FromRequest = () => {
 
 
     // const [loginData, setLoginData] = useState({ user: 'test' })
-    React.useMemo(async () => {
-        let arr = []
-        var i = 0
+    // React.useMemo(async () => {
+    //     let arr = []
+    //     var i = 0
 
-        // if (sessionStorage.getItem('user')) {
-        //     setLoginData(JSON.parse(sessionStorage.getItem('user')))
+    //     // if (sessionStorage.getItem('user')) {
+    //     //     setLoginData(JSON.parse(sessionStorage.getItem('user')))
 
-        // }
-        // console.log(loginData);
-        await getDepartment(JSON.parse(sessionStorage.getItem('user')).company).then(r => {
-            r.map(res => {
-                // console.log(res);
-                arr.push(<Option key={i} value={res}>{res}</Option>);
-                i++
-            })
+    //     // }
+    //     // console.log(loginData);
+    //     await getDepartment(JSON.parse(sessionStorage.getItem('user')).company).then(r => {
+    //         r.map(res => {
+    //             // console.log(res);
+    //             arr.push(<Option key={i} value={res}>{res}</Option>);
+    //             i++
+    //         })
 
-        })
+    //     })
 
-        // console.log(arr);
-        setFormDropdown({
-            ...formDropdown, department: arr
-        })
-        // setState({
-        //     ...formDropdown, province: provinceArray
-        // })
-    }, [])
+    //     // console.log(arr);
+    //     setFormDropdown({
+    //         ...formDropdown, department: arr
+    //     })
+    //     // setState({
+    //     //     ...formDropdown, province: provinceArray
+    //     // })
+    // }, [])
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -83,19 +83,8 @@ const FromRequest = () => {
     function onChange(date, dateString) {
         console.log(date, dateString);
     }
-    const handleCompanyChange = async (department) => {
-        // console.log(JSON.parse(sessionStorage.getItem('user')).company);
-        // console.log(department);
-        await getManagerEmail(JSON.parse(sessionStorage.getItem('user')).company, department)
-            .then(res => {
-                // console.log(res[0].Approver)
-                let managerName = res[0].Approver.split("|");
-                // console.log(`${managerName[0]}@aapico.com`);
 
-                setFormDropdown({ ...formDropdown, managerEmail: `${managerName[0]}@aapico.com` })
-            })
-    }
-    console.log(formDropdown);
+    // console.log(formDropdown);
     const onFinish = async (values) => {
         if (values.purpos == 'Other') {
             values.purpos = values.other_purpos
@@ -121,7 +110,81 @@ const FromRequest = () => {
 
         return current && current < moment().subtract('1', 'days').endOf('day');
     }
+    const handleCompanyChange = async (department) => {
+        // console.log(JSON.parse(sessionStorage.getItem('user')).company);
+        // console.log(department);
+        await getManagerEmail(formDropdown.company, department)
+            .then(res => {
+                // console.log(res[0].Approver)
+                console.log(res);
+                if (res[0]) {
+                    let managerName = res[0].Approver.split("|");
+                    setFormDropdown({ ...formDropdown, managerEmail: `${managerName[0]}@aapico.com` })
 
+                }
+                // console.log(`${managerName[0]}@aapico.com`);
+
+            })
+    }
+    const onSearch = async (value) => {
+        let department = null
+        await getEmployeeById(value).then(async res => {
+            // console.log(res);
+            if (!res) {
+                return
+            }
+            if (res.organize == null) {
+                department = res.group_en_desc
+            } else {
+                department = res.organize.department
+            }
+            let empDetail = {
+                emp_id: res.emp_id,
+                department: department,
+                company: res.company,
+                name: res.eng_name
+            }
+            let arr = []
+            var i = 0
+            await getDepartment(empDetail.company).then(r => {
+                r.map(res => {
+                    // console.log(res);
+                    arr.push(<Option key={i} value={res}>{res}</Option>);
+                    i++
+                })
+
+            })
+            setFormDropdown({
+                ...formDropdown, department: arr, company: empDetail.company
+            })
+            await getManagerEmail(empDetail.company, empDetail.department)
+                .then(d => {
+                    console.log(d)
+                    if (d[0]) {
+                        let managerName = d[0].Approver.split("|");
+
+                        empDetail = { ...empDetail, managerEmail: `${managerName[0]}@aapico.com` }
+                        console.log(empDetail);
+                        form.setFieldsValue({
+                            company: empDetail.company,
+                            department: empDetail.department,
+                            manager_email: empDetail.managerEmail,
+                            fullname: empDetail.name
+                        });
+                    } else {
+                        form.setFieldsValue({
+                            company: empDetail.company,
+                            department: empDetail.department,
+                            fullname: empDetail.name,
+                            manager_email: null
+                        });
+                    }
+                })
+
+
+        }).catch(err => err)
+
+    }
     React.useEffect(() => {
         form.setFieldsValue({
             manager_email: formDropdown.managerEmail
@@ -133,12 +196,24 @@ const FromRequest = () => {
             <div className='margin fontForm'>
                 <Row justify='center'> <h2 style={{ marginTop: '8px', paddingTop: '8px', fontSize: '22px' }}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
-                    initialValues={{ driver: true, company: JSON.parse(sessionStorage.getItem('user')).company || 'null' }}
+                    initialValues={{ driver: true }}
                 >
                     {/* <Row gutter={[24,12]} justify='center'> */}
                     <Row gutter={{ xs: 16, sm: 24 }} justify='center'>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
-                        <Col xs={{ span: 24 }} sm={{ span: 16 }} >
+                        <Col xs={{ span: 24 }} sm={{ span: 8 }} >
+                            <p>รหัสพนักงาน</p>
+                            <Form.Item
+                                name="emp_id"
+                                rules={[
+                                    {
+                                        required: true,
+                                        message: 'กรุณาเลือกบริษัท',
+                                    },]} >
+                                <Search placeholder="รหัสพนักงาน (Employee Id)" onSearch={(value) => { onSearch(value) }} enterButton />
+                            </Form.Item>
+                        </Col>
+                        <Col xs={{ span: 24 }} sm={{ span: 8 }} >
                             <p>บริษัท (Company)</p>
                             <Form.Item
                                 name="company"
@@ -147,36 +222,8 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'กรุณาเลือกบริษัท',
                                     },]} >
-                                <Input readOnly={true} placeholder="บริษัท (Company)" style={{ width: '100%' }} placeholder="ชื่อ - นามสกุล (Full Name)" />
-                                {/* <Select
-                                    showSearch
-                                    style={{ width: '100%' }}
-                                    placeholder="บริษัท (Company)"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) =>
-                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    }
-                                >
-                                    <Option value="AH">AH</Option>
-                                    <Option value="AHP">AHP</Option>
-                                    <Option value="AITS">AITS</Option>
-                                    <Option value="APR">APR</Option>
-                                    <Option value="AA">AA</Option>
-                                    <Option value="AL">AL</Option>
-                                    <Option value="ASP">ASP</Option>
-                                    <Option value="AHA">AHA</Option>
-                                    <Option value="AK">AK</Option>
-                                    <Option value="AMI">AMI</Option>
-                                    <Option value="AHT">AHT</Option>
-                                    <Option value="AM GROUP">AM GROUP</Option>
-                                    <Option value="APB">APB</Option>
-                                    <Option value="TSR">TSR</Option>
-                                    <Option value="AMM">AMM</Option>
-                                    <Option value="NESM">NESM</Option>
-                                    <Option value="NESC">NESC</Option>
-                                    <Option value="AF APC">AF APC</Option>
+                                <Input readOnly={true} placeholder="บริษัท (Company)" style={{ width: '100%' }} />
 
-                                </Select> */}
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
@@ -193,7 +240,7 @@ const FromRequest = () => {
                                         // pattern: new RegExp(/(^[A-Za-zก-๙.]{3,16})([ ]{0,1})([A-Za-zก-๙]{3,16})?([ ]{0,1})?([,A-Za-zก-๙]{3,16})?([ ]{0,1})?([,-Za-zก-๙]{3,16})/),
                                         message: 'pattern invalid',
                                     }]} >
-                                <Input placeholder="ชื่อ - นามสกุล (Full Name)" />
+                                <Input readOnly={true} placeholder="ชื่อ - นามสกุล (Full Name)" />
                             </Form.Item>
                             <p className='fontForm'>โทรศัพท์มือถือ (Mobile Phone Number)</p>
                             <Form.Item
@@ -207,7 +254,7 @@ const FromRequest = () => {
                                         pattern: new RegExp(/(^\d{3})([-]{1})(\d{3})([-]{1})(\d{4})/g),
                                         message: 'pattern invalid'
                                     }]} >
-                                <Input onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
+                                <Input    autoComplete="none" onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
                             </Form.Item>
                             <p className='fontForm'>วันที่ต้องการ (Date Required)</p>
                             <Form.Item
@@ -235,10 +282,7 @@ const FromRequest = () => {
                                     },]} >
 
                                 <Select placeholder="ประเภทรถ (Type of car)" style={{ width: '100%' }} onChange={handleChange} >
-                                    <Option value="jack">Jack</Option>
-                                    <Option value="lucy">Lucy</Option>
-
-                                    <Option value="Yiminghe">yiminghe</Option>
+                                    {state.typeCar}
                                 </Select>
 
                             </Form.Item>
@@ -264,11 +308,11 @@ const FromRequest = () => {
                                 name="department"
                                 rules={[
                                     {
-                                        required: true, message: 'กรุณาเลือกแผนก',
+                                        required: true, message: 'กรุณากรอกแผนก',
                                     },]} >
-                                {/* <Input placeholder="เลือกแผนก" style={{ width: '100%' }} onChange={handleChange} > */}
+                                {/* <Input readOnly={true} placeholder="แผนก (Department)" style={{ width: '100%' }} /> */}
 
-                                {/* </Input> */}
+
                                 <Select
                                     showSearch
                                     onChange={(e) => handleCompanyChange(e)}
@@ -291,7 +335,7 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'require',
                                     },]} >
-                                <Input placeholder="โทรศัพท์ภายใน (Telephone Number)" />
+                                <Input    autoComplete="none" placeholder="โทรศัพท์ภายใน (Telephone Number)" />
                             </Form.Item>
                             <p className='fontForm'>เวลา (Time)</p>
                             <Form.Item

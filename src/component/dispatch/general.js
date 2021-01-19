@@ -307,10 +307,11 @@ const Car = ({ testt }) => {
                     }
                 }
             }
+            // console.log(d);
             // console.log(driverName);
             if (carData.id == d.destCarId) {
                 const insertData = {
-                    user: d.user,
+                    user: d.emp_id,
                     status: 'free',
                     car: parseInt(d.destCarId),
                     driver: driverName,
@@ -336,7 +337,7 @@ const Car = ({ testt }) => {
                     let clearTrips = state.booking
                     // let trips = data
                     data.map((d, index) => {
-                        console.log(d.destCarId , carData.id);
+                        console.log(d.destCarId, carData.id);
                         if (d.destCarId && d.destCarId != carData.id) {
                             console.log(d);
                             // delete d.destCarId
@@ -345,7 +346,7 @@ const Car = ({ testt }) => {
                         }
                     })
                     console.log(newTrip);
-      
+
 
 
                     setState({ ...state, trips: newTrip, booking: clearTrips, count: countData })

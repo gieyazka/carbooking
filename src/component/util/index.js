@@ -26,11 +26,11 @@ export const handleHrApprove = async (id, status) => {
     if (status == false) {
         return await axios.put(`${bookingApi}/${id}`, {
             hrApprove: false
-        }).then(res=> res)
+        }).then(res => res)
     } else {
         return await axios.put(`${bookingApi}/${id}`, {
             hrApprove: true
-        }).then(res=> res)
+        }).then(res => res)
     }
 
 }
@@ -54,6 +54,7 @@ export const saveBooking = async (formData) => {
     const loginData = JSON.parse(sessionStorage.getItem('user'));
 
     await axios.post(`${bookingApi}`, {
+        emp_id: formData.emp_id,
         user: loginData.username,
         name: formData.fullname,
         department: formData.department,
@@ -80,6 +81,12 @@ export const saveBooking = async (formData) => {
 }
 export const getTrips = async () => {
     return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+        // console.log(res);
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
+export const getAllTrips = async () => {
+    return await axios.get(`${tripApi}`).then(res => {
         // console.log(res);
         return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
@@ -246,7 +253,12 @@ export const removeDriver = async (d) => {
 
     })
 }
+export const getEmployeeById = async (id) => {
+    return await axios.get(`http://10.10.10.227:1337/employees?emp_id=${id}`).then(async res => {
+        return res.data[0]
 
+    }).catch(err => err)
+}
 export const addDrivers = async (d) => {
     // console.log(d);
     let newDriverImg = new File([d.imgname], 'Drivers', {
@@ -259,7 +271,7 @@ export const addDrivers = async (d) => {
     // console.log(d.emp_id);
     let idEmployee = null, oldRole
     await axios.get(`${employeeApi}?empID=${d.emp_id}`).then(async res => {
-        console.log(res.data);
+        // console.log(res.data);
         if (res.data[0]) {
             idEmployee = res.data[0].id
 
@@ -270,7 +282,7 @@ export const addDrivers = async (d) => {
             }
         }
     })
-    console.log(oldRole);
+    // console.log(oldRole);
     if (idEmployee == null) {
         Swal.fire({
 
@@ -287,7 +299,6 @@ export const addDrivers = async (d) => {
         custom_role: { ...oldRole }
     })
 
-
     // return await axios.post(`${driverApi}`, formdata).then(async res => {
     //     return await getDrivers().then(data => {
     //         Swal.fire({
@@ -299,11 +310,8 @@ export const addDrivers = async (d) => {
     //         return data
     //     })
     // })
-
-
-
     return await getDriverbyempId(d.emp_id).then(async res => {
-      
+
         if (res) {
             formdata.append("data", JSON.stringify({
                 active: true,
@@ -357,7 +365,6 @@ export const getBookingDispatch = async () => {
 
 
 
-
 export const getDepartment = (e) => {
     var headers = new Headers();
     headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -375,14 +382,10 @@ export const getDepartment = (e) => {
 
     return fetch("https://ess.aapico.com/flow/department", requestOptions)
         .then(response => {
-            // console.log(response);
             return response.json()
         })
         .then(result => {
-            // console.log(result);
             return result
-            // setValue("department", null)
-            // setDepartments(result)
         })
         .catch(error => console.log('error', error));
 }
@@ -426,7 +429,7 @@ export const sendEmail = async (booking) => {
     // myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     const path = window.location.origin;
     var urlencoded = new URLSearchParams();
-    // urlencoded.append("form", "sudarat.t@aapico.com");
+    urlencoded.append("form", "sudarat.t@aapico.com");
     urlencoded.append("formdetail", "Carbooking System");
     urlencoded.append("to", "pokkate.e@aapico.com");
     urlencoded.append("cc", "");

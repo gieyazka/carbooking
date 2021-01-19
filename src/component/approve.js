@@ -6,7 +6,7 @@ import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { loginCheck, checkBookingById, updateManangerStatus } from './util/index.js'
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom";
 import Swal from 'sweetalert2'
-const Login = () => {
+const Approve = () => {
 
     const [screen, setScreen] = useState(null)
     // let params = new URLSearchParams(document.location.search.substring(1));
@@ -19,7 +19,7 @@ const Login = () => {
     React.useMemo(async () => {
 
         await checkBookingById(id).then(async res => {
-            console.log(res.data[0],uuid);
+            console.log(res.data[0], uuid);
             if (res.data[0].uuid == uuid) {
                 await updateManangerStatus(id).then(d => {
                     console.log(d.data);
@@ -42,7 +42,7 @@ const Login = () => {
                         // timer: 1500
                     })
                 })
-            }else{
+            } else {
                 window.open(window.location.origin, "_self");
                 // window.close();
             }
@@ -92,4 +92,4 @@ const Login = () => {
 }
 
 
-export default Login
+export default Approve
