@@ -34,7 +34,6 @@ const Login = () => {
     const onLogin = (e) => {
         e.preventDefault();
         loginCheck(data.username, data.password).then(res => {
-
             if (res.err) {
                 Swal.fire({
 
@@ -45,12 +44,23 @@ const Login = () => {
                     timer: 1500
                 })
             } else {
+                // console.log(19980513);
+                let dataUser
+                console.log(res.data.user.custom_role);
+                if (res.data.user.custom_role == null) {
+                    dataUser = 'user'
 
+                } else if (res.data.user.custom_role.car_role == null) {
+                    dataUser = 'user'
+                } else {
+                    dataUser = res.data.user.custom_role.car_role 
+                }
+                console.log(dataUser);
                 const user = {
                     username: res.data.user.username,
                     company: res.data.user.company,
                     emp_id: res.data.user.empID,
-                    role: res.data.user.custom_role.car_role
+                    role: dataUser
                 }
                 sessionStorage.setItem('user', JSON.stringify(user));
                 Swal.fire({

@@ -2,10 +2,31 @@
     width: 16vw;
      height: 16vh ;
 }
+.rbc-event {
+    border: none;
+    box-sizing: border-box;
+    box-shadow: none;
+    margin: 0;
+    padding: 2px 5px;
+    background-color: #FFF;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+}
+rbc-event.rbc-selected {
+    background-color: #1D366D;
+    color: #fff;
+}
 .driverCalendar {
     position: relative;
     margin: 16px 10vh ;
     background: #1D366D ;
+    border-radius: 8px;
+}
+.tripCard {
+    position: relative;
+    margin: 16px 10vh ;
     border-radius: 8px;
 }
 .rbc-day-bg{
@@ -347,6 +368,10 @@ color: rgba(0, 0, 0, 0.6);
 @media only screen and (max-width: 600px) {
     .driverCalendar {
         margin: 16px 8px ;
+    }
+    .tripCard {
+        margin: 16px 8px ;
+
     }
     .imgCar{
         width: 30vw;

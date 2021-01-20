@@ -1,4 +1,5 @@
 import React, { useState, useForm } from 'react'
+import ReactDOM from 'react-dom'
 import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio } from 'antd';
 import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-dom";
 import './formrequest.css'
@@ -126,6 +127,20 @@ const FromRequest = () => {
 
             })
     }
+    const rangePickerRef = React.useRef();
+    const onBlur = () => {
+        const rangePickerDomNode = ReactDOM.findDOMNode(rangePickerRef.current);
+        const [startInput, endInput] = rangePickerDomNode.querySelectorAll('.ant-picker-input input');
+        const startValue = moment(startInput.value, 'HH:mm');
+        let endValue = moment(endInput.value, 'HH:mm');
+        if (!endValue.isValid()) {
+            endValue = null;
+        }
+
+        form.setFieldsValue({
+            time: [startValue, endValue]
+        });
+    };
     const onSearch = async (value) => {
         let department = null
         await getEmployeeById(value).then(async res => {
@@ -202,7 +217,7 @@ const FromRequest = () => {
                     <Row gutter={{ xs: 16, sm: 24 }} justify='center'>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 24 }} sm={{ span: 8 }} >
-                            <p>รหัสพนักงาน</p>
+                            <p>รหัสพนักงาน (Employee Id)</p>
                             <Form.Item
                                 name="emp_id"
                                 rules={[
@@ -229,7 +244,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='fontForm'>ชื่อ - นามสกุล (Full Name)</p>
+                            <p >ชื่อ - นามสกุล (Full Name)</p>
                             <Form.Item
                                 name="fullname"
                                 rules={[
@@ -242,7 +257,7 @@ const FromRequest = () => {
                                     }]} >
                                 <Input readOnly={true} placeholder="ชื่อ - นามสกุล (Full Name)" />
                             </Form.Item>
-                            <p className='fontForm'>โทรศัพท์มือถือ (Mobile Phone Number)</p>
+                            <p >โทรศัพท์มือถือ (Mobile Phone Number)</p>
                             <Form.Item
                                 name="mobile_phone"
                                 rules={[
@@ -254,9 +269,9 @@ const FromRequest = () => {
                                         pattern: new RegExp(/(^\d{3})([-]{1})(\d{3})([-]{1})(\d{4})/g),
                                         message: 'pattern invalid'
                                     }]} >
-                                <Input    autoComplete="none" onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
+                                <Input autoComplete="none" onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
                             </Form.Item>
-                            <p className='fontForm'>วันที่ต้องการ (Date Required)</p>
+                            <p >วันที่ต้องการ (Date Required)</p>
                             <Form.Item
                                 name="date"
                                 rules={[
@@ -272,7 +287,7 @@ const FromRequest = () => {
                                     onChange={onChange} />
 
                             </Form.Item>
-                            <p className='fontForm'>ประเภทรถ (Type of car)</p>
+                            <p >ประเภทรถ (Type of car)</p>
                             <Form.Item
                                 name="car_type"
                                 rules={[
@@ -286,7 +301,7 @@ const FromRequest = () => {
                                 </Select>
 
                             </Form.Item>
-                            <p className='fontForm'>สถานที่ไป (Place)</p>
+                            <p >สถานที่ไป (Place)</p>
                             <Form.Item
                                 name="place"
                                 rules={[
@@ -303,7 +318,7 @@ const FromRequest = () => {
 
 
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='fontForm'>แผนก/ฝ่าย (Sect./Dept.)</p>
+                            <p >แผนก/ฝ่าย (Sect./Dept.)</p>
                             <Form.Item
                                 name="department"
                                 rules={[
@@ -327,7 +342,7 @@ const FromRequest = () => {
                                     {formDropdown.department}
                                 </Select>
                             </Form.Item>
-                            <p className='fontForm'>โทรศัพท์ภายใน (Telephone Number)</p>
+                            <p >โทรศัพท์ภายใน (Telephone Number)</p>
                             <Form.Item
                                 name="company_phone"
                                 rules={[
@@ -335,9 +350,9 @@ const FromRequest = () => {
                                         required: true,
                                         message: 'require',
                                     },]} >
-                                <Input    autoComplete="none" placeholder="โทรศัพท์ภายใน (Telephone Number)" />
+                                <Input autoComplete="none" placeholder="โทรศัพท์ภายใน (Telephone Number)" />
                             </Form.Item>
-                            <p className='fontForm'>เวลา (Time)</p>
+                            <p >เวลา (Time)</p>
                             <Form.Item
                                 name="time"
                                 rules={[
@@ -346,10 +361,11 @@ const FromRequest = () => {
                                         message: 'require',
                                     },]} >
                                 <RangePicker
+                                    onBlur={() => onBlur()} ref={rangePickerRef}
                                     format='HH:mm'
                                 />
                             </Form.Item>
-                            <p className='fontForm'>จำนวนคน (Amount)</p>
+                            <p >จำนวนคน (Amount)</p>
                             <Form.Item
                                 name="amout"
                                 rules={[
@@ -369,7 +385,7 @@ const FromRequest = () => {
                                     <Option value="10">10</Option>
                                 </Select>
                             </Form.Item>
-                            <p className='fontForm'>จังหวัด (Province)</p>
+                            <p >จังหวัด (Province)</p>
                             <Form.Item
                                 name="province"
                                 rules={[
@@ -397,7 +413,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 6 }} sm={{ span: 4 }} >
-                            <p className='fontForm'>ต้องการคนขับรถ<br />(Driver Required)</p>
+                            <p >ต้องการคนขับรถ<br />(Driver Required)</p>
 
                         </Col>
                         <Col xs={{ span: 6 }} sm={{ span: 4 }} >
@@ -416,7 +432,7 @@ const FromRequest = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-                            <p className='fontForm'>อีเมลล์ของหัวหน้า (Manager's Email)</p>
+                            <p >อีเมลล์ของหัวหน้า (Manager's Email)</p>
                             <Form.Item
                                 name="manager_email"
 
@@ -436,7 +452,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='fontForm'>เหตุผลที่ต้องการใช้รถ (Purpos of using vehicle)</p>
+                            <p >เหตุผลที่ต้องการใช้รถ (Purpos of using vehicle)</p>
                             <Form.Item
                                 name="purpos"
                                 rules={[
@@ -456,7 +472,7 @@ const FromRequest = () => {
                             </Form.Item>
                         </Col>
                         <Col xs={{ span: 12 }} sm={{ span: 8 }} >
-                            <p className='fontForm'>ระบุ</p>
+                            <p >ระบุ</p>
                             <Form.Item
                                 name="other_purpos"
                                 rules={[
@@ -470,7 +486,7 @@ const FromRequest = () => {
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
                         <Col xs={{ span: 24 }} sm={{ span: 16 }} >
-                            <p className='fontForm'>รายละเอียดอื่น ๆ (Other comment)</p>
+                            <p >รายละเอียดอื่น ๆ (Other comment)</p>
                             <Form.Item
                                 name="comment"
                             >

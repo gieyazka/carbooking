@@ -17,7 +17,7 @@ export const loginCheck = async (identifier, password) => {
         identifier,
         password
     }).then(res => {
-        // console.log(res)
+        console.log(res)
         return res;
     }).catch(err => { return { err: err } });
 }
@@ -79,6 +79,23 @@ export const saveBooking = async (formData) => {
 
     })
 }
+export const editTrips = async (d, Mileage) => {
+    console.log(d.id, Mileage);
+    if (d.status == 'free') {
+        await axios.put(`${tripApi}/${d.id}`, {
+            startMileage: Mileage,
+            status: 'trip'
+        })
+        return await getAllTrips()
+    } else {
+        await axios.put(`${tripApi}/${d.id}`, {
+            stopMileage: Mileage,
+            status: 'finish'
+        })
+        return await getAllTrips()
+    }
+
+}
 export const getTrips = async () => {
     return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
         // console.log(res);
@@ -88,7 +105,7 @@ export const getTrips = async () => {
 export const getAllTrips = async () => {
     return await axios.get(`${tripApi}`).then(res => {
         // console.log(res);
-        return _.sortBy(res.data, [function (o) { return o.id; }]);
+        return _.sortBy(res.data, [function (o) { return o.booking.date; }], [function (o) { return o.booking.startTime; }]);
     })
 }
 export const addTrips = async (data, bookingId) => {
@@ -221,12 +238,19 @@ export const getDrivers = async () => {
 }
 
 export const editDriver = async (d) => {
-    let newDriverImg = new File([d.imgname], 'Cars', {
-        type: d.imgname.type,
-        lastModified: d.imgname.lastModified,
-    });
+    console.log(d);
+    let newDriverImg
     let formdata = new FormData()
-    formdata.append("files.picture", newDriverImg)
+
+    if (d.imgname) {
+        newDriverImg = new File([d.imgname], 'Cars', {
+            type: d.imgname.type,
+            lastModified: d.imgname.lastModified,
+        });
+        formdata.append("files.picture", newDriverImg)
+    }
+
+    // formdata.append("files.picture", newDriverImg)
     formdata.append("data", JSON.stringify({
         name: d.name,
         lastname: d.lastname,

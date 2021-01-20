@@ -95,7 +95,7 @@ const AppLayout = () => {
  />}>
                         Manage car<Link to="/user/car" />
                     </Menu.Item> : null}
-                    {loginState && loginState.role == 'driver' || loginState && loginState.role == 'admin' ? <Menu.Item key="trip" icon={<CarOutlined
+                    {loginState  ? <Menu.Item key="trip" icon={<CarOutlined
  />}>
                        Trips<Link to="/user/trip" />
                     </Menu.Item> : null}
@@ -125,7 +125,7 @@ const AppLayout = () => {
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/dispatch" component={Dispatch} /> : null}
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/driver" component={ManageDriver} /> : null}
                         {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/user/hr" component={Hrapprove} /> : null}
-                        {loginState && loginState.role == 'driver' || loginState && loginState.role == 'admin' ? <Route path="/user/trip" component={Trip} /> : null}
+                        {loginState ? <Route path="/user/trip" component={Trip} /> : null}
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/car" component={Car} /> : null}
                         <Route exact path="/user" component={Formrequest} />
                         <Route  path="*" component={Formrequest} />

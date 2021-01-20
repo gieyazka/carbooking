@@ -337,19 +337,19 @@ const Car = ({ testt }) => {
                     let clearTrips = state.booking
                     // let trips = data
                     data.map((d, index) => {
-                        console.log(d.destCarId, carData.id);
+                        // console.log(d.destCarId, carData.id);
                         if (d.destCarId && d.destCarId != carData.id) {
-                            console.log(d);
+                            // console.log(d);
                             // delete d.destCarId
                             // console.log(d);
                             newTrip.push(d)
                         }
                     })
-                    console.log(newTrip);
+                    // console.log(newTrip);
 
 
 
-                    setState({ ...state, trips: newTrip, booking: clearTrips, count: countData })
+                    setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
                     // setState({ ...state, trips: newTrip, booking: newBooking , count: countData })
                     Swal.fire({
 
@@ -357,6 +357,8 @@ const Car = ({ testt }) => {
                         title: 'บันทึกข้อมูลสำเร็จ',
                         showConfirmButton: false,
                         timer: 1500
+                    }).then(() => {
+
                     })
                 })
             }
