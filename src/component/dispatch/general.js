@@ -297,9 +297,14 @@ const Car = ({ testt }) => {
     const saveDispatch = async (data, carData) => {
         // console.log(data, carData);
         var driverName = null
-
+        var noDriver = []
         let disatchInsertById = []
-        data.map(async (d, index) => {
+        let status
+        let insertData = []
+        let test = []
+        var bookingId
+        for (const d of data) {
+            // data.map(async (d, index) => {
             if (state.selectCar) {
                 for (const nameDriver of state.selectCar) {
                     if (nameDriver.carId == d.destCarId) {
@@ -309,59 +314,72 @@ const Car = ({ testt }) => {
             }
             // console.log(d);
             // console.log(driverName);
+            // console.log(noDriver == false);
             if (carData.id == d.destCarId) {
-                const insertData = {
-                    user: d.emp_id,
-                    status: 'free',
-                    car: parseInt(d.destCarId),
-                    driver: driverName,
-                    booking: d.id
-                }
-                // disatchInsertById.push(d)
-                // console.log(d);
-                let bookingId = d.id
-                console.log(insertData);
-                await addTrips(insertData, bookingId).then(async res => {
-                    // console.log(res);
-                    let newTrip = res, newBooking, countData = 0
-                    await getBookingDispatch().then(d => {
 
-                        d.map(data => {
-                            countData += 1
+                if (d.needDriver == true) {
+                    if (driverName == null) {
+                        console.log(d);
+
+                        Swal.fire({
+                            icon: 'warning',
+                            title: `${d.destination} ${d.destProvince} ต้องการคนขับรถ`,
+                            showConfirmButton: false,
+                            timer: 1500
                         })
+                        return
 
-                        newBooking = d
+                    } else {
+                        insertData.push({
+                            user: d.emp_id,
+                            status: 'free',
+                            car: parseInt(d.destCarId),
+                            driver: driverName,
+                            booking: d.id
+                        })
+                    }
+
+                } else {
+                    insertData.push({
+                        user: d.emp_id,
+                        status: 'free',
+                        car: parseInt(d.destCarId),
+                        booking: d.id
                     })
-
-
-                    let clearTrips = state.booking
-                    // let trips = data
-                    data.map((d, index) => {
-                        // console.log(d.destCarId, carData.id);
-                        if (d.destCarId && d.destCarId != carData.id) {
-                            // console.log(d);
-                            // delete d.destCarId
-                            // console.log(d);
-                            newTrip.push(d)
-                        }
-                    })
-                    // console.log(newTrip);
-
-
-
-                    setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
-                    // setState({ ...state, trips: newTrip, booking: newBooking , count: countData })
-                    Swal.fire({
-
-                        icon: 'success',
-                        title: 'บันทึกข้อมูลสำเร็จ',
-                        showConfirmButton: false,
-                        timer: 1500
-                    }).then(() => {
-
-                    })
-                })
+                }
+                // bookingId = d.id
+                // console.log(insertData);
             }
+
+
+        }
+        // console.log(insertData);
+        insertData.map(async insert => {
+            // console.log(insert);
+            await addTrips(insert, insert.booking).then(async res => {
+
+                let newTrip = res, newBooking, countData = 0
+                await getBookingDispatch().then(d => {
+                    d.map(data => {
+                        countData += 1
+                    })
+                    newBooking = d
+                })
+                let clearTrips = state.booking
+                data.map((d, index) => {
+                    if (d.destCarId && d.destCarId != carData.id) {
+                        newTrip.push(d)
+                    }
+                })
+                setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
+                Swal.fire({
+
+                    icon: 'success',
+                    title: 'บันทึกข้อมูลสำเร็จ',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
+            })
         })
         // console.log(disatchInsertById);
     }
@@ -441,7 +459,11 @@ const Car = ({ testt }) => {
 
                                                                     {...provided.draggableProps}
                                                                 >
-                                                                    <div className='font' style={{ position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                    <div className='font' style={data.status == null || data.status == 'free' ?
+                                                                        { position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                        : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                    } >
+
                                                                         {data.destCarId ? <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
                                                                             : null}  <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
                                                                         <p>{data.booking && data.booking.startTime || data.startTime} - {data.booking && data.booking.endTime || data.endTime}</p>

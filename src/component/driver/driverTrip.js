@@ -55,7 +55,7 @@ const Trips = () => {
         setTripModal({ ...tripModal, updateTrip: d, open: true });
     }
     const sendStartMile = async (d) => {
-        console.log(d);
+        // console.log(d);
         if (d.status == 'free') {
             if (valueRef.current.state.value == null) {
                 Swal.fire({
@@ -186,7 +186,7 @@ const Trips = () => {
                 {tripModal.open && tripModal.updateTrip.status == 'free' ?
                     <div style={{ textAlign: 'center', margin: '0 12%' }}>
                         <h2>Enter mileage before start job</h2>
-                        <InputNumber ref={valueRef} style={{ marginTop: '8px', width: '100%' }} placeholder="ไมล์เริ่มต้น (Start Mileage)" />
+                        <InputNumber ref={valueRef} style={{ marginTop: '8px', width: '100%' }} defaultValue={tripModal.updateTrip.car.mileage} placeholder="ไมล์เริ่มต้น (Start Mileage)" />
                         <button onClick={() => sendStartMile(tripModal.updateTrip)} style={{ cursor: 'pointer', color: '#FFF', fontFamily: "Bai Jamjuree", marginTop: '24px', padding: '8px 24px', background: '#309E48', borderRadius: '10px', border: 0, fontSize: '1.3em' }}>Start</button>
                     </div>
                     :

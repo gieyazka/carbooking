@@ -36,11 +36,11 @@ const App = () => {
 
     const showData = (d) => {
         // console.log(d.driver.name);
-        if(!d.driver){
-            setModal({ ...modal, open: true, booking: d.booking  })
+        if (!d.driver) {
+            setModal({ ...modal, open: true, booking: d.booking })
 
-        }else{
-        setModal({ ...modal, open: true, booking: d.booking ,driver : d.driver.name })
+        } else {
+            setModal({ ...modal, open: true, booking: d.booking, driver: d.driver.name })
 
         }
 
@@ -114,6 +114,7 @@ const App = () => {
             setFilter({ ...filerBooking, search: true, province: dataFilter })
         }
     }
+    // console.log(state.trips);
     useEffect(() => {
         // filter
         if (filerBooking.search == true) {
@@ -161,10 +162,11 @@ const App = () => {
 
     React.useEffect(async () => {
         const countTrip = async () => {
-         const test = await getTrips().then(res=>{
-            setCount(res.length)
-         })
-    
+            const test = await getTrips().then(res => {
+                setCount(res.length)
+                setState({ ...state, trips: res })
+            })
+
             // setCount(countData)
             // console.log(res);
         }
@@ -206,7 +208,7 @@ const App = () => {
                             <div style={{ position: 'relative' }}>
                                 <img style={{ height: '16px', width: '16px' }} src={countRequest} /> {count} รายการ
                                  <span style={{ padding: '8px' }} >
-                                    <button onClick={() => { toggleSidebar() }} style={{ cursor : 'pointer' ,padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
+                                    <button onClick={() => { toggleSidebar() }} style={{ cursor: 'pointer', padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                                         <img src={filer} />กรอง</button>
                                 </span>
                                 <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
@@ -367,14 +369,14 @@ const App = () => {
                                         </div>
                                     </Col>
                                     {/* <Col xs={{ span: 24 }} sm={{ span: 5 }} aling='left'> */}
-                                        {/* <div > */}
-                                            {/* <p className='carfont text'> คนขับรถ </p> */}
+                                    {/* <div > */}
+                                    {/* <p className='carfont text'> คนขับรถ </p> */}
 
-                                            {/* <p className='carfont text'>กี้เอง <br /> 0955120247</p> */}
-                                            {/* <p className='carfont text'></p> */}
+                                    {/* <p className='carfont text'>กี้เอง <br /> 0955120247</p> */}
+                                    {/* <p className='carfont text'></p> */}
 
 
-                                        {/* </div> */}
+                                    {/* </div> */}
                                     {/* </Col> */}
                                     <Col xs={{ span: 24 }} sm={{ span: 19 }} >
                                         <div className='Scroll'>
@@ -384,15 +386,19 @@ const App = () => {
                                                 {state.trips ? state.trips.map((d, index) =>
 
                                                     d.car && d.car.id == res.id
-                                                        && d.booking.company == filerBooking.company  && d.car.id == res.id
+                                                        && d.booking.company == filerBooking.company && d.car.id == res.id
                                                         || d.booking.department == filerBooking.department && d.car.id == res.id
                                                         || d.booking.reason == filerBooking.reason && d.car.id == res.id
                                                         || d.booking.date == filerBooking.date && d.car.id == res.id
                                                         || d.booking.destProvince == filerBooking.province && d.car.id == res.id
-                                                        
+
                                                         ?
                                                         <Col key={d.id} className='jobView'>
-                                                            <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                            <div onClick={() => { showData(d) }} className='font'
+                                                                style={d.status == 'free' ?
+                                                                    { cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                    : { cursor: 'pointer', position: 'relative', width: '16vw', background: '#FEAB20', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                } >
                                                                 <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                 <p>{d.booking.startTime} - {d.booking.endTime}</p>
                                                             </div>
@@ -402,7 +408,11 @@ const App = () => {
 
                                                         filerBooking.search == false && d.car && d.car.id == res.id ?
                                                             <Col key={d.id} className='jobView'>
-                                                                <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
+                                                                <div onClick={() => { showData(d) }} className='font'
+                                                                    style={d.status == 'free' ?
+                                                                        { cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                        : { cursor: 'pointer', position: 'relative', width: '16vw', background: '#FEAB20', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                    } >
                                                                     <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                     <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
@@ -416,8 +426,12 @@ const App = () => {
 
                                                                 || filerBooking.reason == 'Other' && d.car.id == res.id && d.booking.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && d.booking.reason != 'ส่งของ' && d.booking.reason != 'รับ - ส่งแขก' && d.booking.reason != 'ติดต่อลูกค้า'
                                                                 ? <Col key={d.id} className='jobView'>
-                                                                    <div onClick={() => { showData(d) }} className='font' style={{ cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }} >
-                                                                        <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                    <div onClick={() => { showData(d) }} className='font'
+                                                                        style={d.status == 'free' ?
+                                                                            { cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                            : { cursor: 'pointer', position: 'relative', width: '16vw', background: '#FEAB20', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                        } >
+                                                                             <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                         <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
                                                                     </div>

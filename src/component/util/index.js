@@ -80,7 +80,7 @@ export const saveBooking = async (formData) => {
     })
 }
 export const editTrips = async (d, Mileage) => {
-    console.log(d.id, Mileage);
+    // console.log(d.id, Mileage);
     if (d.status == 'free') {
         await axios.put(`${tripApi}/${d.id}`, {
             startMileage: Mileage,
@@ -91,10 +91,15 @@ export const editTrips = async (d, Mileage) => {
         await axios.put(`${tripApi}/${d.id}`, {
             stopMileage: Mileage,
             status: 'finish'
+        }).then(async () => {
+            await axios.put(`${carApi}/${d.car.id}`, {
+                mileage: Mileage
+            })
+            return await getAllTrips()
         })
-        return await getAllTrips()
-    }
 
+
+    }
 }
 export const getTrips = async () => {
     return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
@@ -186,14 +191,19 @@ export const addCars = async (carData) => {
 
 }
 export const editCars = async (carData) => {
-    // console.log(carData.id);
-    let newCarsImg = new File([carData.imgname], 'Cars', {
-        type: carData.imgname.type,
-        lastModified: carData.imgname.lastModified,
-    });
-
+    console.log(carData);
     let formdata = new FormData()
-    formdata.append("files.picture", newCarsImg)
+
+    if (carData.imgname) {
+        let newCarsImg = new File([carData.imgname], 'Cars', {
+            type: carData.imgname.type,
+            lastModified: carData.imgname.lastModified,
+        });
+        formdata.append("files.picture", newCarsImg)
+    }
+
+
+
     formdata.append("data", JSON.stringify({
         plateNo: carData.plateNo,
         province: carData.province,
