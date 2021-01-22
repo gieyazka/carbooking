@@ -167,34 +167,39 @@ const FromRequest = () => {
                     arr.push(<Option key={i} value={res}>{res}</Option>);
                     i++
                 })
-
             })
             setFormDropdown({
                 ...formDropdown, department: arr, company: empDetail.company
             })
-            await getManagerEmail(empDetail.company, empDetail.department)
-                .then(d => {
-                    console.log(d)
-                    if (d[0]) {
-                        let managerName = d[0].Approver.split("|");
+            form.setFieldsValue({
+                company: empDetail.company,
+                // department: empDetail.department,
+                // manager_email: empDetail.managerEmail,
+                fullname: empDetail.name
+            });
+            // await getManagerEmail(empDetail.company, empDetail.department)
+            //     .then(d => {
+            //         console.log(d)
+            //         if (d[0]) {
+            //             let managerName = d[0].Approver.split("|");
 
-                        empDetail = { ...empDetail, managerEmail: `${managerName[0]}@aapico.com` }
-                        console.log(empDetail);
-                        form.setFieldsValue({
-                            company: empDetail.company,
-                            department: empDetail.department,
-                            manager_email: empDetail.managerEmail,
-                            fullname: empDetail.name
-                        });
-                    } else {
-                        form.setFieldsValue({
-                            company: empDetail.company,
-                            department: empDetail.department,
-                            fullname: empDetail.name,
-                            manager_email: null
-                        });
-                    }
-                })
+            //             empDetail = { ...empDetail, managerEmail: `${managerName[0]}@aapico.com` }
+            //             console.log(empDetail);
+            //             form.setFieldsValue({
+            //                 company: empDetail.company,
+            //                 // department: empDetail.department,
+            //                 // manager_email: empDetail.managerEmail,
+            //                 fullname: empDetail.name
+            //             });
+            //         } else {
+            //             form.setFieldsValue({
+            //                 company: empDetail.company,
+            //                 // department: empDetail.department,
+            //                 fullname: empDetail.name,
+            //                 // manager_email: null
+            //             });
+            //         }
+            //     })
 
 
         }).catch(err => err)

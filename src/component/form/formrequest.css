@@ -2,6 +2,10 @@
     width: 16vw;
      height: 16vh ;
 }
+.rbc-now{
+    background-color : #1D366D ;
+    color : #FFF
+}
 .rbc-event {
     border: none;
     box-sizing: border-box;

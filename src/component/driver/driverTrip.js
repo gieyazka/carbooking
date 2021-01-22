@@ -29,8 +29,10 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { set } from 'lodash';
+import 'moment/locale/th';
 var _ = require('lodash');
 const Trips = () => {
+    // console.log(moment());
     const [date, setDate] = useState(new moment())
     const localizer = momentLocalizer(moment)
     var data = [{}]
@@ -54,8 +56,13 @@ const Trips = () => {
 
         setTripModal({ ...tripModal, updateTrip: d, open: true });
     }
+
+
+
+
     const sendStartMile = async (d) => {
-        // console.log(d);
+
+
         if (d.status == 'free') {
             if (valueRef.current.state.value == null) {
                 Swal.fire({
@@ -67,14 +74,29 @@ const Trips = () => {
                 })
                 return
             }
-            let startMile = valueRef.current.state.inputValue
-            // console.log(valueRef.current.state);
+            Swal.fire({
+                title: `ยืนยันการเริ่มงานของ ${d.booking.name}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: 'ยืนยัน',
+                reverseButtons: true
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    let startMile = valueRef.current.state.inputValue
+                    valueRef.current.state.inputValue = null
+                    // console.log(valueRef.current.state);
 
-            editTrips(d, startMile).then(res => {
-                setTripDetail({ ...tripDetail, allTrips: res })
-                setTripModal({ open: false });
-                // console.log(res);
+                    editTrips(d, startMile).then(res => {
+                        setTripDetail({ ...tripDetail, allTrips: res })
+                        setTripModal({ open: false });
+                        // console.log(res);
+                    })
+                }
             })
+
         } else if (d.status == 'trip') {
 
             if (valueEndRef.current.state.value == null) {
@@ -90,7 +112,6 @@ const Trips = () => {
             console.log(d, parseInt(d.startMileage), parseInt(valueEndRef.current.state.value));
             if (parseInt(d.startMileage) > parseInt(valueEndRef.current.state.value)) {
                 Swal.fire({
-
                     icon: 'warning',
                     title: `เลขไมล์น้อยกว่าเลขไมล์เริ่มต้น ${d.startMileage}`,
                     showConfirmButton: false,
@@ -99,16 +120,29 @@ const Trips = () => {
                 return
             }
             let endMile = valueEndRef.current.state.inputValue
-            console.log(valueEndRef.current.state);
-
-            editTrips(d, endMile).then(res => {
-                setTripDetail({ ...tripDetail, allTrips: res })
-                setTripModal({ open: false });
-                // console.log(res);
+            // console.log(valueEndRef.current.state);
+            Swal.fire({
+                title: `ยืนยันการเริ่มงานของ ${d.booking.name}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: 'ยืนยัน',
+                reverseButtons: true
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    await editTrips(d, endMile).then(res => {
+                        console.log(res);
+                        setTripDetail({ ...tripDetail, allTrips: res })
+                        setTripModal({ open: false });
+                        // console.log(res);
+                    })
+                }
             })
-
         }
 
+        // console.log(d);
     }
     React.useMemo(async () => {
         await getAllTrips().then(res => {
@@ -127,11 +161,9 @@ const Trips = () => {
                         end: moment(d.booking.date, 'DD-mm-YYYY')._d
                     })
                 }
-
             }
             setTripDetail({ allTrips: res, events: data })
         })
-
     }, [])
     console.log(tripDetail);
     var i = 0
@@ -139,7 +171,7 @@ const Trips = () => {
     return (
         <Fragment >
             <div className='driverCalendar' >
-                <h2 style={{ position: 'relative', padding: '12px', textAlign: 'center', color: '#FFF' }}><img src={backward} onClick={() => { setDate(moment(date).subtract(1, 'months')) }} style={{ cursor: 'pointer' }} /> &nbsp; {date.format('MMMM YYYY')} &nbsp; <img src={forward} onClick={() => { setDate(moment(date).add(1, 'months')) }} style={{ cursor: 'pointer' }} /></h2>
+                <h2 style={{ position: 'relative', padding: '12px', textAlign: 'center', color: '#FFF' }}><img src={backward} onClick={() => { setDate(moment(date).subtract(1, 'months')) }} style={{ cursor: 'pointer' }} /> &nbsp; {date.locale('th').format('MMMM YYYY')} &nbsp; <img src={forward} onClick={() => { setDate(moment(date).add(1, 'months')) }} style={{ cursor: 'pointer' }} /></h2>
                 <Calendar
                     popup
                     culture='ar-AE'
@@ -186,12 +218,15 @@ const Trips = () => {
                 {tripModal.open && tripModal.updateTrip.status == 'free' ?
                     <div style={{ textAlign: 'center', margin: '0 12%' }}>
                         <h2>Enter mileage before start job</h2>
+                        <h2>โปรดกรอกเลขไมล์ก่อนเริ่มงาน</h2>
                         <InputNumber ref={valueRef} style={{ marginTop: '8px', width: '100%' }} defaultValue={tripModal.updateTrip.car.mileage} placeholder="ไมล์เริ่มต้น (Start Mileage)" />
                         <button onClick={() => sendStartMile(tripModal.updateTrip)} style={{ cursor: 'pointer', color: '#FFF', fontFamily: "Bai Jamjuree", marginTop: '24px', padding: '8px 24px', background: '#309E48', borderRadius: '10px', border: 0, fontSize: '1.3em' }}>Start</button>
                     </div>
                     :
                     <div style={{ textAlign: 'center', margin: '0 12%' }}>
                         <h2>Enter mileage before end job</h2>
+                        <h2>โปรดกรอกเลขไมล์ก่อนปิดงาน</h2>
+                        <h4>เลขไมล์เริ่มต้น (Start Mileage) : {tripModal.updateTrip && tripModal.updateTrip.startMileage} </h4>
                         <InputNumber ref={valueEndRef} style={{ marginTop: '8px', width: '100%' }} placeholder="ไมล์สิ้นสุด (End Mileage)" />
                         <button onClick={() => sendStartMile(tripModal.updateTrip)} style={{ cursor: 'pointer', color: '#FFF', fontFamily: "Bai Jamjuree", marginTop: '24px', padding: '8px 24px', background: '#FB0000', borderRadius: '10px', border: 0, fontSize: '1.3em' }}>End</button>
                     </div>

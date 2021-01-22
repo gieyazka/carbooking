@@ -82,20 +82,24 @@ export const saveBooking = async (formData) => {
 export const editTrips = async (d, Mileage) => {
     // console.log(d.id, Mileage);
     if (d.status == 'free') {
-        await axios.put(`${tripApi}/${d.id}`, {
+        return await axios.put(`${tripApi}/${d.id}`, {
             startMileage: Mileage,
             status: 'trip'
+        }).then(async () => {
+            return await getAllTrips()
+
         })
-        return await getAllTrips()
     } else {
-        await axios.put(`${tripApi}/${d.id}`, {
+        return await axios.put(`${tripApi}/${d.id}`, {
             stopMileage: Mileage,
             status: 'finish'
         }).then(async () => {
-            await axios.put(`${carApi}/${d.car.id}`, {
+            return await axios.put(`${carApi}/${d.car.id}`, {
                 mileage: Mileage
+            }).then(async () => {
+                return await getAllTrips()
+
             })
-            return await getAllTrips()
         })
 
 
@@ -114,7 +118,7 @@ export const getAllTrips = async () => {
     })
 }
 export const addTrips = async (data, bookingId) => {
-    console.log(data, bookingId);
+    // console.log(data, bookingId);
     return await axios.post(`${tripApi}`, data).then(async res => {
         await axios.put(`${bookingApi}/${bookingId}`, { dispatch: true })
 
