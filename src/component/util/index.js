@@ -10,6 +10,7 @@ const carApi = 'http://10.10.10.227:1337/cars'
 const driverApi = 'http://10.10.10.227:1337/vehicles'
 const tripApi = 'http://10.10.10.227:1337/requests'
 const employeeApi = 'http://10.10.10.227:1337/users'
+const subscribersApi = 'http://10.10.10.227:1337/subscribers'
 
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
@@ -118,9 +119,18 @@ export const getAllTrips = async () => {
     })
 }
 export const addTrips = async (data, bookingId) => {
-    // console.log(data, bookingId);
+    console.log(data, bookingId);
     return await axios.post(`${tripApi}`, data).then(async res => {
-        await axios.put(`${bookingApi}/${bookingId}`, { dispatch: true })
+        await axios.put(`${bookingApi}/${bookingId}`, { dispatch: true }).then(async () => {
+            if (data.driver) {
+                // console.log(data.driver);
+                await getDriversByid(data.driver).then(async res => {
+                    console.log(res.data.emp_id);
+                    await sendFirebaseNotification(res.data.emp_id)
+
+                })
+            }
+        })
 
         return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
             // console.log(res);
@@ -248,6 +258,11 @@ export const getDrivers = async () => {
     return await axios.get(`${driverApi}?active=true`).then(res => {
         // console.log(res);
         return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
+export const getDriversByid = async (id) => {
+    return await axios.get(`${driverApi}/${id}`).then(res => {
+        return res
     })
 }
 
@@ -567,4 +582,57 @@ export const sendEmail = async (booking) => {
         .then(response => response.json())
         .then(result => console.log(result))
         .catch(error => console.log('error', error));
+}
+
+
+
+export const sendFirebaseNotification = async ( driverId) => {
+    await getSubscriberByempId(driverId).then(async res => {
+        console.log(res[0].token);
+        await axios.post('https://fcm.googleapis.com/fcm/send', {
+            "data": {
+                "notification": {
+                    "title": "Car Booking System",
+                    "body": "คุณมีงานใหม่",
+                    "icon": "/logo.png"
+                }
+            },
+            "to": res[0].token
+        },
+            {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'key=AAAAxjnXApw:APA91bHh9p6rgmWs_g9lXWzgXDYXwNxXYPbj5YBpdkJRXAQ6BfSpMWosnovXEICrb48PKZ3jxH2lqS6PFrSuMZTgl0XucKqCwuWAZqD-mNxVazcHzlg3xVsmnSJpR-hk4rcMS_gT2lEQ '
+                }
+            })
+    })
+
+}
+export const getSubscriberByempId = async (emp_id) => {
+    // console.log(emp_id);
+
+    return await axios.get(`${subscribersApi}?empID=${emp_id}&app_name=Carbooking`).then(res => {
+        // console.log(res.data);
+        return res.data
+    })
+}
+export const updateSubscriber = async (id, token) => {
+    // console.log(emp_id);
+    return await axios.put(`${subscribersApi}/${id}`, {
+        token: token
+    }).then(res => {
+        // console.log(res.data);
+        return res.data
+    })
+}
+export const addSubscriber = async (emp_id, token) => {
+    // console.log(emp_id);
+    return await axios.post(`${subscribersApi}`, {
+        empID: emp_id,
+        token: token,
+        app_name: 'Carbooking'
+    }).then(res => {
+        // console.log(res.data);
+        return res.data
+    })
 }

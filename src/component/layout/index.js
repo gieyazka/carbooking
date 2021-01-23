@@ -5,6 +5,7 @@ import Dispatch from '../dispatch/general'
 import View from '../dispatch/view'
 import History from '../dispatch/history'
 import Hrapprove from '../hr/hrapprove'
+import firebase from '../firebase'
 import ManageDriver from '../driver/managedriver'
 import Trip from '../driver/driverTrip'
 import Car from '../car/car'
@@ -24,15 +25,13 @@ import {
     HistoryOutlined
 } from '@ant-design/icons';
 import { DataContext } from "../store/store"
-
+import { getSubscriberByempId, updateSubscriber, addSubscriber } from "../util"
 import dataProvince from '../../province.json'
 
 const { Header, Sider, Content } = Layout;
 
 const AppLayout = () => {
     let history = useHistory();
-
-
 
     const [state, setState] = useState({
         collapsed: true,
@@ -57,7 +56,62 @@ const AppLayout = () => {
     }
     const [loginState, setLogin] = useState()
 
+    React.useEffect(() => {
+        // firebase
+        const messaging = firebase.messaging()
+        // const messaging = firebase.messaging();
+        messaging.getToken()
+            .then(async function (token) {
+                if (!window.localStorage.carbookingKey) {
+                    localStorage.setItem('carbookingKey', token);
+                }
+                await getSubscriberByempId(JSON.parse(sessionStorage.getItem('user')).emp_id).then(async res => {
+                    console.log(res);
 
+                    if (res[0]) {
+                        for (const d of res) {
+                            // console.log(d);
+                            if (d.app_name == 'Carbooking') {
+                                // console.log(d.token);
+                                if (window.localStorage.carbookingKey !== d.token) {
+                                    await updateSubscriber(d.id, token)
+                                }
+                                break;
+                            }
+                        }
+                    } else {
+                        // console.log(82);
+                        await addSubscriber(JSON.parse(sessionStorage.getItem('user')).emp_id, token)
+                    }
+
+                })
+
+
+                // console.log(token)
+            })
+            .catch(function (err) {
+
+                console.log("Unable to get permission to notify.", err);
+            });
+        let enableForegroundNotification = true;
+        messaging.onMessage(function (payload) {
+            console.log("Message received. ", payload);
+            //  NotisElem.innerHTML + JSON.stringify(payload);
+
+            if (enableForegroundNotification) {
+                console.log("Message received. ", payload);
+
+                const { title, ...options } = JSON.parse(payload.data.notification);
+                console.log({ title, ...options })
+                navigator.serviceWorker.getRegistrations().then(registration => {
+                    console.log(registration[0].showNotification)
+                    registration[0].showNotification(title, options);
+                });
+            } else {
+                console.log('no notification')
+            }
+        });
+    }, [])
     React.useMemo(() => {
         const loginData = JSON.parse(sessionStorage.getItem('user'));
         setLogin(loginData);
@@ -65,6 +119,9 @@ const AppLayout = () => {
             sessionStorage.clear();
             history.push('/login')
         }
+
+
+
     }, [])
     // console.log(loginState);
     // console.log(loginData.role);

@@ -29,7 +29,7 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { addTrips, getBooking, getBookingDispatch, sendEmail } from '../util/index'
+import { addTrips, getBooking, getBookingDispatch, sendEmail,getCars, getDrivers, getTrips } from '../util/index'
 const RequestCar = ({ filerBooking }) => {
     // console.log(filerBooking);
     const [state, setState] = React.useContext(DataContext);
@@ -261,10 +261,12 @@ const RequestCar = ({ filerBooking }) => {
 }
 
 const Car = ({ testt }) => {
+    const { Option } = Select;
+
 
     const [state, setState] = React.useContext(DataContext);
     // console.log(state);
-    const { Option } = Select
+
     const { innerHeight, innerWidth } = window
     const [pastTest, setpastTest] = useState({ ...state })
     const getListStyle = isDraggingOver => ({
@@ -301,10 +303,10 @@ const Car = ({ testt }) => {
         let disatchInsertById = []
         let status
         let insertData = []
-        let test = []
-        var bookingId
+        // let test = []
+        // var bookingId
         for (const d of data) {
-            // data.map(async (d, index) => {
+            
             if (state.selectCar) {
                 for (const nameDriver of state.selectCar) {
                     if (nameDriver.carId == d.destCarId) {
@@ -312,9 +314,6 @@ const Car = ({ testt }) => {
                     }
                 }
             }
-            // console.log(d);
-            // console.log(driverName);
-            // console.log(noDriver == false);
             if (carData.id == d.destCarId) {
 
                 if (d.needDriver == true) {
@@ -481,7 +480,7 @@ const Car = ({ testt }) => {
                                         <Col xs={{ span: 24 }} sm={{ span: 5 }}  >
                                             <div className='posGeneralBtn'  >
                                                 <Button className='fontGeneralBtn' onClick={() => { saveDispatch(state.trips, res) }} style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button>
-                                                <Button className='fontGeneralBtn' onClick={(e) => clearData(state.trips, res.id)} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button>โ
+                                                <Button className='fontGeneralBtn' onClick={(e) => clearData(state.trips, res.id)} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button>
                                             </div>
                                         </Col>
                                     </Row>
@@ -518,7 +517,33 @@ const General = () => {
     // console.log(state);
     const [sidebar, setSidebar] = useState(true)
     const wrapperRef = useRef(null);
+    React.useMemo(async () => {
+        let booking, cars, drivers, trips, countData = 0
 
+        await getBookingDispatch().then(res => {
+            res.map(data => {
+                countData += 1
+            })
+            booking = res
+        })
+        await getCars().then(res => {
+            cars = res
+        })
+        await getDrivers().then(res => {
+            drivers = res
+        })
+        await getTrips().then(res => {
+            trips = res
+        })
+        var i = 0
+        let driverArr = []
+        for (const data in drivers) {
+            driverArr.push(<Option key={i} value={drivers[data].id}>{drivers[data].name}</Option>);
+            i++
+        }
+
+        setState({ ...state, cars: cars, booking: booking, drivers: driverArr, trips: trips, count: countData })
+    }, [])
 
     const move = (source, destination, droppableSource, droppableDestination) => {
         console.log(source, destination, droppableSource, droppableDestination);

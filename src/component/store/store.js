@@ -98,7 +98,7 @@ export default props => {
     brandCar.push(<Option key={42} value='Skoda'>Skoda</Option>);
 
     let typeCar = []
-    typeCar.push(<Option key={0} value='Car(เก๋ง)'>Car(เก๋ง)</Option>);
+    typeCar.push(<Option key={0} value='Carzเก๋ง)'>Car(เก๋ง)</Option>);
     typeCar.push(<Option key={1} value='Pick up(กระบะ)'>Pick up(กระบะ)</Option>);
     typeCar.push(<Option key={2} value='Bus(ตู้)'>Bus(ตู้)</Option>);
     typeCar.push(<Option key={3} value='PPV'>PPV</Option>);

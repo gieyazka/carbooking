@@ -3,7 +3,7 @@ import { Row, Col, Card, Input } from 'antd';
 import password from './asset/password1.png'
 import car from './asset/login.png'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { loginCheck } from './util/index.js'
+import { loginCheck, sendFirebaseNotification } from './util/index.js'
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import Swal from 'sweetalert2'
 const Login = () => {
@@ -29,6 +29,9 @@ const Login = () => {
             setLanguage('TH')
         }
     }
+    // useEffect(async() => {
+    //     await sendFirebaseNotification(1)
+    // }, [])
     // console.log(data)
     let history = useHistory();
     const onLogin = (e) => {
@@ -53,7 +56,7 @@ const Login = () => {
                 } else if (res.data.user.custom_role.car_role == null) {
                     dataUser = 'user'
                 } else {
-                    dataUser = res.data.user.custom_role.car_role 
+                    dataUser = res.data.user.custom_role.car_role
                 }
                 console.log(dataUser);
                 const user = {

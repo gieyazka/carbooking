@@ -241,30 +241,31 @@ const Trips = () => {
                     <>
 
                         < div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
+                            <div>
+                                <img src={car} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.driver && modalData.tripData.driver.name + " " + modalData.tripData.driver.lastname} &nbsp;  {modalData.tripData.booking.carType}   </span>
 
-                            <img src={car} /> <span > {modalData.tripData.driver && modalData.tripData.driver.name + " " + modalData.tripData.driver.lastname} &nbsp;  {modalData.tripData.booking.carType}   </span>
-
-                        </div>
-                        <div style={{ paddingTop: '4%' }} >
-                            {modalData.tripData.booking.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  <span style={{ position: 'relative', paddingLeft: '4%' }} >  คนขับรถ  </span>
-                        </div>
+                            </div>
+                            <div style={{ paddingTop: '4%' }} >
+                                {modalData.tripData.booking.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  <span style={{ position: 'relative', paddingLeft: '5%' }} >  คนขับรถ  </span>
+                            </div>
 
 
-                        <div style={{ paddingTop: '4%' }}>
-                            <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
-                        </div>
-                        <div style={{ paddingTop: '4%' }} >
-                            <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.destination} {modalData.tripData.booking.destProvince}</span>
-                        </div>
-                        <div style={{ paddingTop: '4%' }}>
-                            <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>
-                        </div>
-                        <div style={{ paddingTop: '4%' }}>
-                            <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.reason}</span>
-                        </div>
+                            <div style={{ paddingTop: '4%' }}>
+                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
+                            </div>
+                            <div style={{ paddingTop: '4%' }} >
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.destination} {modalData.tripData.booking.destProvince}</span>
+                            </div>
+                            <div style={{ paddingTop: '4%' }}>
+                                <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>
+                            </div>
+                            <div style={{ paddingTop: '4%' }}>
+                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.reason}</span>
+                            </div>
 
-                        <div style={{ paddingTop: '4%' }}>
-                            <p>รายละเอียดอื่น ๆ   : {modalData.tripData.booking.comment || '-'}</p>
+                            <div style={{ paddingTop: '4%' }}>
+                                <p>รายละเอียดอื่น ๆ   : {modalData.tripData.booking.comment || '-'}</p>
+                            </div>
                         </div>
                     </>
                     : null}
