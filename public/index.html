@@ -57,10 +57,10 @@
     //  NotisElem.innerHTML + JSON.stringify(payload);
 
     if (enableForegroundNotification) {
-      console.log("Message received. ", payload);
+      // console.log("Message received. ", payload);
 
       const { title, ...options } = JSON.parse(payload.data.notification);
-      console.log({ title, ...options })
+      // console.log({ title, ...options })
       navigator.serviceWorker.getRegistrations().then(registration => {
         registration[0].showNotification(title, options);
       });

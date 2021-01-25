@@ -2,16 +2,18 @@ import axios from 'axios';
 import moment from 'moment';
 import _ from 'lodash';
 import Swal from 'sweetalert2';
+import io from 'socket.io-client';
+
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { v4 as uuidv4 } from 'uuid';
-const loginApi = 'http://10.10.10.227:1337/auth/local';
-const bookingApi = 'http://10.10.10.227:1337/bookings';
-const carApi = 'http://10.10.10.227:1337/cars'
-const driverApi = 'http://10.10.10.227:1337/vehicles'
-const tripApi = 'http://10.10.10.227:1337/requests'
-const employeeApi = 'http://10.10.10.227:1337/users'
-const subscribersApi = 'http://10.10.10.227:1337/subscribers'
-
+const loginApi = 'https://ess.aapico.com/auth/local';
+const bookingApi = 'https://ess.aapico.com/bookings';
+const carApi = 'https://ess.aapico.com/cars'
+const driverApi = 'https://ess.aapico.com/vehicles'
+const tripApi = 'https://ess.aapico.com/requests'
+const employeeApi = 'https://ess.aapico.com/users'
+const subscribersApi = 'https://ess.aapico.com/subscribers'
+const socket = io('localhost:3002');
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
@@ -112,6 +114,12 @@ export const getTrips = async () => {
         return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
 }
+export const getTripsBybooking = async (bookingId) => {
+    return await axios.get(`${tripApi}?booking=${bookingId}`).then(res => {
+        // console.log(res);
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
 export const getAllTrips = async () => {
     return await axios.get(`${tripApi}`).then(res => {
         // console.log(res);
@@ -126,6 +134,9 @@ export const addTrips = async (data, bookingId) => {
                 // console.log(data.driver);
                 await getDriversByid(data.driver).then(async res => {
                     console.log(res.data.emp_id);
+                    const tripData = await getTripsBybooking(bookingId)
+                    // console.log(tripData);
+                    socket.emit('dispatch', tripData[0])
                     await sendFirebaseNotification(res.data.emp_id)
 
                 })
@@ -307,7 +318,7 @@ export const removeDriver = async (d) => {
     })
 }
 export const getEmployeeById = async (id) => {
-    return await axios.get(`http://10.10.10.227:1337/employees?emp_id=${id}`).then(async res => {
+    return await axios.get(`https://ess.aapico.com/employees?emp_id=${id}`).then(async res => {
         return res.data[0]
 
     }).catch(err => err)
@@ -586,7 +597,7 @@ export const sendEmail = async (booking) => {
 
 
 
-export const sendFirebaseNotification = async ( driverId) => {
+export const sendFirebaseNotification = async (driverId) => {
     await getSubscriberByempId(driverId).then(async res => {
         console.log(res[0].token);
         await axios.post('https://fcm.googleapis.com/fcm/send', {

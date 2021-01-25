@@ -2,6 +2,7 @@ import React, { useState, useRef, useReducer, Fragment } from 'react'
 import { DataContext } from "../store/store"
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../form/formrequest.css'
+import io from 'socket.io-client';
 
 
 import { Modal, Form, Input, Row, Col, Select, InputNumber, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
@@ -31,6 +32,7 @@ import moment from 'moment'
 import { set } from 'lodash';
 import 'moment/locale/th';
 var _ = require('lodash');
+const socket = io('localhost:3002');
 const Trips = () => {
     // console.log(moment());
     const [date, setDate] = useState(new moment())
@@ -56,8 +58,34 @@ const Trips = () => {
 
         setTripModal({ ...tripModal, updateTrip: d, open: true });
     }
+    const loginEmpId = JSON.parse(sessionStorage.getItem('user')).emp_id
+    console.log(loginEmpId);
+    // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id);
+    React.useEffect(() => {
+
+        socket.on(loginEmpId, data => {
+
+            const oldTrip = tripDetail.allTrips
+            oldTrip.push(data)
+            Swal.fire({
+
+                icon: 'info',
+                title: 'คุณมีงานใหม่',
+                showConfirmButton: false,
+                timer: 1500
+            })
+            setTripDetail({ ...tripDetail, allTrips: oldTrip })
+        })
 
 
+        return () => {
+            socket.off('connect');
+            // socket.off('disconnect');
+            socket.off('sendData');
+            socket.off(loginEmpId);
+
+        };
+    });
 
 
     const sendStartMile = async (d) => {
