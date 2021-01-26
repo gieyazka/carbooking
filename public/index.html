@@ -30,6 +30,14 @@
 </html>
 
 <script>
+  var config = {
+    'messagingSenderId': '851373916828',
+    'apiKey': 'AIzaSyCX9MgSHZd64fwVG7I7QriHcfyLzryob08',
+    'projectId': 'car-booking-4433a',
+    'appId': '1:851373916828:web:bdb3c4099248049c946359',
+  };
+  firebase.initializeApp(config);
+
   const messaging = firebase.messaging();
 
   if ('serviceWorker' in navigator) {
@@ -53,13 +61,7 @@
     console.log('else')
   }
 
-  var config = {
-    'messagingSenderId': '851373916828',
-    'apiKey': 'AIzaSyCX9MgSHZd64fwVG7I7QriHcfyLzryob08',
-    'projectId': 'car-booking-4433a',
-    'appId': '1:851373916828:web:bdb3c4099248049c946359',
-  };
-  firebase.initializeApp(config);
+
   messaging
     .requestPermission()
     .then(function () {
