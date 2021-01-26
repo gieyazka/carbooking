@@ -406,7 +406,7 @@ const Car = ({ testt }) => {
                                     <Row gutter={{ xs: 16, sm: 16 }}>
                                         <Col xs={{ span: 24 }} sm={{ span: 8 }} align='center'>
                                             <div className='carPos' >
-                                                <img src={res.picture[res.picture.length - 1] ? `http://10.10.10.227:1337${res.picture[res.picture.length - 1].url}` :
+                                                <img src={res.picture[res.picture.length - 1] ? `https://ess.aapico.com${res.picture[res.picture.length - 1].url}` :
                                                     'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                                 } className='imgCar' />
                                                 <p className='carfont' style={{ paddingTop: '2px', height: '100%' }}> {res.plateNo} {res.province}</p>
