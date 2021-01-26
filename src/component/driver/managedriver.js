@@ -376,7 +376,7 @@ const ManageDriver = () => {
                                     </div>
 
                                     <img className='driverimg'
-                                        src={res.picture[res.picture.length - 1] ? `https://ess.appico.com/${res.picture[res.picture.length - 1].url}` :
+                                        src={res.picture[res.picture.length - 1] ? `https://ess.aapico.com/${res.picture[res.picture.length - 1].url}` :
                                             'https://crestedcranesolutions.com/wp-content/uploads/2013/07/facebook-profile-picture-no-pic-avatar.jpg'
                                         } />
                                 </div>
