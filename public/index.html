@@ -41,11 +41,24 @@
   const messaging = firebase.messaging();
 
   if ('serviceWorker' in navigator) {
-    console.log(34)
+    console.log(44)
     navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js')
       .then(function (reg) {
         messaging.useServiceWorker(reg);
-
+        messaging
+          .requestPermission()
+          .then(function () {
+            console.log("Notification permission granted.");
+            // get the token in the form of promise
+            return messaging.getToken()
+          })
+          .then(function (token) {
+            console.log(token)
+            localStorage.setItem('carbookingKey', token);
+          })
+          .catch(function (err) {
+            console.log("Unable to get permission to notify.", err);
+          });
         if (reg.installing) {
           console.log('SW installing');
         } else if (reg.waiting) {
@@ -62,20 +75,7 @@
   }
 
 
-  messaging
-    .requestPermission()
-    .then(function () {
-      console.log("Notification permission granted.");
-      // get the token in the form of promise
-      return messaging.getToken()
-    })
-    .then(function (token) {
-      console.log(token)
-      localStorage.setItem('carbookingKey', token);
-    })
-    .catch(function (err) {
-      console.log("Unable to get permission to notify.", err);
-    });
+
   let enableForegroundNotification = true;
   messaging.onMessage(function (payload) {
     if (enableForegroundNotification) {
