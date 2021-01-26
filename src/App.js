@@ -16,7 +16,7 @@ function App() {
     <div style={{ fontFamily: 'Bai Jamjuree' }}>
       <DataContextProvider>
         <Router
-         basename={'/carbooking'}
+         basename={'/carbooking/#/'}
          >
           
           <Switch>
