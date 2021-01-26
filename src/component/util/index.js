@@ -605,7 +605,7 @@ export const sendFirebaseNotification = async (driverId) => {
                 "notification": {
                     "title": "Car Booking System",
                     "body": "คุณมีงานใหม่",
-                    "icon": "/logo.png"
+                    "icon": "/carbooking/logo.png"
                 }
             },
             "to": res[0].token

@@ -67,27 +67,28 @@ const AppLayout = () => {
         //             localStorage.setItem('carbookingKey', token);
         //         }
         console.log(window.localStorage.carbookingKey);
-        await getSubscriberByempId(JSON.parse(sessionStorage.getItem('user')).emp_id).then(async res => {
-            console.log(res);
+        if (JSON.parse(sessionStorage.getItem('user'))) {
+            await getSubscriberByempId(JSON.parse(sessionStorage.getItem('user')).emp_id).then(async res => {
+                console.log(res);
 
-            if (res[0]) {
-                for (const d of res) {
-                    // console.log(d);
-                    if (d.app_name == 'Carbooking') {
-                        // console.log(d.token);
-                        if (window.localStorage.carbookingKey !== d.token) {
-                            await updateSubscriber(d.id, window.localStorage.carbookingKey)
+                if (res[0]) {
+                    for (const d of res) {
+                        // console.log(d);
+                        if (d.app_name == 'Carbooking') {
+                            // console.log(d.token);
+                            if (window.localStorage.carbookingKey !== d.token) {
+                                await updateSubscriber(d.id, window.localStorage.carbookingKey)
+                            }
+                            break;
                         }
-                        break;
                     }
+                } else {
+                    // console.log(82);
+                    await addSubscriber(JSON.parse(sessionStorage.getItem('user')).emp_id, window.localStorage.carbookingKey)
                 }
-            } else {
-                // console.log(82);
-                await addSubscriber(JSON.parse(sessionStorage.getItem('user')).emp_id, window.localStorage.carbookingKey)
-            }
 
-        })
-
+            })
+        }
 
         // console.log(token)
         // })
@@ -118,7 +119,12 @@ const AppLayout = () => {
 
         <Layout >
             <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
-                <div className="logo" style={{ fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>  Car Booking </div>
+                <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>Car Booking
+                    <div style={{ position: 'absolute', top: '0',left : '100%'}}> {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+                    className: 'trigger',
+                    onClick: toggle,
+                })}</div>
+                </div>
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<FormOutlined />}>
                         Request form<Link to="/user" />

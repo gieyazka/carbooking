@@ -6,6 +6,12 @@
     background-color : #1D366D ;
     color : #FFF
 }
+.ant-layout-sider { position: fixed; z-index: 999; height: 100%; }
+/* .anticon-menu-fold{
+    position: absolute;
+    left : 25vw ;
+    top : 2.5vh ;
+} */
 .rbc-event {
     border: none;
     box-sizing: border-box;
