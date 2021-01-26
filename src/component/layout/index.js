@@ -119,7 +119,7 @@ const AppLayout = () => {
 
         <Layout >
             <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
-                <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>Car Booking
+                <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
                     <div style={{ position: 'absolute', top: '0',left : '100%'}}> {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                     className: 'trigger',
                     onClick: toggle,

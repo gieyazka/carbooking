@@ -555,7 +555,7 @@ export const sendEmail = async (booking) => {
         <table align='center' border="0" cellspacing="0" cellpadding="0">
           <tr>
             <td align="center" style="border: 1px solid #1D366D; border-radius: 8px;" bgcolor="#1D366D">
-            <a href="${path}/approve/${booking.data.id}/${booking.data.uuid}" target="_blank" style="font-size: 16px; font-family: Bai Jamjuree; color: #ffffff; text-decoration: none; text-decoration: none;border-radius: 8px; padding: 12px 18px; border: 1px solid #1D366D; display: inline-block;">APPROVE</a>
+            <a href="${path}/carbooking/approve/${booking.data.id}/${booking.data.uuid}" target="_blank" style="font-size: 16px; font-family: Bai Jamjuree; color: #ffffff; text-decoration: none; text-decoration: none;border-radius: 8px; padding: 12px 18px; border: 1px solid #1D366D; display: inline-block;">APPROVE</a>
             </td>
           </tr>
         </table>
