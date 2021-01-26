@@ -147,7 +147,7 @@ const Login = () => {
                                     iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                                 />
                                 <div style={{ marginTop: '24px', textAlign: 'right' }}>
-                                    <button type='button' onClick={() => { window.open('https://ess.aapico.com/#/register') }} style={{ cursor: 'pointer', border: '1.5px solid ', background : '#FFF',borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
+                                    <button type='button' onClick={() => { window.open('https://ess.aapico.com/#/register') }} style={{ cursor: 'pointer', border: '1.5px solid ', backgroundColor : '#FFFFFF',borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
 
                                     <button type="submit" onClick={(e) => onLogin(e)} style={{ cursor: 'pointer', marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
 
@@ -187,7 +187,7 @@ const Login = () => {
                         />
                     </div>
                     <div style={{ marginTop: '24px', textAlign: 'center' }}>
-                        <button style={{ border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
+                        <button style={{ border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ',backgroundColor: '#FFF' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
 
                         <button onClick={(e) => onLogin(e)} style={{ marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
 
