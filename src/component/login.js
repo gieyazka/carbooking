@@ -193,7 +193,7 @@ const Login = () => {
 
                     </div>
                 </Row>
-                <img src={car} style={{ position: 'fixed', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} />
+                <img src={car} style={{ position: 'absolute', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} />
             </div>
         )
     }
