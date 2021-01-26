@@ -396,9 +396,9 @@ const App = () => {
                                                         <Col key={d.id} className='jobView'>
                                                             <div onClick={() => { showData(d) }} className='font'
                                                                 style={d.status == 'free' ?
-                                                                    { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                } >
+                                                                { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
+                                                                : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
+                                                             } >
                                                                 <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                 <p>{d.booking.startTime} - {d.booking.endTime}</p>
                                                             </div>
@@ -410,9 +410,9 @@ const App = () => {
                                                             <Col key={d.id} className='jobView'>
                                                                 <div onClick={() => { showData(d) }} className='font'
                                                                     style={d.status == 'free' ?
-                                                                        { cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                        : { cursor: 'pointer', position: 'relative', width: '16vw', background: '#FEAB20', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                    } >
+                                                                    { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
+                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
+                                                                 } >
                                                                     <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                     <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
@@ -428,9 +428,9 @@ const App = () => {
                                                                 ? <Col key={d.id} className='jobView'>
                                                                     <div onClick={() => { showData(d) }} className='font'
                                                                         style={d.status == 'free' ?
-                                                                            { cursor: 'pointer', position: 'relative', width: '16vw', background: '#1D366D', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                            : { cursor: 'pointer', position: 'relative', width: '16vw', background: '#FEAB20', borderRadius: '10px', zIndex: '2', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                        } >
+                                                                        { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
+                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
+                                                                    } >
                                                                              <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                         <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
