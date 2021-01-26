@@ -1,12 +1,14 @@
 importScripts("https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js");
 importScripts(
+    // "carbooking/firebase-messaging.js",
     "https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js",
+
 );
 // For an optimal experience using Cloud Messaging, also add the Firebase SDK for Analytics.
 importScripts(
     "https://www.gstatic.com/firebasejs/7.16.1/firebase-analytics.js",
 );
- 
+
 // Initialize the Firebase app in the service worker by passing in the
 // messagingSenderId.
 firebase.initializeApp({
@@ -15,12 +17,12 @@ firebase.initializeApp({
     'projectId': 'car-booking-4433a',
     'appId': '1:851373916828:web:bdb3c4099248049c946359',
 });
- 
+
 // Retrieve an instance of Firebase Messaging so that it can handle background
 // messages.
 const messaging = firebase.messaging();
- console.log(messaging);
-messaging.setBackgroundMessageHandler(function(payload) {
+console.log(messaging);
+messaging.setBackgroundMessageHandler(function (payload) {
     // console.log(
     //     "[firebase-messaging-sw.js] Received background message ",
     //     payload,
