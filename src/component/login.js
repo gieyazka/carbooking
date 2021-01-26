@@ -189,11 +189,11 @@ const Login = () => {
                     <div style={{ marginTop: '24px', textAlign: 'center' }}>
                         <button style={{ border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ', backgroundColor: '#FFF' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
 
-                        <button onClick={(e) => onLogin(e)} style={{ zIndex: 5, marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
+                        <button onClick={(e) => onLogin(e)} style={{ zIndex: '5', marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
 
                     </div>
                 </Row>
-                <img src={car} style={{ position: 'absolute', width: '80vw', top: '300px', left: '10vw', height: '40vh' }} />
+                <img src={car} style={{ zIndex : '-1',position: 'absolute', width: '80vw', top: '300px', left: '10vw', height: '40vh' }} />
             </div>
         )
     }

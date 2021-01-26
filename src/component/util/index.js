@@ -13,7 +13,7 @@ const driverApi = 'https://ess.aapico.com/vehicles'
 const tripApi = 'https://ess.aapico.com/requests'
 const employeeApi = 'https://ess.aapico.com/users'
 const subscribersApi = 'https://ess.aapico.com/subscribers'
-const socket = io('https://ess.aapico.com');
+const socket = io('https://ess.aapico.com',{transports : ['websocket']});
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
