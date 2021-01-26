@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Row, Col, Card, Input } from 'antd';
 import password from './asset/password1.png'
-import car from './asset/login.png'
+import car from './asset/login.svg'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { loginCheck, sendFirebaseNotification } from './util/index.js'
 import { Redirect, useHistory, useLocation } from "react-router-dom";
@@ -193,7 +193,7 @@ const Login = () => {
 
                     </div>
                 </Row>
-                <img src={car} style={{ position: 'absolute', width: '80vw', bottom: '8vh', left: '10vw', height: '40vh' }} />
+                <img src={car} style={{ position: 'fixed', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} />
             </div>
         )
     }
