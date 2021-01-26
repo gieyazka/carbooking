@@ -32,7 +32,7 @@ import moment from 'moment'
 import { set } from 'lodash';
 import 'moment/locale/th';
 var _ = require('lodash');
-const socket = io('https://ess.aapico.com', { transports: ['websocket'] });
+const socket = io('https://ess.aapico.com');
 const Trips = () => {
     // console.log(moment());
     const [date, setDate] = useState(new moment())
