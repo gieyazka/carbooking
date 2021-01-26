@@ -8,25 +8,11 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-io.on('connection', (socket) => { // chanel
-
-    // console.log('a user connected');
+io.on('connection', (socket) => {
     socket.on('dispatch', (data) => {
-        // console.log(data.driver.emp_id);
-        // io.emit(res.username,data)
-        // io.emit('sendData', data)
         io.emit(data.driver.emp_id, data)
 
     });
-
-    // user.map(res => {
-    //     socket.on(res.username, (data) => {
-    //         console.log(data);
-    //         // io.emit(res.username,data)
-    //         io.emit('sendData',data)
-    //     });
-    // })
-
 });
 
 

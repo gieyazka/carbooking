@@ -1,7 +1,7 @@
 import React, { useState, useRef, useReducer } from 'react'
 import { DataContext } from "../store/store"
 import moment from 'moment'
-import SweetAlert from 'react-bootstrap-sweetalert';
+// import SweetAlert from 'react-bootstrap-sweetalert';
 import { Modal, Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
 import editdriver from '../asset/editdriver.png'
 import Swal from 'sweetalert2';
@@ -376,7 +376,7 @@ const ManageDriver = () => {
                                     </div>
 
                                     <img className='driverimg'
-                                        src={res.picture[res.picture.length - 1] ? `http://10.10.10.227:1337${res.picture[res.picture.length - 1].url}` :
+                                        src={res.picture[res.picture.length - 1] ? `https://ess.appico.com/${res.picture[res.picture.length - 1].url}` :
                                             'https://crestedcranesolutions.com/wp-content/uploads/2013/07/facebook-profile-picture-no-pic-avatar.jpg'
                                         } />
                                 </div>

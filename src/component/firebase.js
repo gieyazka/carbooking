@@ -8,7 +8,10 @@ var config = {
     'projectId': 'car-booking-4433a',
     'appId': '1:851373916828:web:bdb3c4099248049c946359',
 };
-firebase.initializeApp(config);
+if (firebase.messaging.isSupported()) {
+    firebase.initializeApp(config);
+
+}
 export default firebase
 // const messaging = firebase.messaging();
 // messaging
