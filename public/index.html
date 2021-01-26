@@ -27,7 +27,7 @@
 
 <script>
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    navigator.serviceWorker.register('/{repository}/firebase-messaging-sw.js')
       .then(function (reg) {
         if (reg.installing) {
           console.log('SW installing');
@@ -40,6 +40,8 @@
         // registration failed
         console.log('Registration failed with ' + error);
       });
+  }else{
+    console.log('else')
   }
 </script>
 <script>
