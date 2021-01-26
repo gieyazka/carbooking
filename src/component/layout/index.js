@@ -52,7 +52,7 @@ const AppLayout = () => {
 
     const onLogout = () => {
         sessionStorage.clear();
-        history.push('/carbooking/login')
+        history.push('/login')
     }
     const [loginState, setLogin] = useState()
 
@@ -136,31 +136,31 @@ const AppLayout = () => {
                 <div className="logo" style={{ fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>  Car Booking </div>
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<FormOutlined />}>
-                        Request form<Link to="/carbooking/user" />
+                        Request form<Link to="/user" />
                     </Menu.Item>
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="dispatch" icon={<SelectOutlined />}>
-                        dispatch<Link to="/carbooking/user/dispatch" />
+                        dispatch<Link to="/user/dispatch" />
                     </Menu.Item> : null}
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="view" icon={<FolderViewOutlined />}>
-                        View Job<Link to="/carbooking/user/view" />
+                        View Job<Link to="/user/view" />
                     </Menu.Item> : null}
                     {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Menu.Item key="he" icon={<SettingOutlined />}>
-                        Hr Approve<Link to="/carbooking/user/hr" />
+                        Hr Approve<Link to="/user/hr" />
                     </Menu.Item> : null}
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="driver" icon={<SettingOutlined />}>
-                        Manage driver<Link to="/carbooking/user/driver" />
+                        Manage driver<Link to="/user/driver" />
                     </Menu.Item> : null}
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="car" icon={<CarOutlined
                     />}>
-                        Manage car<Link to="/carbooking/user/car" />
+                        Manage car<Link to="/user/car" />
                     </Menu.Item> : null}
                     {loginState ? <Menu.Item key="trip" icon={<CarOutlined
                     />}>
-                        Trips<Link to="/carbooking/user/trip" />
+                        Trips<Link to="/user/trip" />
                     </Menu.Item> : null}
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="history" icon={<HistoryOutlined
                     />}>
-                        History<Link to="/carbooking/user/history" />
+                        History<Link to="/user/history" />
                     </Menu.Item> : null}
 
                 </Menu>
@@ -185,15 +185,15 @@ const AppLayout = () => {
 
                     {/* <Route path="/user/view" component={View} /> */}
                     <Switch>
-                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/carbooking/user/view" component={View} /> : null}
-                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/carbooking/user/dispatch" component={Dispatch} /> : null}
-                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/carbooking/user/driver" component={ManageDriver} /> : null}
-                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/carbooking/user/history" component={History} /> : null}
-                        {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/carbooking/user/hr" component={Hrapprove} /> : null}
-                        {loginState ? <Route path="/carbooking/user/trip" component={Trip} /> : null}
-                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/carbooking/user/car" component={Car} /> : null}
-                        <Route exact path="/carbooking/user" component={Formrequest} />
-                        <Route path="/carbooking/*" component={Formrequest} />
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/view" component={View} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/dispatch" component={Dispatch} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/driver" component={ManageDriver} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/history" component={History} /> : null}
+                        {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/user/hr" component={Hrapprove} /> : null}
+                        {loginState ? <Route path="/user/trip" component={Trip} /> : null}
+                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/car" component={Car} /> : null}
+                        <Route exact path="/user" component={Formrequest} />
+                        <Route path="*" component={Formrequest} />
                     </Switch>
                     {/* <Formrequest /> */}
                 </Content>

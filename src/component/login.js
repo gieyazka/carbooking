@@ -72,7 +72,7 @@ const Login = () => {
                     showConfirmButton: false,
                     timer: 1500
                 }).then(() => {
-                    history.push('/carbooking/user')
+                    history.push('/user')
 
                 })
             }
