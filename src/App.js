@@ -15,15 +15,18 @@ function App() {
   return (
     <div style={{ fontFamily: 'Bai Jamjuree' }}>
       <DataContextProvider>
-        <Router>
-          <Switch>
-            <Route exact path="/carbooking" component={Login} />
+        <Router
+          basename={'/carbooking'}
+        >
 
-            <Route path="/carbooking/login" component={Login} />
-            <Route path="/carbooking/approve/:id/:uuid" component={Approve} />
-            <Route path="/carbooking/user" component={Layout} />
-            <Route path="/carbooking/flow" component={Flow} />
-            <Route path="/carbooking/*" component={Layout} />
+          <Switch>
+            <Route exact path="/" component={Login} />
+
+            <Route path="/login" component={Login} />
+            <Route path="/approve/:id/:uuid" component={Approve} />
+            <Route path="/user" component={Layout} />
+            <Route path="/flow" component={Flow} />
+            <Route path="/*" component={Layout} />
           </Switch>
         </Router>
       </DataContextProvider>
