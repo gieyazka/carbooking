@@ -17,13 +17,13 @@ function App() {
       <DataContextProvider>
         <Router>
           <Switch>
-            <Route exact path="/" component={Login} />
+            <Route exact path="/carbooking" component={Login} />
 
-            <Route path="/login" component={Login} />
-            <Route path="/approve/:id/:uuid" component={Approve} />
-            <Route path="/user" component={Layout} />
-            <Route path="/flow" component={Flow} />
-            <Route path="*" component={Layout} />
+            <Route path="/carbooking/login" component={Login} />
+            <Route path="/carbooking/approve/:id/:uuid" component={Approve} />
+            <Route path="/carbooking/user" component={Layout} />
+            <Route path="/carbooking/flow" component={Flow} />
+            <Route path="/carbooking/*" component={Layout} />
           </Switch>
         </Router>
       </DataContextProvider>
