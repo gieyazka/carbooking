@@ -15,8 +15,8 @@
 
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js"></script>
-  <!-- <script src="/carbooking/#/firebase-messaging.js"></script> -->
+  <!-- <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js"></script> -->
+  <script src="/carbooking/#/firebase-messaging.js"></script>
 
   <title>Car Booking</title>
 </head>
@@ -29,25 +29,25 @@
 
 </html>
 
-<script >
-  if ('serviceWorker' in navigator) {
-    console.log(34)
-    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js')
-      .then(function (reg) {
-        if (reg.installing) {
-          console.log('SW installing');
-        } else if (reg.waiting) {
-          console.log('SW waiting');
-        } else if (reg.active) {
-          console.log('SW activated');
-        }
-      }).catch(function (error) {
-        // registration failed
-        console.log('Registration failed with ' + error);
-      });
-  } else {
-    console.log('else')
-  }
+<script>
+  // if ('serviceWorker' in navigator) {
+  //   console.log(34)
+  //   navigator.serviceWorker.register('/firebase-messaging-sw.js')
+  //     .then(function (reg) {
+  //       if (reg.installing) {
+  //         console.log('SW installing');
+  //       } else if (reg.waiting) {
+  //         console.log('SW waiting');
+  //       } else if (reg.active) {
+  //         console.log('SW activated');
+  //       }
+  //     }).catch(function (error) {
+  //       // registration failed
+  //       console.log('Registration failed with ' + error);
+  //     });
+  // } else {
+  //   console.log('else')
+  // }
 
   var config = {
     'messagingSenderId': '851373916828',
