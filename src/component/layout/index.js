@@ -118,12 +118,13 @@ const AppLayout = () => {
 
 
         <Layout >
-            <Sider theme="dark" breakpoint="sm" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
-                <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
-                    <div style={{ position: 'absolute', top: '0',left : '100%'}}> {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
+            <Sider theme="dark" breakpoint="lg" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
+                <div style={{ color : '#FFF',position: 'absolute',paddingTop : '2.5vh', top: '0vh', left: '100%', backgroundColor: '#1D366D', height: '100vh' }}> {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
                     className: 'trigger',
                     onClick: toggle,
                 })}</div>
+                <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
+
                 </div>
                 <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<FormOutlined />}>
