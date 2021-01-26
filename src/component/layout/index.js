@@ -12,7 +12,7 @@ import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../login'
 import { Layout, Menu, Select } from 'antd';
-import { Route, Link, useLocation, useHistory, Redirect, Switch } from "react-router-dom";
+import {  BrowserRouter as Router, Route, Link, useLocation, useHistory, Redirect, Switch } from "react-router-dom";
 import {
     FormOutlined,
     SelectOutlined,
