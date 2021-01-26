@@ -40,7 +40,7 @@
         // registration failed
         console.log('Registration failed with ' + error);
       });
-  }else{
+  } else {
     console.log('else')
   }
 </script>
@@ -53,6 +53,23 @@
   };
   firebase.initializeApp(config);
   const messaging = firebase.messaging();
+  messaging
+    .requestPermission()
+    .then(function () {
+      // MsgElem.innerHTML = "Notification permission granted."
+      console.log("Notification permission granted.");
+      // get the token in the form of promise
+      return messaging.getToken()
+    })
+    .then(function (token) {
+      localStorage.setItem('carbookingKey', token);
+
+      // TokenElem.innerHTML = "token is : " + token
+    })
+    .catch(function (err) {
+
+      console.log("Unable to get permission to notify.", err);
+    });
   let enableForegroundNotification = true;
   messaging.onMessage(function (payload) {
     // console.log("Message received. ", payload);

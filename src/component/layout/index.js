@@ -12,7 +12,7 @@ import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../login'
 import { Layout, Menu, Select } from 'antd';
-import {  BrowserRouter as Router, Route, Link, useLocation, useHistory, Redirect, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, useLocation, useHistory, Redirect, Switch } from "react-router-dom";
 import {
     FormOutlined,
     SelectOutlined,
@@ -56,62 +56,46 @@ const AppLayout = () => {
     }
     const [loginState, setLogin] = useState()
 
-    React.useEffect(() => {
+    React.useEffect(async () => {
         // firebase
-        const messaging = firebase.messaging()
+        // const messaging = firebase.messaging()
         // const messaging = firebase.messaging();
-        messaging.getToken()
-            .then(async function (token) {
-                console.log(token)
-                if (!window.localStorage.carbookingKey) {
-                    localStorage.setItem('carbookingKey', token);
-                }
-                await getSubscriberByempId(JSON.parse(sessionStorage.getItem('user')).emp_id).then(async res => {
-                    console.log(res);
+        // messaging.getToken()
+        //     .then(async function (token) {
+        //         console.log(token)
+        //         if (!window.localStorage.carbookingKey) {
+        //             localStorage.setItem('carbookingKey', token);
+        //         }
+        console.log(window.localStorage.carbookingKey);
+        await getSubscriberByempId(JSON.parse(sessionStorage.getItem('user')).emp_id).then(async res => {
+            console.log(res);
 
-                    if (res[0]) {
-                        for (const d of res) {
-                            // console.log(d);
-                            if (d.app_name == 'Carbooking') {
-                                // console.log(d.token);
-                                if (window.localStorage.carbookingKey !== d.token) {
-                                    await updateSubscriber(d.id, token)
-                                }
-                                break;
-                            }
+            if (res[0]) {
+                for (const d of res) {
+                    // console.log(d);
+                    if (d.app_name == 'Carbooking') {
+                        // console.log(d.token);
+                        if (window.localStorage.carbookingKey !== d.token) {
+                            await updateSubscriber(d.id, window.localStorage.carbookingKey)
                         }
-                    } else {
-                        // console.log(82);
-                        await addSubscriber(JSON.parse(sessionStorage.getItem('user')).emp_id, token)
+                        break;
                     }
-
-                })
-
-
-                // console.log(token)
-            })
-            .catch(function (err) {
-
-                console.log("Unable to get permission to notify.", err);
-            });
-        let enableForegroundNotification = true;
-        messaging.onMessage(function (payload) {
-            console.log("Message received. ", payload);
-            //  NotisElem.innerHTML + JSON.stringify(payload);
-
-            if (enableForegroundNotification) {
-                console.log("Message received. ", payload);
-
-                const { title, ...options } = JSON.parse(payload.data.notification);
-                console.log({ title, ...options })
-                navigator.serviceWorker.getRegistrations().then(registration => {
-                    console.log(registration[0].showNotification)
-                    registration[0].showNotification(title, options);
-                });
+                }
             } else {
-                console.log('no notification')
+                // console.log(82);
+                await addSubscriber(JSON.parse(sessionStorage.getItem('user')).emp_id, window.localStorage.carbookingKey)
             }
-        });
+
+        })
+
+
+        // console.log(token)
+        // })
+        // .catch(function (err) {
+
+        //     console.log("Unable to get permission to notify.", err);
+        // });
+
     }, [])
     React.useMemo(() => {
         const loginData = JSON.parse(sessionStorage.getItem('user'));
