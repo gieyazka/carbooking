@@ -62,6 +62,7 @@ const AppLayout = () => {
         // const messaging = firebase.messaging();
         messaging.getToken()
             .then(async function (token) {
+                console.log(token)
                 if (!window.localStorage.carbookingKey) {
                     localStorage.setItem('carbookingKey', token);
                 }
