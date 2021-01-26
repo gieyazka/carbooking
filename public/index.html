@@ -32,7 +32,7 @@
 <script >
   if ('serviceWorker' in navigator) {
     console.log(34)
-    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js')
       .then(function (reg) {
         if (reg.installing) {
           console.log('SW installing');
