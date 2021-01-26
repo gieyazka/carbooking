@@ -397,7 +397,8 @@ color: rgba(0, 0, 0, 0.6);
    
     .jobView{
         margin-left: 30px;
-        
+        /* background : red; */
+        width : 100% ;       
     }
     .sideFilter.isactive {
         width: 80vw;
