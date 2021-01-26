@@ -52,7 +52,7 @@ const AppLayout = () => {
 
     const onLogout = () => {
         sessionStorage.clear();
-        history.push('/login')
+        history.push('/carbooking/login')
     }
     const [loginState, setLogin] = useState()
 
