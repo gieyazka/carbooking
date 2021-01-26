@@ -36,8 +36,9 @@
     console.log(34)
     navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js')
       .then(function (reg) {
+        messaging.useServiceWorker(registration);
+
         if (reg.installing) {
-          messaging.useServiceWorker(registration);
           console.log('SW installing');
         } else if (reg.waiting) {
           console.log('SW waiting');
