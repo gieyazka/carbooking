@@ -8,6 +8,7 @@ import Hrapprove from '../hr/hrapprove'
 import firebase from '../firebase'
 import ManageDriver from '../driver/managedriver'
 import Trip from '../user/trip'
+import Status from '../user/status'
 import Car from '../car/car'
 import logout from '../asset/logout.png'
 import Login from '../user/login'
@@ -126,7 +127,7 @@ const AppLayout = () => {
                 {/* <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
 
                 </div> */}
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ marginTop : '32px',backgroundColor: '#1D366D', color: 'white' }}  >
+                <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ marginTop : '48px',backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<FormOutlined />}>
                         Request form<Link to="/user" />
                     </Menu.Item>
@@ -187,7 +188,7 @@ const AppLayout = () => {
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/history" component={History} /> : null}
                         {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/user/hr" component={Hrapprove} /> : null}
                         {loginState ? <Route path="/user/trip" component={Trip} /> : null}
-                        {loginState ? <Route path="/user/status" component={Trip} /> : null}
+                        {loginState ? <Route path="/user/status" component={Status} /> : null}
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/car" component={Car} /> : null}
                         <Route exact path="/user" component={Formrequest} />
                         <Route path="*" component={Formrequest} />
