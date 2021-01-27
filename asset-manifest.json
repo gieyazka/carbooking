@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/carbooking/static/css/main.e65ef97c.chunk.css",
-    "main.js": "/carbooking/static/js/main.f450233c.chunk.js",
-    "main.js.map": "/carbooking/static/js/main.f450233c.chunk.js.map",
+    "main.css": "/carbooking/static/css/main.fd41348c.chunk.css",
+    "main.js": "/carbooking/static/js/main.3dc9da48.chunk.js",
+    "main.js.map": "/carbooking/static/js/main.3dc9da48.chunk.js.map",
     "runtime-main.js": "/carbooking/static/js/runtime-main.9b003bcc.js",
     "runtime-main.js.map": "/carbooking/static/js/runtime-main.9b003bcc.js.map",
     "static/css/2.5d88927a.chunk.css": "/carbooking/static/css/2.5d88927a.chunk.css",
-    "static/js/2.7c329afa.chunk.js": "/carbooking/static/js/2.7c329afa.chunk.js",
-    "static/js/2.7c329afa.chunk.js.map": "/carbooking/static/js/2.7c329afa.chunk.js.map",
+    "static/js/2.e6112ba5.chunk.js": "/carbooking/static/js/2.e6112ba5.chunk.js",
+    "static/js/2.e6112ba5.chunk.js.map": "/carbooking/static/js/2.e6112ba5.chunk.js.map",
     "static/js/3.dd4f2ab9.chunk.js": "/carbooking/static/js/3.dd4f2ab9.chunk.js",
     "static/js/3.dd4f2ab9.chunk.js.map": "/carbooking/static/js/3.dd4f2ab9.chunk.js.map",
     "index.html": "/carbooking/index.html",
     "static/css/2.5d88927a.chunk.css.map": "/carbooking/static/css/2.5d88927a.chunk.css.map",
-    "static/css/main.e65ef97c.chunk.css.map": "/carbooking/static/css/main.e65ef97c.chunk.css.map",
-    "static/js/2.7c329afa.chunk.js.LICENSE.txt": "/carbooking/static/js/2.7c329afa.chunk.js.LICENSE.txt",
+    "static/css/main.fd41348c.chunk.css.map": "/carbooking/static/css/main.fd41348c.chunk.css.map",
+    "static/js/2.e6112ba5.chunk.js.LICENSE.txt": "/carbooking/static/js/2.e6112ba5.chunk.js.LICENSE.txt",
     "static/media/login.02e485ce.png": "/carbooking/static/media/login.02e485ce.png",
     "static/media/login.37d75a24.svg": "/carbooking/static/media/login.37d75a24.svg",
     "static/media/logo.6ce24c58.svg": "/carbooking/static/media/logo.6ce24c58.svg",
@@ -22,8 +22,8 @@
   "entrypoints": [
     "static/js/runtime-main.9b003bcc.js",
     "static/css/2.5d88927a.chunk.css",
-    "static/js/2.7c329afa.chunk.js",
-    "static/css/main.e65ef97c.chunk.css",
-    "static/js/main.f450233c.chunk.js"
+    "static/js/2.e6112ba5.chunk.js",
+    "static/css/main.fd41348c.chunk.css",
+    "static/js/main.3dc9da48.chunk.js"
   ]
 }
