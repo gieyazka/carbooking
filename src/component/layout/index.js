@@ -7,10 +7,10 @@ import History from '../dispatch/history'
 import Hrapprove from '../hr/hrapprove'
 import firebase from '../firebase'
 import ManageDriver from '../driver/managedriver'
-import Trip from '../driver/driverTrip'
+import Trip from '../user/trip'
 import Car from '../car/car'
 import logout from '../asset/logout.png'
-import Login from '../login'
+import Login from '../user/login'
 import { Layout, Menu, Select } from 'antd';
 import { BrowserRouter as Router, Route, Link, useLocation, useHistory, Redirect, Switch } from "react-router-dom";
 import {
@@ -119,14 +119,14 @@ const AppLayout = () => {
 
         <Layout >
             <Sider theme="dark" breakpoint="lg" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
-                <div style={!state.collapsed ? { color: '#FFF', position: 'absolute', top: '0vh', left: '100%', backgroundColor: '#1D366D', height: '100vh' } : null}> {state.collapsed ? null : React.createElement(MenuFoldOutlined, {
+                <div style={!state.collapsed ? { color: '#FFF', position: 'absolute', top: '0vh', left: '75%', backgroundColor: '#1D366D', height: '100vh' } : null}> {state.collapsed ? null : React.createElement(MenuFoldOutlined, {
                     className: 'trigger',
                     onClick: toggle,
                 })}</div>
-                <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
+                {/* <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
 
-                </div>
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ backgroundColor: '#1D366D', color: 'white' }}  >
+                </div> */}
+                <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ marginTop : '32px',backgroundColor: '#1D366D', color: 'white' }}  >
                     <Menu.Item key="requestform" icon={<FormOutlined />}>
                         Request form<Link to="/user" />
                     </Menu.Item>
@@ -146,15 +146,19 @@ const AppLayout = () => {
                     />}>
                         Manage car<Link to="/user/car" />
                     </Menu.Item> : null}
-                    {loginState ? <Menu.Item key="trip" icon={<CarOutlined
-                    />}>
-                        Trips<Link to="/user/trip" />
-                    </Menu.Item> : null}
                     {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="history" icon={<HistoryOutlined
                     />}>
                         History<Link to="/user/history" />
                     </Menu.Item> : null}
 
+                    {loginState ? <Menu.Item key="trip" icon={<CarOutlined
+                    />}>
+                        Trips<Link to="/user/trip" />
+                    </Menu.Item> : null}
+                    {loginState ? <Menu.Item key="status" icon={<CarOutlined
+                    />}>
+                        Status<Link to="/user/status" />
+                    </Menu.Item> : null}
                 </Menu>
             </Sider>
             <Layout className="site-layout" style={{ position: 'relative' }}>
@@ -183,6 +187,7 @@ const AppLayout = () => {
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/history" component={History} /> : null}
                         {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Route path="/user/hr" component={Hrapprove} /> : null}
                         {loginState ? <Route path="/user/trip" component={Trip} /> : null}
+                        {loginState ? <Route path="/user/status" component={Trip} /> : null}
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/car" component={Car} /> : null}
                         <Route exact path="/user" component={Formrequest} />
                         <Route path="*" component={Formrequest} />

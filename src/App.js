@@ -4,8 +4,8 @@ import 'antd/dist/antd.css';
 import { BrowserRouter as Router, Route, Link, useLocation, Switch } from "react-router-dom";
 import DataContextProvider from './component/store/store'
 
-import Login from './component/login'
-import Approve from './component/approve'
+import Login from './component/user/login'
+import Approve from './component/user/approve'
 import Flow from './component/flow'
 
 // import FromRequest from './component/form/formrequest'

@@ -1,21 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { Row, Col, Card, Input } from 'antd';
-import password from './asset/password1.png'
-import car from './asset/login.png'
+import password from '../asset/password1.png'
+import car from '../asset/login.png'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { loginCheck, checkBookingById, updateManangerStatus } from './util/index.js'
+import { loginCheck, checkBookingById, updateManangerStatus } from '../util/index.js'
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom";
 import Swal from 'sweetalert2'
 const Approve = () => {
-
-    const [screen, setScreen] = useState(null)
-    // let params = new URLSearchParams(document.location.search.substring(1));
-    // let name = params.get("name")
-    // let history = useHistory();
-    // const path = window.location.origin;
-    // console.log(path);
     let { id, uuid } = useParams();
-    // const [booking,setBooking] = React.useState()
     React.useMemo(async () => {
 
         await checkBookingById(id).then(async res => {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Row, Col, Card, Input } from 'antd';
-import password from './asset/password1.png'
-import car from './asset/login.svg'
+import password from '../asset/password1.png'
+import car from '../asset/login.svg'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { loginCheck, sendFirebaseNotification } from './util/index.js'
+import { loginCheck, sendFirebaseNotification } from '../util/index.js'
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import Swal from 'sweetalert2'
 const Login = () => {
