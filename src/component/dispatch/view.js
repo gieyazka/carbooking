@@ -393,12 +393,12 @@ const App = () => {
                                                         || d.booking.destProvince == filerBooking.province && d.car.id == res.id
 
                                                         ?
-                                                        <Col key={d.id} className='jobView'>
+                                                        <Col xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
                                                             <div onClick={() => { showData(d) }} className='font'
                                                                 style={d.status == 'free' ?
-                                                                { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                             } >
+                                                                    { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
+                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
+                                                                } >
                                                                 <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                 <p>{d.booking.startTime} - {d.booking.endTime}</p>
                                                             </div>
@@ -407,12 +407,12 @@ const App = () => {
                                                         :
 
                                                         filerBooking.search == false && d.car && d.car.id == res.id ?
-                                                            <Col key={d.id} className='jobView'>
+                                                            <Col  xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
                                                                 <div onClick={() => { showData(d) }} className='font'
                                                                     style={d.status == 'free' ?
-                                                                    { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                 } >
+                                                                        { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
+                                                                        : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
+                                                                    } >
                                                                     <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                     <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
@@ -425,13 +425,13 @@ const App = () => {
                                                                 || filerBooking.department == 'Other' && d.car.id == res.id && d.booking.department != 'Production' && d.booking.department != 'production' && d.booking.department != 'Marketing' && d.booking.department != 'marketing' && d.booking.department != 'QA & QC' && d.booking.department != 'Personnel' && d.booking.department != 'personnel' && d.booking.department != 'IT' && d.booking.department != 'it' && d.booking.department != 'Business Deverlopment' && d.booking.department != 'business deverlopment' && d.booking.department != 'Purchasing' && d.booking.department != 'purchasing' && d.booking.department != 'Safety' && d.booking.department != 'Safety'
 
                                                                 || filerBooking.reason == 'Other' && d.car.id == res.id && d.booking.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && d.booking.reason != 'ส่งของ' && d.booking.reason != 'รับ - ส่งแขก' && d.booking.reason != 'ติดต่อลูกค้า'
-                                                                ? <Col key={d.id} className='jobView'>
+                                                                ? <Col xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
                                                                     <div onClick={() => { showData(d) }} className='font'
                                                                         style={d.status == 'free' ?
-                                                                        { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2',padding : '8px' , marginTop: '4%' }
-                                                                    } >
-                                                                             <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                            { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
+                                                                            : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
+                                                                        } >
+                                                                        <p>{d.booking.destination} {d.booking.destProvince}</p>
                                                                         <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
                                                                     </div>

@@ -246,6 +246,7 @@ line-height: 140%;
 }
 .jobView{
     margin-left: 8px;
+    
 }
 .font{
     /* margin-top : -12px ; */
@@ -402,7 +403,7 @@ color: rgba(0, 0, 0, 0.6);
     }
    
     .jobView{
-        margin-left: 30px;
+        margin-left: 0;
         /* background : red; */
         width : 100% ;       
     }
