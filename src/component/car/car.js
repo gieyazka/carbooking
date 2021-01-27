@@ -305,7 +305,7 @@ const ManageDriver = () => {
                         <img style={{ width: '183px', height: '183px' }}
                             src={carState.carData && carState.carData.img ? carState.carData.img : carState.carData != null ? carState.carData && carState.carData.plateNo
                                 ? carState.carData.picture && carState.carData.picture[carState.carData.picture.length - 1]
-                                    ? `https://ess.appico.com${carState.carData.picture[carState.carData.picture.length - 1].url}`
+                                    ? `https://ess.aapico.com${carState.carData.picture[carState.carData.picture.length - 1].url}`
                                     : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 : 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'} />
