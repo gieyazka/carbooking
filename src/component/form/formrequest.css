@@ -47,7 +47,6 @@ rbc-event.rbc-selected {
     background-color: #FFF;
     height:  50px;
      position: relative;
- 
 }
 .rbc-header > span {
     font-family: Bai Jamjuree;
@@ -55,31 +54,22 @@ rbc-event.rbc-selected {
      position: absolute;
     top: 50%;    
     left: 50%;    
-    /* z-index: 5;                      */
     transform: translate(-50%, -50%) ;
 }
 .swConfirm{
     font-family:  'Bai Jamjuree';
     background-color: #2CC84D;
     color: #FFF;
- 
-    /* border: 0; */
     border-radius: 10px;
-
     padding: 4px 16px;
     border: 0;
-    /* border-radius: .25em; */
-    /* background: initial; */
-    /* background-color: #2778c4; */
     color: #fff;
     font-size: 1.0625em;
 }
 
 .cardBooking{
     background :  #E3E3E3;
-
     padding: 12px;
-    /* border: 0.5px solid black ; */
      border-radius: 24px 
 }
 .swCancel{
@@ -89,14 +79,8 @@ rbc-event.rbc-selected {
     box-sizing: border-box;
     border-radius: 10px;
     border-color: #71a07b;
-    /* border: 0; */
     border-radius: 10px;
     padding: 4px 16px;
-    /* border: 0; */
-    /* border-radius: .25em; */
-    /* background: initial; */
-    /* background-color: #757575; */
-    /* color: #fff; */
     font-size: 1.0625em;
 }
 
@@ -104,15 +88,9 @@ rbc-event.rbc-selected {
     font-family:  'Bai Jamjuree';
     background-color: #C53030;
     color: #FFF;
- 
-    /* border: 0; */
     border-radius: 10px;
-    
     padding: 4px 16px;
     border: 0;
-    /* border-radius: .25em; */
-    /* background: initial; */
-    /* background-color: #2778c4; */
     color: #fff;
     font-size: 1.0625em;
 }
@@ -127,14 +105,8 @@ rbc-event.rbc-selected {
     box-sizing: border-box;
     border-radius: 10px;
     color: #C53030;
-    /* border: 0; */
     border-radius: 10px;
     padding: 4px 16px;
-    /* border: 0; */
-    /* border-radius: .25em; */
-    /* background: initial; */
-    /* background-color: #757575; */
-    /* color: #fff; */
     font-size: 1.0625em;
 }
 .ant-select:not(.ant-select-customize-input) .ant-select-selector,
