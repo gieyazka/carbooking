@@ -7,8 +7,6 @@ import '../form/formrequest.css'
 import { Modal, Form, Input, Row, Col, Select, InputNumber, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
 import forward from '../asset/forward.png'
 import backward from '../asset/backward.png'
-import Swal from 'sweetalert2';
-import user from '../asset/hruser.png'
 import calender from '../asset/hrcarender.png'
 import location from '../asset/hrlocation.png'
 import car from '../asset/carblack.png'

@@ -419,6 +419,12 @@ export const getBookingDispatch = async () => {
         return res.data
     })
 }
+export const getBookingStatus = async (id) => {
+    return await axios.get(`${bookingApi}?emp_id=${id}`).then(res => {
+
+        return res.data
+    })
+}
 // export const getBookingDispatch = async () => {
 
 //     return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true`).then(res => {
