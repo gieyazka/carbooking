@@ -117,10 +117,10 @@ const Login = () => {
                         <Col>
                             <div style={{ backgroundColor: '#E5E5E5', height: '100vh', width: '75vw' }}>
                                 <h1 style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw',zIndex : 5}}>Car Booking System</h1>
-                                <div style={{ position: 'absolute', left: '-20vw', height: '50%',zIndex : 4,top : '2vh'}}>
+                                {/* <div style={{ position: 'absolute', left: '-20vw', height: '50%',zIndex : 4,top : '2vh'}}>
                                     <CoverCar width='100%' height='100%' />
-                                </div>
-                                {/* <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} /> */}
+                                </div> */}
+                                <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} />
                             </div>
                         </Col>
                         <div style={{ position: 'absolute', right: '0', backgroundColor: '#1D366D', height: '100vh', width: '25vw' }}></div>
