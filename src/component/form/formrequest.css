@@ -2,6 +2,9 @@
     width: 16vw;
      height: 16vh ;
 }
+#bwheel{
+    width: 100vw;
+}
 .rbc-now{
     background-color : #1D366D ;
     color : #FFF

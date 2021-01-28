@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react'
 import { Row, Col, Card, Input } from 'antd';
 import password from '../asset/password1.png'
 import car from '../asset/login.svg'
+import carBookingCover from '../asset/carBookingCover.svg'
+import CoverCar from './coverCar.js'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { loginCheck, sendFirebaseNotification } from '../util/index.js'
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import Swal from 'sweetalert2'
+import { motion } from "framer-motion"
 const Login = () => {
 
     const [screen, setScreen] = useState(null)
@@ -109,14 +112,15 @@ const Login = () => {
         return (
 
             <div >
-
                 <div >
                     <Row style={{ fontFamily: "Bai Jamjuree" }}>
                         <Col>
                             <div style={{ backgroundColor: '#E5E5E5', height: '100vh', width: '75vw' }}>
-                                <h1 style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw' }}>Car Booking System</h1>
-
-                                <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} />
+                                <h1 style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw',zIndex : 5}}>Car Booking System</h1>
+                                <div style={{ position: 'absolute', left: '-20vw', height: '50%',zIndex : 4,top : '2vh'}}>
+                                    <CoverCar width='100%' height='100%' />
+                                </div>
+                                {/* <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} /> */}
                             </div>
                         </Col>
                         <div style={{ position: 'absolute', right: '0', backgroundColor: '#1D366D', height: '100vh', width: '25vw' }}></div>
@@ -193,7 +197,7 @@ const Login = () => {
 
                     </div>
                 </Row>
-                <img src={car} style={{ zIndex : '-1',position: 'absolute', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} />
+                <img src={car} style={{ zIndex: '-1', position: 'absolute', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} />
             </div>
         )
     }
