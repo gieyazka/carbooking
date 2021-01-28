@@ -117,7 +117,7 @@ const Login = () => {
                         <Col>
                             <div style={{ backgroundColor: '#E5E5E5', height: '100vh', width: '75vw' }}>
                                 <h1 style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw', zIndex: 5 }}>Car Booking System</h1>
-                                <div style={{ position: 'absolute', left: '-20vw', height: '50%',width : '100vw', zIndex: 4, bottom: '50vh' }}>
+                                <div style={{ position: 'absolute', left: '-20vw', height: '50%',width : '100vw', zIndex: 1, bottom: '50vh' }}>
                                     <CoverCar width='100vw' height='100vh' />
                                 </div>
                                 {/* <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} /> */}
@@ -125,9 +125,9 @@ const Login = () => {
                         </Col>
                         <div style={{ position: 'absolute', right: '0', backgroundColor: '#1D366D', height: '100vh', width: '25vw' }}></div>
 
-                        <Card style={{ boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), -4px -4px 4px rgba(0, 0, 0, 0.05)', position: 'fixed', right: '12.5vw', top: '12vh', width: '24vw', paddingBottom: '20vh' }}>
+                        <Card style={{ zIndex : 20 ,boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), -4px -4px 4px rgba(0, 0, 0, 0.05)', position: 'fixed', right: '12.5vw', top: '12vh', width: '24vw', paddingBottom: '20vh' }}>
                             <h1 style={{ textAlign: 'center', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
-                            <Row justify='end'>
+                            <Row style={{zIndex : 20}} justify='end'>
                                 <Col>
                                     <p onClick={() => { switchLanguage('EN') }}
                                         style={language == 'TH' ? { cursor: 'pointer', fontWeight: 'normal' } : { cursor: 'pointer', fontWeight: 'Bold' }}
