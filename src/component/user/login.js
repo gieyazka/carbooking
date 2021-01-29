@@ -188,7 +188,7 @@ const Login = () => {
     } else {
         return (
             <div>
-                <h1 style={{ textAlign : 'center' , fontFamily: 'Bai Jamjuree', fontSize: '3em', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
+                <h1 style={{ textAlign : 'center' , fontFamily: 'Bai Jamjuree', fontSize: '3em', marginTop: '6%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
                 <Row justify='center' style={{width : '100vw' ,zIndex: 9 }}>
                     <Col>
                         <p onClick={() => { switchLanguage('EN') }}
