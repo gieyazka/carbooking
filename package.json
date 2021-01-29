@@ -18,6 +18,7 @@
     "react-big-calendar": "^0.30.0",
     "react-bootstrap-sweetalert": "^5.2.0",
     "react-dom": "^17.0.1",
+    "react-gif-loader": "^0.6.0",
     "react-loader-spinner": "^3.1.14",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",

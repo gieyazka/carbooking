@@ -2,12 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Row, Col, Card, Input } from 'antd';
 import password from '../asset/password1.png'
 import car from '../asset/login.svg'
+import loadingLogin from '../asset/wheel.gif'
 import carBookingCover from '../asset/carBookingCover.svg'
 import CoverCar from './coverCar.js'
 import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
 import { loginCheck, sendFirebaseNotification } from '../util/index.js'
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 import Swal from 'sweetalert2'
+import GifLoader from 'react-gif-loader';
 import { motion } from "framer-motion"
 const Login = () => {
 
@@ -16,6 +18,7 @@ const Login = () => {
         username: null,
         password: null,
     })
+    const [loading, setloading] = useState(false)
     // console.log(innerHeight,innerWidth);
     useEffect(() => {
         if (window.innerWidth <= 575) {
@@ -39,8 +42,10 @@ const Login = () => {
     let history = useHistory();
     const onLogin = (e) => {
         e.preventDefault();
+        setloading(true)
         loginCheck(data.username, data.password).then(res => {
             if (res.err) {
+                setloading(false)
                 Swal.fire({
 
                     icon: 'error',
@@ -61,7 +66,8 @@ const Login = () => {
                 } else {
                     dataUser = res.data.user.custom_role.car_role
                 }
-                console.log(dataUser);
+                setloading(false)
+
                 const user = {
                     username: res.data.user.username,
                     company: res.data.user.company,
@@ -79,7 +85,11 @@ const Login = () => {
 
                 })
             }
-        }).catch(err => console.log('err', err))
+        }).catch(err => {
+            setloading(false)
+
+            console.log('err', err)
+        })
     }
     React.useMemo(() => {
         if (sessionStorage.getItem("user")) {
@@ -111,23 +121,35 @@ const Login = () => {
     if (!screen) {
         return (
 
-            <div >
+            <div style={{ width: '100vw', height: '100vh' }} >
+
+                <GifLoader
+                    loading={loading}
+                    imageSrc={loadingLogin}
+                    imageStyle={{
+                        borderRadius: '10px', top: '50%',
+                        left: '50%',
+                        position: 'absolute',
+                        transform: 'translate(-50%, -50%)'
+                    }}
+                    overlayBackground="rgba(0,0,0,0.5)"
+                />
                 <div >
                     <Row style={{ fontFamily: "Bai Jamjuree" }}>
                         <Col>
-                            <div style={{ backgroundColor: '#E5E5E5', height: '100vh', width: '75vw' }}>
+                            <div style={{ position: 'relative', backgroundColor: '#E5E5E5', height: '100vh', width: '75vw' }}>
                                 <h1 style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw', zIndex: 5 }}>Car Booking System</h1>
-                                <div style={{ position: 'absolute', left: '-20vw', height: '50%',width : '100vw', zIndex: 1, bottom: '50vh' }}>
-                                    <CoverCar width='100vw' height='100vh' />
-                                </div>
+                                {/* <div style={{ position: 'absolute', left: '-20vw', height: '50%',width : '100vw', zIndex: 1, bottom: '50vh' }}> */}
+                                <CoverCar width='70vw' height='70vh' />
+                                {/* </div> */}
                                 {/* <img src={car} style={{ position: 'absolute', width: '43vw', bottom: '16vh', left: '8vw', height: '50%' }} /> */}
                             </div>
                         </Col>
                         <div style={{ position: 'absolute', right: '0', backgroundColor: '#1D366D', height: '100vh', width: '25vw' }}></div>
 
-                        <Card style={{ zIndex : 20 ,boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), -4px -4px 4px rgba(0, 0, 0, 0.05)', position: 'fixed', right: '12.5vw', top: '12vh', width: '24vw', paddingBottom: '20vh' }}>
+                        <Card style={{ zIndex: 20, boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25), -4px -4px 4px rgba(0, 0, 0, 0.05)', position: 'fixed', right: '12.5vw', top: '12vh', width: '24vw', paddingBottom: '20vh' }}>
                             <h1 style={{ textAlign: 'center', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
-                            <Row style={{zIndex : 20}} justify='end'>
+                            <Row style={{ zIndex: 20 }} justify='end'>
                                 <Col>
                                     <p onClick={() => { switchLanguage('EN') }}
                                         style={language == 'TH' ? { cursor: 'pointer', fontWeight: 'normal' } : { cursor: 'pointer', fontWeight: 'Bold' }}
