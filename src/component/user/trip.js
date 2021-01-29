@@ -24,9 +24,7 @@ import clearIcon from '../asset/clearIcon.png'
 import { getTrips } from '../util/index'
 import { getAllTrips, editTrips } from '../util/index'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
-
-
-
+import loadingLogin from '../asset/wheel.gif'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { set } from 'lodash';
@@ -34,7 +32,8 @@ import 'moment/locale/th';
 var _ = require('lodash');
 const socket = io('https://ess.aapico.com');
 const Trips = () => {
-    // console.log(moment());
+    const [loading, setloading] = useState(false)
+
     const [date, setDate] = useState(new moment())
     const localizer = momentLocalizer(moment)
     var data = [{}]
@@ -113,6 +112,7 @@ const Trips = () => {
                 reverseButtons: true
             }).then(async (result) => {
                 if (result.isConfirmed) {
+                    setloading(true)
                     let startMile = valueRef.current.state.inputValue
                     valueRef.current.state.inputValue = null
                     // console.log(valueRef.current.state);
@@ -120,8 +120,10 @@ const Trips = () => {
                     editTrips(d, startMile).then(res => {
                         setTripDetail({ ...tripDetail, allTrips: res })
                         setTripModal({ open: false });
+
                         // console.log(res);
                     })
+                    setloading(false)
                 }
             })
 
@@ -160,12 +162,14 @@ const Trips = () => {
                 reverseButtons: true
             }).then(async (result) => {
                 if (result.isConfirmed) {
+                    setloading(true)
                     await editTrips(d, endMile).then(res => {
                         console.log(res);
                         setTripDetail({ ...tripDetail, allTrips: res })
                         setTripModal({ open: false });
                         // console.log(res);
                     })
+                    setloading(false)
                 }
             })
         }
@@ -198,6 +202,10 @@ const Trips = () => {
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
     return (
         <Fragment >
+            < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+            </div >
+
             <div className='driverCalendar' >
                 <h2 style={{ position: 'relative', padding: '12px', textAlign: 'center', color: '#FFF' }}><img src={backward} onClick={() => { setDate(moment(date).subtract(1, 'months')) }} style={{ cursor: 'pointer' }} /> &nbsp; {date.locale('th').format('MMMM YYYY')} &nbsp; <img src={forward} onClick={() => { setDate(moment(date).add(1, 'months')) }} style={{ cursor: 'pointer' }} /></h2>
                 <Calendar

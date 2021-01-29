@@ -20,6 +20,7 @@ import clearIcon from '../asset/clearIcon.png'
 import car from '../asset/carblack.png'
 import people from '../asset/people.png'
 import Swal from 'sweetalert2'
+import loadingLogin from '../asset/wheel.gif'
 // import statusdriver2 from '../asset/statusdriver2.png'
 
 import filer from '../asset/filer.png'
@@ -87,6 +88,7 @@ const Hrapprove = () => {
             reverseButtons: true
         }).then(async (result) => {
             if (result.isConfirmed) {
+                setloading(true)
                 const status = false
                 const id = res.id
                 let name = null
@@ -98,6 +100,8 @@ const Hrapprove = () => {
                                 name = booking.name
                             }
                         })
+                        setloading(false)
+
                         Swal.fire({
                             text: `ไม่อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
                             // text: "You won't be able to revert this!",
@@ -109,11 +113,14 @@ const Hrapprove = () => {
                         // return res
                     })
                 })
+                setloading(false)
 
             }
         })
         // console.log(res);
     }
+    const [loading, setloading] = useState(false)
+
     const hrApproveClick = (res) => {
         Swal.fire({
             text: `อนุมัติคำขอของ ${res.name} ?`,
@@ -127,6 +134,7 @@ const Hrapprove = () => {
             reverseButtons: true
         }).then(async (result) => {
             if (result.isConfirmed) {
+                setloading(true)
                 const status = true
                 const id = res.id
                 let name = null
@@ -139,8 +147,9 @@ const Hrapprove = () => {
                                 // console.log( booking.name);
                             }
                         })
-                  
+
                         // console.log(d);
+                        setloading(false)
 
                         Swal.fire({
                             text: `อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
@@ -151,9 +160,12 @@ const Hrapprove = () => {
                         })
                         setBookingData(data)
                         // return res
+                    }).catch(err => {
+                        console.log(err)
                     })
                 })
 
+                setloading(false)
 
             }
         })
@@ -164,7 +176,7 @@ const Hrapprove = () => {
 
     const filterBooking = (dataFilter, filter) => {
         // console.log(dataFilter, filter);
-     
+
         if (filter == 'Company') {
             setFilter({ ...filerBooking, search: true, company: dataFilter })
         } else if (filter == 'Department') {
@@ -308,6 +320,9 @@ const Hrapprove = () => {
     // console.log(modal);
     return (
         <div>
+            < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+            </div >
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
             <div className='padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p style={{ color: 'black', paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>

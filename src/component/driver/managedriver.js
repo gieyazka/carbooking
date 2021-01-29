@@ -10,8 +10,9 @@ import { IconMap } from 'antd/lib/result';
 import { getDrivers, editDriver, addDrivers, removeDriver } from '../util/index'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import Loader from "react-loader-spinner";
+import loadingLogin from '../asset/wheel.gif'
 const ManageDriver = () => {
-    const [loader, setLoader] = useState(false)
+    // const [loader, setLoader] = useState(false)
     const [driverstate, setDriverstate] = useState({
         isModalVisible: false,
         openCreateModal: false,
@@ -26,6 +27,7 @@ const ManageDriver = () => {
             img: null,
         }, allDriver: null
     });
+    const [loading, setloading] = useState(false)
     React.useMemo(async () => {
         const getDriversData = async () => {
             return await getDrivers().then(res => res)
@@ -96,15 +98,6 @@ const ManageDriver = () => {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                // }
-                //  else if (driverstate.driverData.password != driverstate.driverData.confirm_password) {
-                //     Swal.fire({
-
-                //         icon: 'warning',
-                //         title: 'รหัสผ่านไม่ตรงกัน',
-                //         showConfirmButton: false,
-                //         timer: 1500
-                //     })
             } else {
 
 
@@ -127,7 +120,7 @@ const ManageDriver = () => {
                     reverseButtons: true,
 
                 }).then(async (result) => {
-                    setLoader(true)
+                    setloading(true)
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         await addDrivers(driverstate.driverData).then(async (res) => {
@@ -144,7 +137,7 @@ const ManageDriver = () => {
                                 })
                             }
 
-                            setLoader(false)
+                            setloading(false)
                             // Swal.fire({
                             //     icon: 'success',
                             //     title: 'บันทึกข้อมูลสำเร็จ',
@@ -175,7 +168,7 @@ const ManageDriver = () => {
 
 
     };
-    
+
     const handleRemove = () => {
 
         Swal.fire({
@@ -199,8 +192,11 @@ const ManageDriver = () => {
         }).then(async (result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
+                setloading(true)
                 await removeDriver(driverstate.driverData).then(async res => {
                     setDriverstate({ ...driverstate, allDriver: res, isModalVisible: false })
+                    setloading(false)
+
                     Swal.fire({
 
                         icon: 'success',
@@ -274,6 +270,7 @@ const ManageDriver = () => {
     const handleEdit = () => {
 
         if (driverstate.driverData) {
+          
             if (!driverstate.driverData.name || !driverstate.driverData.lastname || !driverstate.driverData.emp_id || !driverstate.driverData.tel) {
                 Swal.fire({
 
@@ -282,7 +279,14 @@ const ManageDriver = () => {
                     showConfirmButton: false,
                     timer: 1500
                 })
-                console.log(241);
+            } else if (driverstate.driverData.tel.length != 10) {
+                Swal.fire({
+
+                    icon: 'warning',
+                    title: 'หมายเลขโทรศัพท์ไม่ถูกต้อง',
+                    showConfirmButton: false,
+                    timer: 1500
+                })
             } else {
                 Swal.fire({
                     title: `บันทึกข้อมูลรถ ${driverstate.driverData.plateNo}`,
@@ -305,9 +309,11 @@ const ManageDriver = () => {
                 }).then(async (result) => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
+                        setloading(true)
                         // console.log(driverstate.driverData);
                         await editDriver(driverstate.driverData).then(async res => {
                             setDriverstate({ ...driverstate, allDriver: res, isModalVisible: false })
+                            setloading(false)
                             Swal.fire({
 
                                 icon: 'success',
@@ -339,18 +345,10 @@ const ManageDriver = () => {
     const [form] = Form.useForm();
     return (
         <div>
-            <Loader
-                style={{
-                    position: 'absolute', top: '50%', zIndex: '5'
-                    , left: '50%', transform: 'translate(-50%, -50%)'
-                }}
-                visible={loader}
-                type="Watch"
-                color="#1D366D"
-                height={100}
-                width={100}
-            // timeout={3000}
-            />
+            < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+            </div >
+
             <div className=' padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p className='hrfont' style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
@@ -388,7 +386,7 @@ const ManageDriver = () => {
 
                 </Row>
 
-                <Modal style={loader ? { display: 'none' } : null} title="" visible={driverstate.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
+                <Modal style={loading ? { display: 'none' } : null} title="" visible={driverstate.isModalVisible} onOk={handleOk} onCancel={handleCancel} footer={[
                     <Row gutter={{ xs: 24, sm: 24 }} style={{ textAlign: 'center' }}>
                         <Col span={24}>
                             {!driverstate.openCreateModal ? <Button key="back" style={{ backgroundColor: '#C53030', color: 'white', width: '35%' }} onClick={() => handleRemove()}>
@@ -445,9 +443,9 @@ const ManageDriver = () => {
                                 <Input style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='นามสกุล' bordered={false} name='lastname' onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.lastname : null} />
                             </Col>
                             <Col span={24}>
-                             
+
                                 <h3 style={{ fontWeight: 'bold' }}>รหัสพนักงาน</h3>
-                                <Input readOnly={!driverstate.openCreateModal ? true : false}  style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='รหัสพนักงาน' name='emp_id' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.emp_id : null} />
+                                <Input readOnly={!driverstate.openCreateModal ? true : false} style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='รหัสพนักงาน' name='emp_id' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.emp_id : null} />
                                 <h3 style={{ fontWeight: 'bold' }} >เบอร์โทรศัพท์</h3>
                                 <Input style={{ width: '100%', backgroundColor: '#EDEDED' }} placeholder='เบอร์โทรศัพท์' name='tel' bordered={false} onChange={(e) => { handleDriverData(e) }} value={driverstate.driverData ? driverstate.driverData.tel : null} />
                                 {/* <h3 style={{ fontWeight: 'bold' }}>ชื่อบัญชีผู้ใช้</h3>

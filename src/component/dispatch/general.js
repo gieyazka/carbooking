@@ -21,7 +21,9 @@ import senddatabtn from '../asset/senddatabtn.png'
 import filer from '../asset/filer.png'
 import noDriver1 from '../asset/noDriver1.png'
 import noDriver from '../asset/noDriver.png'
+import loadingLogin from '../asset/wheel.gif'
 
+import GifLoader from 'react-gif-loader';
 import car from '../asset/carblack.png'
 import hrmessage from '../asset/hrmessage.png'
 import people from '../asset/people.png'
@@ -29,7 +31,7 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { addTrips, getBooking, getBookingDispatch, sendEmail,getCars, getDrivers, getTrips } from '../util/index'
+import { addTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
 const RequestCar = ({ filerBooking }) => {
     // console.log(filerBooking);
     const [state, setState] = React.useContext(DataContext);
@@ -296,8 +298,11 @@ const Car = ({ testt }) => {
         setState({ ...state, selectCar: arr })
     }
     // console.log(state);
+    const [loading, setloading] = useState(false)
     const saveDispatch = async (data, carData) => {
         // console.log(data, carData);
+        setloading(true)
+        // return
         var driverName = null
         var noDriver = []
         let disatchInsertById = []
@@ -306,7 +311,7 @@ const Car = ({ testt }) => {
         // let test = []
         // var bookingId
         for (const d of data) {
-            
+
             if (state.selectCar) {
                 for (const nameDriver of state.selectCar) {
                     if (nameDriver.carId == d.destCarId) {
@@ -326,6 +331,7 @@ const Car = ({ testt }) => {
                             showConfirmButton: false,
                             timer: 1500
                         })
+                        setloading(false)
                         return
 
                     } else {
@@ -371,6 +377,8 @@ const Car = ({ testt }) => {
                     }
                 })
                 setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
+                setloading(false)
+
                 Swal.fire({
 
                     icon: 'success',
@@ -378,8 +386,13 @@ const Car = ({ testt }) => {
                     showConfirmButton: false,
                     timer: 1500
                 })
+            }).catch(err => {
+                setloading(false)
+
+                console.log(err)
             })
         })
+        setloading(false)
         // console.log(disatchInsertById);
     }
     if (innerWidth <= 575) {
@@ -390,6 +403,10 @@ const Car = ({ testt }) => {
     return (
         <div className='horizonScroll'>
             <div className='ScrollCar'>
+
+                < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', left: 0, textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                    <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+                </div >
                 {state.cars.map((res, index) =>
                     <Droppable key={index} droppableId={`${res.id}`}>
                         {(provided, snapshot) => (

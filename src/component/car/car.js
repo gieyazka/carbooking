@@ -7,8 +7,10 @@ import Swal from 'sweetalert2';
 import countRequest from '../asset/countRequest.png'
 import { IconMap } from 'antd/lib/result';
 import { addCars, getCars, editCars, removeCars } from '../util/index'
-
+import loadingLogin from '../asset/wheel.gif'
 const ManageDriver = () => {
+    const [loading, setloading] = useState(false)
+
     const [state, setState] = React.useContext(DataContext);
     const [carState, setcarState] = useState({
         isModalVisible: false,
@@ -101,11 +103,14 @@ const ManageDriver = () => {
                     reverseButtons: true,
 
                 }).then(async (result) => {
+                    setloading(true)
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         await addCars(carState.carData).then(async res => {
 
                             setcarState({ ...carState, allCar: res, isModalVisible: false })
+                            setloading(false)
+
                             Swal.fire({
 
                                 icon: 'success',
@@ -115,9 +120,8 @@ const ManageDriver = () => {
                             })
                         })
 
-
                     } else if (result.isDenied) {
-
+                      
                         // setcarState({ ...carState, isModalVisible: false });
                     }
                 })
@@ -165,9 +169,11 @@ const ManageDriver = () => {
                 }).then(async (result) => {
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
-                        console.log(carState.carData);
+                        setloading(true)
+
                         await editCars(carState.carData).then(async res => {
                             setcarState({ ...carState, allCar: res, isModalVisible: false })
+                            setloading(false)
                             Swal.fire({
 
                                 icon: 'success',
@@ -179,7 +185,7 @@ const ManageDriver = () => {
 
 
                     } else if (result.isDenied) {
-
+                   
                         // setcarState({ ...carState, isModalVisible: false });
                     }
                 })
@@ -217,8 +223,12 @@ const ManageDriver = () => {
         }).then(async (result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
+                setloading(true)
+
                 await removeCars(carState.carData).then(async res => {
                     setcarState({ ...carState, allCar: res, isModalVisible: false })
+                    setloading(false)
+
                     Swal.fire({
 
                         icon: 'success',
@@ -228,6 +238,8 @@ const ManageDriver = () => {
                     })
                 })
             } else if (result.isDenied) {
+              
+
                 // Swal.fire('Changes are not saved', '', 'info')
             }
         })
@@ -244,6 +256,9 @@ const ManageDriver = () => {
     // console.log(carState)
     return (
         <div>
+            < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+            </div >
 
             {/* <img src={state.carData.img  || null} /> */}
             <div className=' padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
@@ -376,7 +391,7 @@ const ManageDriver = () => {
                                     }
                                 >
 
-{state.brandCar}
+                                    {state.brandCar}
                                 </Select>
                             </Col>
                             {/* <Col span={4}></Col> */}

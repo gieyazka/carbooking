@@ -1,14 +1,17 @@
 import React, { useState, useForm } from 'react'
 import ReactDOM from 'react-dom'
 import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio } from 'antd';
-import { BrowserRouter as Router, Route, Link, useLocation } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, useLocation, useHistory } from "react-router-dom";
 import './formrequest.css'
 import dataProvince from '../../province.json'
 import moment from 'moment';
 import { saveBooking, sendEmail, getDepartment, getManagerEmail, getEmployeeById } from '../util/index'
 import Swal from 'sweetalert2'
 import { DataContext } from "../store/store"
+import loadingLogin from '../asset/wheel.gif'
+import GifLoader from 'react-gif-loader';
 const FromRequest = () => {
+    let history = useHistory();
     const { Search } = Input;
     const [form] = Form.useForm();
     const [state, setState] = React.useContext(DataContext);
@@ -21,35 +24,8 @@ const FromRequest = () => {
         managerEmail: null,
 
     });
+    const [loading, setloading] = useState(false)
 
-
-    // const [loginData, setLoginData] = useState({ user: 'test' })
-    // React.useMemo(async () => {
-    //     let arr = []
-    //     var i = 0
-
-    //     // if (sessionStorage.getItem('user')) {
-    //     //     setLoginData(JSON.parse(sessionStorage.getItem('user')))
-
-    //     // }
-    //     // console.log(loginData);
-    //     await getDepartment(JSON.parse(sessionStorage.getItem('user')).company).then(r => {
-    //         r.map(res => {
-    //             // console.log(res);
-    //             arr.push(<Option key={i} value={res}>{res}</Option>);
-    //             i++
-    //         })
-
-    //     })
-
-    //     // console.log(arr);
-    //     setFormDropdown({
-    //         ...formDropdown, department: arr
-    //     })
-    //     // setState({
-    //     //     ...formDropdown, province: provinceArray
-    //     // })
-    // }, [])
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -62,9 +38,7 @@ const FromRequest = () => {
             mobile_phone: value,
         });
         setState({ ...state, mobilephone: value })
-
     }
-    // console.log(state);
     const radioOnChange = e => {
         setState({ ...state, radiocheck: e.target.value })
     };
@@ -87,18 +61,32 @@ const FromRequest = () => {
 
     // console.log(formDropdown);
     const onFinish = async (values) => {
+        setloading(true)
+
         if (values.purpos == 'Other') {
             values.purpos = values.other_purpos
         }
         values.mobile_phone = values.mobile_phone.replaceAll('-', '')
         const saveForm = await saveBooking(values).then(res => {
+            setloading(false)
             Swal.fire({
                 icon: 'success',
                 title: 'บันทึกสำเร็จ',
                 showConfirmButton: false,
                 timer: 1500
             }).then(() => {
-                form.resetFields()
+                // form.resetFields()
+                history.push('/user/status')
+
+            })
+        }).catch(err => {
+            setloading(false)
+            Swal.fire({
+                icon: 'error',
+                title: 'บันทึกไม่สำเร็จ',
+                text: 'กรุณาลองใหม่อีกครั้ง',
+                showConfirmButton: false,
+                timer: 1500
             })
         })
     };
@@ -131,12 +119,16 @@ const FromRequest = () => {
     const onBlur = () => {
         const rangePickerDomNode = ReactDOM.findDOMNode(rangePickerRef.current);
         const [startInput, endInput] = rangePickerDomNode.querySelectorAll('.ant-picker-input input');
-        const startValue = moment(startInput.value, 'HH:mm');
+        console.log(startInput.value);
+        if (startInput.value) {
+            var startValue = moment(startInput.value, 'HH:mm');
+
+        }
         let endValue = moment(endInput.value, 'HH:mm');
         if (!endValue.isValid()) {
             endValue = null;
         }
-
+        console.log(rangePickerDomNode);
         form.setFieldsValue({
             time: [startValue, endValue]
         });
@@ -173,35 +165,8 @@ const FromRequest = () => {
             })
             form.setFieldsValue({
                 company: empDetail.company,
-                // department: empDetail.department,
-                // manager_email: empDetail.managerEmail,
                 fullname: empDetail.name
             });
-            // await getManagerEmail(empDetail.company, empDetail.department)
-            //     .then(d => {
-            //         console.log(d)
-            //         if (d[0]) {
-            //             let managerName = d[0].Approver.split("|");
-
-            //             empDetail = { ...empDetail, managerEmail: `${managerName[0]}@aapico.com` }
-            //             console.log(empDetail);
-            //             form.setFieldsValue({
-            //                 company: empDetail.company,
-            //                 // department: empDetail.department,
-            //                 // manager_email: empDetail.managerEmail,
-            //                 fullname: empDetail.name
-            //             });
-            //         } else {
-            //             form.setFieldsValue({
-            //                 company: empDetail.company,
-            //                 // department: empDetail.department,
-            //                 fullname: empDetail.name,
-            //                 // manager_email: null
-            //             });
-            //         }
-            //     })
-
-
         }).catch(err => err)
 
     }
@@ -211,9 +176,15 @@ const FromRequest = () => {
         });
     }, [formDropdown]);
     return (
-        <div>
+
+        <div >
+            <div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+            </div>
+         
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
             <div className='margin fontForm'>
+
                 <Row justify='center'> <h2 style={{ marginTop: '8px', paddingTop: '8px', fontSize: '22px' }}>Car Booking</h2>  </Row>
                 <Form name="requestForm" form={form} onFinish={onFinish} onFinishFailed={onFinishFailed}
                     initialValues={{ driver: true }}
@@ -274,7 +245,7 @@ const FromRequest = () => {
                                         pattern: new RegExp(/(^\d{3})([-]{1})(\d{3})([-]{1})(\d{4})/g),
                                         message: 'pattern invalid'
                                     }]} >
-                                <Input autoComplete="none" onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
+                                <Input maxLength='12' autoComplete="none" onChange={(e) => { checkPhone(e) }} placeholder="โทรศัพท์มือถือ (Mobile Phone Number)" />
                             </Form.Item>
                             <p >วันที่ต้องการ (Date Required)</p>
                             <Form.Item
@@ -516,7 +487,9 @@ const FromRequest = () => {
                     </Row>
 
                 </Form>
+
             </div>
+
         </div>
     )
 }
