@@ -188,8 +188,8 @@ const Login = () => {
     } else {
         return (
             <div>
-                <h1 style={{ fontFamily: 'Bai Jamjuree', marginLeft: '2em', fontSize: '3em', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
-                <Row justify='end' style={{ marginRight: '16vw' }}>
+                <h1 style={{ textAlign : 'center' , fontFamily: 'Bai Jamjuree', fontSize: '3em', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
+                <Row justify='center' style={{width : '100vw' ,zIndex: 9 }}>
                     <Col>
                         <p onClick={() => { switchLanguage('EN') }}
                             style={language == 'TH' ? { cursor: 'pointer', fontWeight: 'normal' } : { cursor: 'pointer', fontWeight: 'Bold' }}
@@ -205,7 +205,7 @@ const Login = () => {
                         >TH</p>
 
                     </Col>
-                    <div style={{ marginLeft: '5em' }}>
+                    <div style={{ padding : '16px' }}>
                         <Input style={{ fontSize: 'Bai Jamjuree' }} onChange={(e) => { setData({ ...data, username: e.target.value }) }} placeholder={language == 'TH' ? 'ชื่อผู้ใช้' : 'Username'} />
                         <Input.Password style={{ marginTop: '24px', border: ' 1px solid #d9d9d9', borderRadius: '8px' }} onChange={(e) => { setData({ ...data, password: e.target.value }) }}
                             placeholder={language == 'TH' ? 'รหัสผ่าน' : 'Password'}
@@ -213,13 +213,17 @@ const Login = () => {
                         />
                     </div>
                     <div style={{ marginTop: '24px', textAlign: 'center' }}>
-                        <button style={{ border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ', backgroundColor: '#FFF' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
+                        <button onClick={() => { window.open('https://ess.aapico.com/#/register') }} style={{ zIndex: 999, border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ', backgroundColor: '#FFF' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
 
                         <button onClick={(e) => onLogin(e)} style={{ zIndex: '5', marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
 
                     </div>
+                    <CoverCar width='100vw' height='70vh' />
+
                 </Row>
-                <img src={car} style={{ zIndex: '-1', position: 'absolute', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} />
+
+
+                {/* <img src={car} style={{ zIndex: '-1', position: 'absolute', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} /> */}
             </div>
         )
     }

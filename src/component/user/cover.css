@@ -4,3 +4,15 @@
     margin-top :  12vh;
     z-index : 1 ;
 }
+
+
+@media only screen and (max-width: 600px) {
+    #testSvg{
+        background-color: transparent;
+        position: 'absolute';
+        /* left : 50%; */
+        /* transform:  translateX(-50%); */
+        margin-top :  -16vh;
+        z-index : -1 ;
+    }
+}
