@@ -20,7 +20,7 @@ export const loginCheck = async (identifier, password) => {
         identifier : identifier.toUpperCase(),
         password
     }).then(res => {
-        console.log(res)
+        // console.log(res)
         return res;
     }).catch(err => { return { err: err } });
 }
