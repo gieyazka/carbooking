@@ -17,7 +17,7 @@ const socket = io('https://ess.aapico.com');
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
-        identifier,
+        identifier : identifier.toUpperCase(),
         password
     }).then(res => {
         console.log(res)
