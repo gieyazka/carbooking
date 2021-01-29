@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.css": "/carbooking/static/css/main.5db85f9e.chunk.css",
-    "main.js": "/carbooking/static/js/main.0ae395f0.chunk.js",
-    "main.js.map": "/carbooking/static/js/main.0ae395f0.chunk.js.map",
+    "main.css": "/carbooking/static/css/main.e684bd6c.chunk.css",
+    "main.js": "/carbooking/static/js/main.9b322c68.chunk.js",
+    "main.js.map": "/carbooking/static/js/main.9b322c68.chunk.js.map",
     "runtime-main.js": "/carbooking/static/js/runtime-main.35e7ab68.js",
     "runtime-main.js.map": "/carbooking/static/js/runtime-main.35e7ab68.js.map",
     "static/css/2.5d88927a.chunk.css": "/carbooking/static/css/2.5d88927a.chunk.css",
-    "static/js/2.5a785b5e.chunk.js": "/carbooking/static/js/2.5a785b5e.chunk.js",
-    "static/js/2.5a785b5e.chunk.js.map": "/carbooking/static/js/2.5a785b5e.chunk.js.map",
+    "static/js/2.e2876588.chunk.js": "/carbooking/static/js/2.e2876588.chunk.js",
+    "static/js/2.e2876588.chunk.js.map": "/carbooking/static/js/2.e2876588.chunk.js.map",
     "static/js/3.080a3ed8.chunk.js": "/carbooking/static/js/3.080a3ed8.chunk.js",
     "static/js/3.080a3ed8.chunk.js.map": "/carbooking/static/js/3.080a3ed8.chunk.js.map",
     "index.html": "/carbooking/index.html",
     "static/css/2.5d88927a.chunk.css.map": "/carbooking/static/css/2.5d88927a.chunk.css.map",
-    "static/css/main.5db85f9e.chunk.css.map": "/carbooking/static/css/main.5db85f9e.chunk.css.map",
-    "static/js/2.5a785b5e.chunk.js.LICENSE.txt": "/carbooking/static/js/2.5a785b5e.chunk.js.LICENSE.txt",
+    "static/css/main.e684bd6c.chunk.css.map": "/carbooking/static/css/main.e684bd6c.chunk.css.map",
+    "static/js/2.e2876588.chunk.js.LICENSE.txt": "/carbooking/static/js/2.e2876588.chunk.js.LICENSE.txt",
     "static/media/carBookingCover.9414f961.svg": "/carbooking/static/media/carBookingCover.9414f961.svg",
     "static/media/login.02e485ce.png": "/carbooking/static/media/login.02e485ce.png",
     "static/media/login.37d75a24.svg": "/carbooking/static/media/login.37d75a24.svg",
@@ -24,8 +24,8 @@
   "entrypoints": [
     "static/js/runtime-main.35e7ab68.js",
     "static/css/2.5d88927a.chunk.css",
-    "static/js/2.5a785b5e.chunk.js",
-    "static/css/main.5db85f9e.chunk.css",
-    "static/js/main.0ae395f0.chunk.js"
+    "static/js/2.e2876588.chunk.js",
+    "static/css/main.e684bd6c.chunk.css",
+    "static/js/main.9b322c68.chunk.js"
   ]
 }
