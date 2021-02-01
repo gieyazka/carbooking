@@ -46,7 +46,7 @@ const RequestCar = ({ filerBooking }) => {
         var device = 'vertical'
     }
     const showData = (d) => {
-        console.log(d);
+        // console.log(d);
         if (d.booking) {
             setbookingData(d.booking)
         } else {
@@ -56,6 +56,7 @@ const RequestCar = ({ filerBooking }) => {
         setModal(true)
 
     }
+    console.log(state.booking)
     // sendEmail()z
     return (
 
@@ -100,16 +101,16 @@ const RequestCar = ({ filerBooking }) => {
                                                                 </div>
                                                             </div>
                                                             <div style={{ paddingTop: '4%' }}>
-                                                                <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name || res.booking.nae} ({res.company || res.booking.company})  </span>
+                                                                <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name ? res.name : res.booking.name} ({res.company ? res.company : res.booking.company})  </span>
                                                             </div>
                                                             <div style={{ paddingTop: '4%' }}>
-                                                                <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date && res.date.replaceAll('-', '/') || res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime || res.booking.startTime} - {res.endTime || res.booking.endTime}  </span>
+                                                                <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? res.date.replaceAll('-', '/') : res.booking.date.replaceAll('-', '/')} &nbsp; {res.startTime ? res.startTime : res.booking.startTime} - {res.endTime ? res.endTime : res.booking.endTime}  </span>
                                                             </div>
                                                             <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                                <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination || res.booking.destination} {res.destProvince || res.booking.destProvince}  </span>
+                                                                <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.destination ? res.destination : res.booking.destination} {res.destProvince ? res.destProvince : res.booking.destProvince}  </span>
                                                             </div>
                                                             <div style={{ paddingTop: '4%' }}>
-                                                                <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason || res.booking.reason}  </span>
+                                                                <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason ? res.reason : res.booking.reason}  </span>
                                                             </div>
                                                             <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
                                                                 <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>

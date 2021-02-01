@@ -118,6 +118,17 @@ const Login = () => {
         return windowDimensions;
     }
     useWindowDimensions();
+    const h1Variant = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                duration: 1,
+                // repeat: Infinity, ease: easeInOut,
+            },
+
+        }
+    }
     if (!screen) {
         return (
 
@@ -138,7 +149,9 @@ const Login = () => {
                     <Row style={{ fontFamily: "Bai Jamjuree" }}>
                         <Col>
                             <div style={{ position: 'relative', backgroundColor: '#E5E5E5', height: '100vh', width: '75vw' }}>
-                                <h1 style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw', zIndex: 5 }}>Car Booking System</h1>
+                                <motion.h1
+                                    variants={h1Variant}
+                                    initial='hidden' animate='visible' style={{ color: '#1D366D', position: 'absolute', top: '12vh', left: '8vw', zIndex: 5 }}>Car Booking System</motion.h1>
                                 {/* <div style={{ position: 'absolute', left: '-20vw', height: '50%',width : '100vw', zIndex: 1, bottom: '50vh' }}> */}
                                 <CoverCar width='70vw' height='70vh' />
                                 {/* </div> */}
@@ -188,8 +201,8 @@ const Login = () => {
     } else {
         return (
             <div>
-                <h1 style={{ textAlign : 'center' , fontFamily: 'Bai Jamjuree', fontSize: '3em', marginTop: '6%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
-                <Row justify='center' style={{width : '100vw' ,zIndex: 9 }}>
+                <h1 style={{ textAlign: 'center', fontFamily: 'Bai Jamjuree', fontSize: '3em', marginTop: '6%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
+                <Row justify='center' style={{ width: '100vw', zIndex: 9 }}>
                     <Col>
                         <p onClick={() => { switchLanguage('EN') }}
                             style={language == 'TH' ? { cursor: 'pointer', fontWeight: 'normal' } : { cursor: 'pointer', fontWeight: 'Bold' }}
@@ -205,7 +218,7 @@ const Login = () => {
                         >TH</p>
 
                     </Col>
-                    <div style={{ padding : '16px' }}>
+                    <div style={{ padding: '16px' }}>
                         <Input style={{ fontSize: 'Bai Jamjuree' }} onChange={(e) => { setData({ ...data, username: e.target.value }) }} placeholder={language == 'TH' ? 'ชื่อผู้ใช้' : 'Username'} />
                         <Input.Password style={{ marginTop: '24px', border: ' 1px solid #d9d9d9', borderRadius: '8px' }} onChange={(e) => { setData({ ...data, password: e.target.value }) }}
                             placeholder={language == 'TH' ? 'รหัสผ่าน' : 'Password'}
@@ -224,7 +237,7 @@ const Login = () => {
 
 
                 {/* <img src={car} style={{ zIndex: '-1', position: 'absolute', width: '80vw', top: '400px', left: '10vw', height: '40vh' }} /> */}
-            </div>
+            </div >
         )
     }
 }
