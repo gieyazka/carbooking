@@ -28,7 +28,7 @@ const Trips = () => {
     // console.log(moment());
     const [date, setDate] = useState(new moment())
     const localizer = momentLocalizer(moment)
-    var data = [{}]
+    var data = []
     const [tripDetail, setTripDetail] = useState({
         events: []
     })
@@ -55,19 +55,22 @@ const Trips = () => {
         await getBookingStatus(loginEmpId).then(res => {
             console.log(res);
             for (const d of res) {
+                console.log(d.date);
+                console.log(moment('03-02-2021', 'DD-MM-YYYY')._d);
                 data.push({
                     id: d.id,
                     data: d,
                     title: `${d.destination} ${d.destProvince}`,
                     allDay: false,
-                    start: moment(d.date, 'DD-mm-YYYY')._d,
-                    end: moment(d.date, 'DD-mm-YYYY')._d
+                    start: moment(d.date, 'DD-MM-YYYY')._d,
+                    end: moment(d.date, 'DD-MM-YYYY')._d
                 })
             }
-            setTripDetail({ allTrips: res, events: data })
+            console.log(data)
+            setTripDetail({ ...tripDetail, allTrips: res, events: data })
         })
     }, [])
-    console.log(tripDetail);
+    console.log(tripDetail.events);
     var i = 0
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
     return (
@@ -76,7 +79,7 @@ const Trips = () => {
                 <h2 style={{ position: 'relative', padding: '12px', textAlign: 'center', color: '#FFF' }}><img src={backward} onClick={() => { setDate(moment(date).subtract(1, 'months')) }} style={{ cursor: 'pointer' }} /> &nbsp; {date.locale('th').format('MMMM YYYY')} &nbsp; <img src={forward} onClick={() => { setDate(moment(date).add(1, 'months')) }} style={{ cursor: 'pointer' }} /></h2>
                 <Calendar
                     popup
-                    culture='ar-AE'
+                    // culture='ar-AE'
                     localizer={localizer}
                     events={tripDetail.events}
                     startAccessor="start"
@@ -114,9 +117,9 @@ const Trips = () => {
                             <div style={{ paddingTop: '4%' }}>
                                 <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.totalPassenger} คน</span>
                             </div>
-                            <div style={{ position : 'relative' ,paddingTop: '4%', textAlign: 'center' }}>
+                            <div style={{ position: 'relative', paddingTop: '4%', textAlign: 'center' }}>
                                 <h3>Status</h3>
-                                <div style={{ textAlign: 'left' , marginLeft : '25%' }}>
+                                <div style={{ textAlign: 'left', marginLeft: '25%' }}>
                                     <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > Manager Approve :  {modalData.tripData.managerApprove ? modalData.tripData.managerApprove === true ? "Yes" : 'No' : "Waiting"} </span>
                                     <br />  <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > Hr Approve :   {modalData.tripData.hrApprove ? modalData.tripData.hrApprove === true ? "Yes" : 'No' : "Waiting"} </span>
                                     <br /> <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > Dispatch :  {modalData.tripData.dispatch ? modalData.tripData.dispatch === true ? "Yes" : 'No' : "Waiting"} </span>

@@ -9,7 +9,11 @@ import { saveBooking, sendEmail, getDepartment, getManagerEmail, getEmployeeById
 import Swal from 'sweetalert2'
 import { DataContext } from "../store/store"
 import loadingLogin from '../asset/wheel.gif'
-import GifLoader from 'react-gif-loader';
+import addForm from '../asset/addForm.png'
+import deleteForm from '../asset/deleteForm.png'
+
+import { motion, AnimatePresence } from 'framer-motion'
+
 const FromRequest = () => {
     let history = useHistory();
     const { Search } = Input;
@@ -24,8 +28,8 @@ const FromRequest = () => {
         managerEmail: null,
 
     });
+    const [destState, setDestState] = useState([{}])
     const [loading, setloading] = useState(false)
-
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -58,10 +62,39 @@ const FromRequest = () => {
     function onChange(date, dateString) {
         console.log(date, dateString);
     }
+    const addFormData = (v) => {
+        let data = [...destState]
+        // for (let i = 0; i <= v; i++) {
+        data.push({})
 
+        // }
+        setDestState(data)
+    }
+    const removeFormData = () => {
+        // console.log('asdsadd');
+        let data = [...destState]
+        data.pop()
+        setDestState(data)
+    }
     // console.log(formDropdown);
     const onFinish = async (values) => {
+        // console.log(values);
         setloading(true)
+
+        let place = [], province = []
+        values.place.map(res => {
+
+            place.push(res)
+        })
+        values.province.map(res => {
+
+            province.push(res)
+        })
+        values.place = JSON.stringify(place)
+        values.province = JSON.stringify(province)
+        // console.log(values);
+
+        // return
 
         if (values.purpos == 'Other') {
             values.purpos = values.other_purpos
@@ -76,7 +109,7 @@ const FromRequest = () => {
                 timer: 1500
             }).then(() => {
                 // form.resetFields()
-                history.push('/user/status')
+                // history.push('/user/status')
 
             })
         }).catch(err => {
@@ -181,7 +214,7 @@ const FromRequest = () => {
             <div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                 <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
             </div>
-         
+
             {/* <div style={{ backgroundColor: '#1D366D', height: '40px', width: '100%' }}></div> */}
             <div className='margin fontForm'>
 
@@ -277,18 +310,22 @@ const FromRequest = () => {
                                 </Select>
 
                             </Form.Item>
+
                             <p >สถานที่ไป (Place)</p>
-                            <Form.Item
-                                name="place"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: '*require',
-                                    },]} >
+                            {destState.map((res, index) =>
+                            (
+                                <Form.Item
+                                    name={['place', index]}
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: '*require',
+                                        },]} >
 
-                                <Input placeholder="สถานที่ไป (Place)" />
-
-                            </Form.Item>
+                                    <Input placeholder="สถานที่ไป (Place)" />
+                                </Form.Item>
+                            )
+                            )}
                         </Col>
 
 
@@ -362,28 +399,41 @@ const FromRequest = () => {
                                 </Select>
                             </Form.Item>
                             <p >จังหวัด (Province)</p>
-                            <Form.Item
-                                name="province"
-                                rules={[
-                                    {
-                                        required: true,
-                                        message: 'require',
-                                    },]} >
-                                <Select
-                                    autoComplete="none"
-                                    showSearch
-                                    style={{ width: '100%' }}
-                                    placeholder="จังหวัด (Province)"
-                                    optionFilterProp="children"
-                                    filterOption={(input, option) =>
-                                        option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-                                    }
-                                >
-                                    {state.province}
+                            {destState.map((res, index) =>
+                            (
+                                <>
+
+                                    <Form.Item
 
 
-                                </Select>
-                            </Form.Item>
+                                        name={['province', index]}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message: 'require',
+                                            },]} >
+                                        <Select
+                                            autoComplete="none"
+                                            showSearch
+                                            style={{ width: 'calc(100% - 36px)' }}
+                                            placeholder="จังหวัด (Province)"
+                                            optionFilterProp="children"
+                                            filterOption={(input, option) =>
+                                                option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                                            }
+                                        >
+                                            {state.province}
+                                        </Select>
+                                        {index === 0
+                                            ? <img src={addForm} onClick={() => addFormData()} style={{ marginLeft: '12px', width: '24px', height: '24px', cursor: 'pointer' }} />
+                                            : index === destState.length - 1 ? <img src={deleteForm} onClick={() => removeFormData()} style={{ cursor: 'pointer', marginLeft: '12px', width: '24px', height: '24px' }} />
+                                                : null
+                                        }
+
+                                    </Form.Item>
+                                </>
+                            )
+                            )}
                         </Col>
 
                         <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-
+import React, { useState, useEffect, useRef, forwardRef } from 'react'
+import MaterialTable, { MTableBodyRow } from 'material-table'
 import { DataContext } from "../store/store"
 import moment from 'moment'
 import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card, Modal } from 'antd';
@@ -22,10 +22,13 @@ import people from '../asset/people.png'
 import Swal from 'sweetalert2'
 import loadingLogin from '../asset/wheel.gif'
 // import statusdriver2 from '../asset/statusdriver2.png'
-
+import SearchIcon from '@material-ui/icons/Search';
 import filer from '../asset/filer.png'
 import { getBookingHr, handleHrApprove } from '../util/index'
-
+import { AddBox, ArrowDownward, Clear, Check, ChevronLeft, ChevronRight, DeleteOutline, Edit, FilterList, FirstPage, LastPage, Remove, SaveAlt, Search, ViewColumn } from '@material-ui/icons'
+import VisibilityIcon from '@material-ui/icons/Visibility';
+import ThumbUpAltOutlinedIcon from '@material-ui/icons/ThumbUpAltOutlined';
+import ThumbDownAltOutlinedIcon from '@material-ui/icons/ThumbDownAltOutlined';
 const Hrapprove = () => {
     const TestBtn = Button
     let filterCompany = null
@@ -33,6 +36,7 @@ const Hrapprove = () => {
     // console.log(res);
     const [sidebar, setSidebar] = useState(true)
     const [bookingData, setBookingData] = useState([])
+    const [defaultBooking, setDefaultBooking] = useState([])
     const wrapperRef = useRef(null);
     const [state, setState] = React.useContext(DataContext);
     const { Option } = Select
@@ -190,29 +194,36 @@ const Hrapprove = () => {
         }
     }
 
-
+    // console.log(filerBooking);
     useEffect(() => {
         // filter
         if (filerBooking.search == true) {
             let countBooking = 0
-            bookingData.map(res => {
-                // console.log(res.destProvince);
+            var test = []
+            defaultBooking.map(res => {
+                console.log(res.company, filerBooking.company);
                 if (res.hrApprove == null && res.company == filerBooking.company) {
                     countBooking += 1
+                    test.push(res)
                 } else if (res.hrApprove == null && res.department == filerBooking.department) {
                     countBooking += 1
+                    test.push(res)
                 } else if (res.hrApprove == null && res.reason == filerBooking.reason) {
                     countBooking += 1
+                    test.push(res)
                 }
                 else if (res.hrApprove == null && res.date == filerBooking.date) {
                     // console.log(res.date );
                     countBooking += 1
+                    test.push(res)
                 }
                 else if (res.hrApprove == null && res.destProvince == filerBooking.province) {
                     countBooking += 1
+                    test.push(res)
                 }
                 else if (filerBooking.company == 'Other' && res.hrApprove == null && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO') {
                     countBooking += 1
+                    test.push(res)
                 }
                 else if (filerBooking.department == 'Other' && res.hrApprove == null
                     && res.department != 'Production' && res.department != 'production'
@@ -224,11 +235,16 @@ const Hrapprove = () => {
                     && res.department != 'Purchasing' && res.department != 'purchasing'
                     && res.department != 'Safety' && res.department != 'Safety') {
                     countBooking += 1
+                    test.push(res)
                 } else if (res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า') {
                     countBooking += 1
+                    test.push(res)
 
                 }
+                console.log(test);
+
             })
+            setBookingData(test)
             // console.log(countBooking);
             setCount(countBooking)
         }
@@ -303,7 +319,9 @@ const Hrapprove = () => {
     const [count, setCount] = useState(0)
     React.useMemo(async () => {
         const bookingControl = async () => {
+
             setBookingData(await getBookingHr().then(async res => {
+                setDefaultBooking(res)
                 let countData = 0
                 res.map(data => {
                     if (data.hrApprove == null) {
@@ -311,19 +329,38 @@ const Hrapprove = () => {
                     }
                 })
                 setCount(countData)
-                // console.log(res);
                 return res
             }))
         }
         await bookingControl()
     }, [])
-    // console.log(modal);
+    const tableIcons = {
+        Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+        Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+        Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+        Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+        DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+        Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+        Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+        Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+        FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+        LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+        NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+        PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+        ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+        Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+        SortArrow: forwardRef((props, ref) => <ArrowDownward {...props} ref={ref} />),
+        ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+        ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+    };
+
+    // console.log(bookingData[0] && JSON.parse(bookingData[0].destProvince)[0]);
     return (
         <div>
             < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
                 <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
             </div >
-            <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
+            <div style={{ zIndex: 90 }} className={!sidebar == true ? 'contentFilter' : 'red'}></div>
             <div className='padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                 <p style={{ color: 'black', paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
                 <div style={{ position: 'relative' }}>
@@ -332,7 +369,7 @@ const Hrapprove = () => {
                         <button onClick={() => { toggleSidebar() }} style={{ cursor: 'pointer', padding: '4px 12px', fontSize: '1em', backgroundColor: '#1D366D', color: '#FFFFFF', borderRadius: '20px', border: '0' }}>
                             <img src={filer} />กรอง</button>
                     </span>
-                    <div ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
+                    <div style={{ zIndex: 999 }} ref={wrapperRef} className={sidebar == true ? 'sideFilter' : 'sideFilter isactive'} >
 
                         <div style={{ position: 'absolute', color: 'black', top: '120px', left: '8%', fontFamily: 'Bai Jamjuree' }}>
                             <p>บริษัท</p>
@@ -468,11 +505,67 @@ const Hrapprove = () => {
                 </div>
             </div>
             <div className='margin hrfont'>
+
                 <Row gutter={{ xs: 24, sm: 24 }}>
                     {/* filter no other */}
+                    <Col span={24}>
+                        <MaterialTable
+                            actions={[
+                                {
+                                    icon: () => <VisibilityIcon />,
+                                    tooltip: 'View detail',
+                                    onClick: (event, rowData) => showData(rowData),
+                                    position: "row"
+                                },
+
+                                {
+                                    tooltip: 'Reject',
+                                    icon: () => <ThumbDownAltOutlinedIcon style={{ color: 'white' }} />,
+                                    onClick: (evt, data) => console.log('You want to delete ' + data.length + ' rows')
+                                },
+                                {
+                                    tooltip: 'Approve',
+                                    icon: () => <ThumbUpAltOutlinedIcon style={{ color: 'white' }} />,
+                                    onClick: (evt, data) => console.log('You want to delete ' + data + ' rows')
+                                },
 
 
-                    {bookingData.map(res =>
+                            ]}
+                            data={bookingData}
+                            icons={tableIcons}
+                            columns={[
+                                { title: 'ชื่อ', field: 'name' },
+                                { title: 'แผนก', field: 'department' },
+                                { title: 'สถานที่ไป', render: (rowData) => JSON.parse(rowData.destination) + " " },
+                                { title: 'จังหวัด', render: (rowData) => JSON.parse(rowData.destProvince) + " " },
+                                { title: 'เหตุผล', field: 'reason' },
+                                { title: 'วันที่', field: 'date' },
+                                { title: 'เวลา', render: (rowData) => rowData.startTime + " - " + rowData.endTime }
+                            ]}
+                            localization={{
+
+                                toolbar: {
+                                    nRowsSelected: '{0} booking is selected'
+                                },
+                                header: {
+                                    actions: ''
+                                },
+
+                            }}
+                            options={{
+                                actionsColumnIndex: -1,
+                                selection: true,
+                                search: false,
+                                sorting: true,
+                                rowStyle: { hover: { backgroundColor: 'red' } },
+                            }}
+
+                            title=""
+                        />
+                    </Col>
+
+
+                    {/* {bookingData.map(res =>
 
                         res.hrApprove == null && res.company == filerBooking.company
                             || res.hrApprove == null && res.department == filerBooking.department
@@ -541,7 +634,7 @@ const Hrapprove = () => {
                                                 <img src={calender} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
                                             </div>
                                             <div style={{ paddingTop: '3%' }} >
-                                                <img src={location} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
+                                                <img src={location} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {JSON.parse(bookingData[0].destProvince).map(d => d)} </span>
                                             </div>
                                             <div style={{ paddingTop: '3%' }}>
                                                 <img src={hrmessage} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
@@ -613,7 +706,7 @@ const Hrapprove = () => {
 
                                         </Col>
                                     ) : null
-                    )}
+                    )} */}
 
                 </Row>
             </div>
@@ -639,7 +732,7 @@ const Hrapprove = () => {
                     <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} >{modal.date} &nbsp; &nbsp;  {modal.startTime} - {modal.endTime} </span>
                 </div>
                 <div style={{ paddingTop: '4%' }} >
-                    <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.destination} &nbsp; {modal.destProvince}</span>
+                    <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modal.destination) + " "} &nbsp; {JSON.parse(modal.destProvince) + " "}</span>
                 </div>
                 <div style={{ paddingTop: '4%' }}>
                     <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.reason}</span>

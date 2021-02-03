@@ -52,8 +52,8 @@ const History = () => {
                     data: d,
                     title: `${d.booking.destination} ${d.booking.destProvince}`,
                     allDay: false,
-                    start: moment(d.booking.date, 'DD-mm-YYYY')._d,
-                    end: moment(d.booking.date, 'DD-mm-YYYY')._d
+                    start: moment(d.booking.date, 'DD-MM-YYYY')._d,
+                    end: moment(d.booking.date, 'DD-MM-YYYY')._d
                 })
 
             }

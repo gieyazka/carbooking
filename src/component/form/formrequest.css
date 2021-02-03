@@ -5,6 +5,20 @@
 #bwheel{
     width: 100vw;
 }
+.MuiTableRow-root:hover{
+    background-color: rgba(178,202,255,1);
+}
+
+.MTableToolbar-highlight-6{
+   background-color : #1D366D !important;
+    color: #FFF !important;
+}
+.MuiTypography-h6{
+    color: #FFF !important;
+}
+.MuiCheckbox-colorSecondary.Mui-checked{
+    color: #1D366D !important;
+}
 .rbc-now{
     background-color : #1D366D ;
     color : #FFF
@@ -324,6 +338,7 @@ color: rgba(0, 0, 0, 0.6);
    
 }
 .contentFilter {
+    z-index : 90 ;
     position: fixed; 
     top : -64px ;
     /* right: 30vw ; */

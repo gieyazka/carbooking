@@ -32,6 +32,19 @@ import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
 import { addTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
+
+const testVaraint = {
+    hidden: {
+        opacity: 1
+    },
+    visible: {
+        opacity: 1,
+        // transition: { duration: 1 }
+    }, exit: {
+        opacity: 1,
+        transition: { ease: "easeInOut" }
+    }
+}
 const RequestCar = ({ filerBooking }) => {
     // console.log(filerBooking);
     const [state, setState] = React.useContext(DataContext);
@@ -56,7 +69,7 @@ const RequestCar = ({ filerBooking }) => {
         setModal(true)
 
     }
-    console.log(state.booking)
+    // console.log(state.booking)
     // sendEmail()z
     return (
 
@@ -767,7 +780,7 @@ const General = () => {
     }
     // console.log(test);
     return (
-        <div >
+        <div>
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
             <Row style={{ color: 'black' }}>
                 <Col span={24} >
