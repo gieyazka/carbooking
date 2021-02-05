@@ -50,7 +50,7 @@ const History = () => {
                 data.push({
                     id: d.id,
                     data: d,
-                    title: `${d.booking.destination} ${d.booking.destProvince}`,
+                    title: `${JSON.parse(d.booking.destination)+ " "} ${JSON.parse(d.booking.destProvince)+ " "}`,
                     allDay: false,
                     start: moment(d.booking.date, 'DD-MM-YYYY')._d,
                     end: moment(d.booking.date, 'DD-MM-YYYY')._d
@@ -102,7 +102,7 @@ const History = () => {
                                 <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.destination} {modalData.tripData.booking.destProvince}</span>
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.booking.destination)+ " "} &nbsp; {JSON.parse(modalData.tripData.booking.destProvince)+ " "}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
                                 <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>

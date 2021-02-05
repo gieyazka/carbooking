@@ -58,7 +58,7 @@ const Trips = () => {
         setTripModal({ ...tripModal, updateTrip: d, open: true });
     }
     const loginEmpId = JSON.parse(sessionStorage.getItem('user')).emp_id
-    console.log(loginEmpId);
+    // console.log(loginEmpId);
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id);
     React.useEffect(() => {
 
@@ -187,7 +187,7 @@ const Trips = () => {
                     data.push({
                         id: d.id,
                         data: d,
-                        title: `${d.booking.destination} ${d.booking.destProvince}`,
+                        title: `${JSON.parse(d.booking.destination)+ " "} ${JSON.parse(d.booking.destProvince)+ " "}`,
                         allDay: false,
                         start: moment(d.booking.date, 'DD-MM-YYYY')._d,
                         end: moment(d.booking.date, 'DD-MM-YYYY')._d
@@ -197,7 +197,7 @@ const Trips = () => {
             setTripDetail({ allTrips: res, events: data })
         })
     }, [])
-    console.log(tripDetail);
+    // console.log(tripDetail);
     var i = 0
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
     return (
@@ -238,7 +238,7 @@ const Trips = () => {
                             }>
                                 {/* {res.driver && res.driver.emp_id} */}
                                 <p style={{ fontSize: '24px' }}>{res.booking.date} &nbsp; {res.booking.startTime}</p>
-                                <p >{res.booking.destination} &nbsp; {res.booking.destProvince}</p>
+                                <p >{JSON.parse(res.booking.destination)+ " "} &nbsp; {JSON.parse(res.booking.destProvince)+ " "}</p>
                                 {i++ == 0 ? <img src={res.status == 'free' ? playIcon : pause} onClick={() => tripsControl(res)} style={{ cursor: 'pointer', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />
                                     : <img src={res.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
                             </Card>
@@ -290,7 +290,7 @@ const Trips = () => {
                                 <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.destination} {modalData.tripData.booking.destProvince}</span>
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.booking.destination)+ " "} &nbsp; {JSON.parse(modalData.tripData.booking.destProvince)+ " "}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
                                 <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>

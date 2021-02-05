@@ -45,7 +45,7 @@ const App = () => {
         }
 
     }
-    console.log(modal);
+    // console.log(modal);
     function useOutsideAlerter(ref) {
         useEffect(() => {
             /**
@@ -399,7 +399,7 @@ const App = () => {
                                                                     { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
                                                                     : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
                                                                 } >
-                                                                <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                <p>{(JSON.parse(d.booking.destination)+ " ")} {(JSON.parse(d.booking.destProvince) + " ")}</p>
                                                                 <p>{d.booking.startTime} - {d.booking.endTime}</p>
                                                             </div>
 
@@ -413,7 +413,7 @@ const App = () => {
                                                                         { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
                                                                         : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
                                                                     } >
-                                                                    <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                    <p>{(JSON.parse(d.booking.destination)+ " ")} {(JSON.parse(d.booking.destProvince) + " ")}</p>
                                                                     <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
                                                                 </div>
@@ -431,7 +431,7 @@ const App = () => {
                                                                             { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
                                                                             : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
                                                                         } >
-                                                                        <p>{d.booking.destination} {d.booking.destProvince}</p>
+                                                                        <p>{(JSON.parse(d.booking.destination)+ " ")} {(JSON.parse(d.booking.destProvince) + " ")}</p>
                                                                         <p>{d.booking.startTime} - {d.booking.endTime}</p>
 
                                                                     </div>
@@ -479,7 +479,7 @@ const App = () => {
                         <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.date}    {modal.booking.startTime} - {modal.booking.endTime}</span>
                     </div>
                     <div style={{ paddingTop: '4%' }} >
-                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.destination} {modal.booking.destProvince}</span>
+                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {(JSON.parse(modal.booking.destination)+ " ")} {(JSON.parse(modal.booking.destProvince)+ " ")}</span>
                     </div>
                     <div style={{ paddingTop: '4%' }}>
                         <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modal.booking.totalPassenger} คน</span>

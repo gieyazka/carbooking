@@ -79,9 +79,9 @@ const Hrapprove = () => {
         open: false
     })
 
-    const hrCancleClick = (res) => {
+    const hrCancleClick = (d) => {
         Swal.fire({
-            text: `ไม่อนุมัติคำขอของ ${res.name} ?`,
+            text: `ไม่อนุมัติจำนวน ${d.length} รายการ ?`,
             // text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
@@ -93,30 +93,26 @@ const Hrapprove = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 setloading(true)
-                const status = false
-                const id = res.id
-                let name = null
-                await handleHrApprove(res.id, status).then(async (d) => {
-                    await getBookingHr().then(async data => {
-                        data.map(booking => {
+                for (const res of d) {
+                    const status = false
+                    const id = res.id
+                    await handleHrApprove(res.id, status)
+                }
+                await getBookingHr().then(async data => {
+                    setloading(false)
 
-                            if (booking.id == id) {
-                                name = booking.name
-                            }
-                        })
-                        setloading(false)
-
-                        Swal.fire({
-                            text: `ไม่อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
-                            // text: "You won't be able to revert this!",
-                            icon: 'info',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        setBookingData(data)
-                        // return res
+                    Swal.fire({
+                        text: `ไม่อนุมัติคำขอสำเร็จ`,
+                        // text: "You won't be able to revert this!",
+                        icon: 'info',
+                        showConfirmButton: false,
+                        timer: 1500
                     })
+                    // setDefaultBooking(data)
+                    setBookingData(data)
+                    // return res
                 })
+
                 setloading(false)
 
             }
@@ -125,9 +121,11 @@ const Hrapprove = () => {
     }
     const [loading, setloading] = useState(false)
 
-    const hrApproveClick = (res) => {
+    const hrApproveClick = (d) => {
+        console.log(d);
+
         Swal.fire({
-            text: `อนุมัติคำขอของ ${res.name} ?`,
+            text: `อนุมัติจำนวน ${d.length} รายการ ?`,
             // text: "You won't be able to revert this!",
             icon: 'warning',
             showCancelButton: true,
@@ -139,41 +137,26 @@ const Hrapprove = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 setloading(true)
-                const status = true
-                const id = res.id
-                let name = null
-                await handleHrApprove(res.id, status).then(async (d) => {
-                    await getBookingHr().then(async data => {
-                        data.map(booking => {
-
-                            if (booking.id == id) {
-                                name = booking.name
-                                // console.log( booking.name);
-                            }
-                        })
-
-                        // console.log(d);
-                        setloading(false)
-
-                        Swal.fire({
-                            text: `อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
-                            // text: "You won't be able to revert this!",
-                            icon: 'success',
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        setBookingData(data)
-                        // return res
-                    }).catch(err => {
-                        console.log(err)
+                for (const res of d) {
+                    const status = true
+                    const id = res.id
+                    await handleHrApprove(res.id, status)
+                }
+                await getBookingHr().then(async data => {
+                    Swal.fire({
+                        text: `อนุมัติคำขอสำเร็จ`,
+                        icon: 'success',
+                        showConfirmButton: false,
+                        timer: 1500
                     })
+                    // setDefaultBooking(data)
+                    setBookingData(data)
+                }).catch(err => {
+                    console.log(err)
                 })
-
                 setloading(false)
-
             }
         })
-        // console.log(res);
     }
 
 
@@ -261,11 +244,12 @@ const Hrapprove = () => {
             province: null
         })
         let countData = 0
-        bookingData.map(data => {
+        defaultBooking.map(data => {
             if (data.hrApprove == null) {
                 countData += 1
             }
         })
+        setBookingData(defaultBooking)
         setCount(countData)
     }
     // console.log(filerBooking);
@@ -321,6 +305,7 @@ const Hrapprove = () => {
         const bookingControl = async () => {
 
             setBookingData(await getBookingHr().then(async res => {
+                console.log(res)
                 setDefaultBooking(res)
                 let countData = 0
                 res.map(data => {
@@ -507,7 +492,6 @@ const Hrapprove = () => {
             <div className='margin hrfont'>
 
                 <Row gutter={{ xs: 24, sm: 24 }}>
-                    {/* filter no other */}
                     <Col span={24}>
                         <MaterialTable
                             actions={[
@@ -521,15 +505,13 @@ const Hrapprove = () => {
                                 {
                                     tooltip: 'Reject',
                                     icon: () => <ThumbDownAltOutlinedIcon style={{ color: 'white' }} />,
-                                    onClick: (evt, data) => console.log('You want to delete ' + data.length + ' rows')
+                                    onClick: (evt, data) => hrCancleClick(data)
                                 },
                                 {
                                     tooltip: 'Approve',
                                     icon: () => <ThumbUpAltOutlinedIcon style={{ color: 'white' }} />,
-                                    onClick: (evt, data) => console.log('You want to delete ' + data + ' rows')
+                                    onClick: (evt, data) => hrApproveClick(data)
                                 },
-
-
                             ]}
                             data={bookingData}
                             icons={tableIcons}
@@ -557,157 +539,11 @@ const Hrapprove = () => {
                                 selection: true,
                                 search: false,
                                 sorting: true,
-                                rowStyle: { hover: { backgroundColor: 'red' } },
-                            }}
 
+                            }}
                             title=""
                         />
                     </Col>
-
-
-                    {/* {bookingData.map(res =>
-
-                        res.hrApprove == null && res.company == filerBooking.company
-                            || res.hrApprove == null && res.department == filerBooking.department
-                            || res.hrApprove == null && res.reason == filerBooking.reason
-                            || res.hrApprove == null && res.date == filerBooking.date
-                            || res.hrApprove == null && res.destProvince == filerBooking.province ?
-
-                            (
-
-                                <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
-
-                                    <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
-                                        <Card style={{
-                                            position: 'relative',
-                                            width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
-                                        }}>
-                                            <div  >
-                                                <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
-                                            </div>
-                                            <div style={{ paddingTop: '4%' }} >
-                                                <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
-                                            </div>
-                                            <div style={{ paddingTop: '4%' }}>
-                                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
-                                            </div>
-                                            <div style={{ paddingTop: '4%' }} >
-                                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
-                                            </div>
-                                            <div style={{ paddingTop: '4%' }}>
-                                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
-                                            </div>
-
-                                        </Card>
-                                        <Row>
-                                            <Col style={{ paddingTop: '8%' }} span={4} >
-                                                <div className='cursor'>
-                                                    <img onClick={() => { showData(res) }} src={hrdescription} />
-                                                </div>
-                                            </Col>
-                                            <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
-                                                <div style={{ paddingTop: '4px' }}>
-                                                    <Button onClick={() => { hrCancleClick(res) }} style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
-                                        <Button onClick={() => { hrApproveClick(res) }} style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </Card>
-
-                                </Col>
-                            ) : res.hrApprove == null && filerBooking.search == false ? (
-                                // no filter
-                                <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
-
-                                    <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
-                                        <Card style={{
-                                            position: 'relative',
-                                            width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
-                                        }}>
-                                            <div  >
-                                                <img src={user} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
-                                            </div>
-                                            <div style={{ paddingTop: '3%' }} >
-                                                <img src={department} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
-                                            </div>
-                                            <div style={{ paddingTop: '3%' }}>
-                                                <img src={calender} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
-                                            </div>
-                                            <div style={{ paddingTop: '3%' }} >
-                                                <img src={location} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {JSON.parse(bookingData[0].destProvince).map(d => d)} </span>
-                                            </div>
-                                            <div style={{ paddingTop: '3%' }}>
-                                                <img src={hrmessage} /> <span style={{ top: '2px', position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
-                                            </div>
-
-                                        </Card>
-                                        <Row>
-                                            <Col style={{ paddingTop: '8%' }} span={4} >
-                                                <div className='cursor'>
-                                                    <img onClick={() => { showData(res) }} src={hrdescription} />
-                                                </div>
-                                            </Col>
-                                            <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
-                                                <div style={{ paddingTop: '4px' }}>
-                                                    <Button onClick={() => { hrCancleClick(res) }} style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
-                                        <Button onClick={() => { hrApproveClick(res) }} style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
-                                                </div>
-                                            </Col>
-                                        </Row>
-                                    </Card>
-
-                                </Col>
-                                // other filter
-                            )
-                                : res.hrApprove == null && filerBooking.company == 'Other' && res.company != 'AH' && res.company != 'AHP' && res.company != 'AHT' && res.company != 'AITS' && res.company != 'ASICO'
-                                    || res.hrApprove == null && filerBooking.department == 'Other' && res.department != 'Production' && res.department != 'production' && res.department != 'Marketing' && res.department != 'marketing' && res.department != 'QA & QC' && res.department != 'Personnel' && res.department != 'personnel' && res.department != 'IT' && res.department != 'it' && res.department != 'Business Deverlopment' && res.department != 'business deverlopment' && res.department != 'Purchasing' && res.department != 'purchasing' && res.department != 'Safety' && res.department != 'Safety'
-
-                                    || res.hrApprove == null && filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า'
-
-                                    ? (
-                                        <Col key={res.id} xs={{ span: 24 }} sm={{ span: 8 }} style={{ marginTop: '8px' }}>
-
-                                            <Card style={{ width: '100%', background: '#475384', boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.2)' }}>
-                                                <Card style={{
-                                                    position: 'relative',
-                                                    width: '100%', background: '#F7FAFC', boxShadow: 'inset 0px 4px 4px rgba(0, 0, 0, 0.2)'
-                                                }}>
-                                                    <div  >
-                                                        <img src={user} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.name} ({res.company})  </span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }} >
-                                                        <img src={department} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.department}  </span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }}>
-                                                        <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.date} &nbsp; &nbsp;  {res.startTime} - {res.endTime}</span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }} >
-                                                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.destination} &nbsp; {res.destProvince} </span>
-                                                    </div>
-                                                    <div style={{ paddingTop: '4%' }}>
-                                                        <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {res.reason}</span>
-                                                    </div>
-
-                                                </Card>
-                                                <Row>
-                                                    <Col style={{ paddingTop: '8%' }} span={4} >
-                                                        <div className='cursor'>
-                                                            <img onClick={() => { showData(res) }} src={hrdescription} />
-                                                        </div>
-                                                    </Col>
-                                                    <Col style={{ paddingTop: '8%', textAlign: 'right' }} span={20} >
-                                                        <div style={{ paddingTop: '4px' }}>
-                                                            <Button onClick={() => { hrCancleClick(res) }} style={{ borderRadius: '24px', borderColor: '#E53E3E', backgroundColor: '#E53E3E', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={xicon} /> <span style={{ paddingLeft: '4px' }}>ไม่อนุมัติ</span></Button> &nbsp;
-                                        <Button onClick={() => { hrApproveClick(res) }} style={{ borderRadius: '24px', borderColor: '#2BA441', backgroundColor: '#2BA441', color: "#FFF" }}><img style={{ marginBottom: '2px' }} src={assignicon} /> <span style={{ paddingLeft: '4px' }}>อนุมัติ</span></Button>
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                            </Card>
-
-                                        </Col>
-                                    ) : null
-                    )} */}
-
                 </Row>
             </div>
             <Modal

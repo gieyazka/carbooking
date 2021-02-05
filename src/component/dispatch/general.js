@@ -31,7 +31,7 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { addTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
+import { getBookingDispatched, addTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
 
 const testVaraint = {
     hidden: {
@@ -59,12 +59,12 @@ const RequestCar = ({ filerBooking }) => {
         var device = 'vertical'
     }
     const showData = (d) => {
-        // console.log(d);
         if (d.booking) {
-            setbookingData(d.booking)
+            const data = { ...d.d.booking, destination: JSON.parse(d.booking.destination) + " ", destProvince: JSON.parse(d.booking.destProvince) + " " }
+            setbookingData(data)
         } else {
-            setbookingData(d)
-
+            const data = { ...d, destination: JSON.parse(d.destination) + " ", destProvince: JSON.parse(d.destProvince) + " " }
+            setbookingData(data)
         }
         setModal(true)
 
@@ -106,7 +106,7 @@ const RequestCar = ({ filerBooking }) => {
                                                 >
                                                     <Card className='cardMobile' >
                                                         <div style={{ position: 'relative', width: 'auto' }}>
-                                                            <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
+                                                            <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.booking ? res.booking.carType : res.carType} </span>
                                                             {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
                                                             <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
                                                                 <img src={dragicon1}    {...provided.dragHandleProps} />
@@ -117,10 +117,10 @@ const RequestCar = ({ filerBooking }) => {
                                                             <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name ? res.name : res.booking.name} ({res.company ? res.company : res.booking.company})  </span>
                                                         </div>
                                                         <div style={{ paddingTop: '4%' }}>
-                                                            <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? res.date.replaceAll('-', '/') : res.booking.date.replaceAll('-', '/')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
+                                                            <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? moment(res.date, 'YYYYMMDD').format('DD-MM-YYYY') : moment(res.booking.date, 'YYYYMMDD').format('DD-MM-YYYY')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
                                                         </div>
                                                         <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                            <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? res.booking.destination : res.destination} {res.booking ? res.booking.destProvince : res.destProvince}  </span>
+                                                            <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? JSON.parse(res.booking.destination) + " " : JSON.parse(res.destination) + " "} {res.booking ? JSON.parse(res.booking.destProvince) + " " : JSON.parse(res.destProvince) + " "}  </span>
                                                         </div>
                                                         <div style={{ paddingTop: '4%' }}>
                                                             <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.booking ? res.booking.reason : res.reason}  </span>
@@ -159,10 +159,10 @@ const RequestCar = ({ filerBooking }) => {
                                                                 <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name ? res.name : res.booking.name} ({res.company ? res.company : res.booking.company})  </span>
                                                             </div>
                                                             <div style={{ paddingTop: '4%' }}>
-                                                                <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? res.date.replaceAll('-', '/') : res.booking.date.replaceAll('-', '/')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
+                                                                <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? moment(res.date, 'YYYYMMDD').format('DD-MM-YYYY') : moment(res.booking.date, 'YYYYMMDD').format('DD-MM-YYYY')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
                                                             </div>
                                                             <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                                <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? res.booking.destination : res.destination} {res.booking ? res.booking.destProvince : res.destProvince}  </span>
+                                                                <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? JSON.parse(res.booking.destination) + " " : JSON.parse(res.destination) + " "} {res.booking ? JSON.parse(res.booking.destProvince) + " " : JSON.parse(res.destProvince) + " "}  </span>
                                                             </div>
                                                             <div style={{ paddingTop: '4%' }}>
                                                                 <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.booking ? res.booking.reason : res.reason}  </span>
@@ -204,10 +204,10 @@ const RequestCar = ({ filerBooking }) => {
                                                                     <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name ? res.name : res.booking.name} ({res.company ? res.company : res.booking.company})  </span>
                                                                 </div>
                                                                 <div style={{ paddingTop: '4%' }}>
-                                                                    <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? res.date.replaceAll('-', '/') : res.booking.date.replaceAll('-', '/')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
+                                                                    <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? moment(res.date, 'YYYYMMDD').format('DD-MM-YYYY') : moment(res.booking.date, 'YYYYMMDD').format('DD-MM-YYYY')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
                                                                 </div>
                                                                 <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                                    <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? res.booking.destination : res.destination} {res.booking ? res.booking.destProvince : res.destProvince}  </span>
+                                                                    <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? JSON.parse(res.booking.destination) + " " : JSON.parse(res.destination) + " "} {res.booking ? JSON.parse(res.booking.destProvince) + " " : JSON.parse(res.destProvince) + " "}  </span>
                                                                 </div>
                                                                 <div style={{ paddingTop: '4%' }}>
                                                                     <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.booking ? res.booking.reason : res.reason}  </span>
@@ -276,12 +276,12 @@ const RequestCar = ({ filerBooking }) => {
     )
 }
 
-const Car = ({ testt }) => {
+const Car = () => {
     const { Option } = Select;
-
 
     const [state, setState] = React.useContext(DataContext);
     // console.log(state);
+    // console.log(state)
 
     const { innerHeight, innerWidth } = window
     const [pastTest, setpastTest] = useState({ ...state })
@@ -308,24 +308,32 @@ const Car = ({ testt }) => {
         // console.log(value, carId);
         let arr = state.selectCar || []
         arr.push({ value, carId })
-        console.log(arr);
         setState({ ...state, selectCar: arr })
     }
     // console.log(state);
     const [loading, setloading] = useState(false)
     const saveDispatch = async (data, carData) => {
-        // console.log(data, carData);
-        setloading(true)
-        // return
-        var driverName = null
-        var noDriver = []
-        let disatchInsertById = []
-        let status
-        let insertData = []
-        // let test = []
-        // var bookingId
-        for (const d of data) {
+        console.log(data, carData);
+        let editable = false
 
+        console.log(data)
+        // setloading(true)
+        // if (!editable) {
+        var driverName = null
+        let insertData = []
+        let bookingId = []
+        let carId = null
+        let date = null
+        // var bookingId
+        let i = 0
+        date = data[0].date
+        for (const d of data) {
+            // console.log(d.date || d.booking.date);
+            // if (d.car && d.car.status == 'edit') {
+            if (d.bookings) {
+                editable = true
+                // break ;
+            }
             if (state.selectCar) {
                 for (const nameDriver of state.selectCar) {
                     if (nameDriver.carId == d.destCarId) {
@@ -335,13 +343,23 @@ const Car = ({ testt }) => {
             }
             if (carData.id == d.destCarId) {
 
+                if (d.date != date) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: `วันที่ไม่ตรงกัน`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    })
+                    setloading(false)
+                    return
+                }
+                carId = d.destCarId
                 if (d.needDriver == true) {
                     if (driverName == null) {
-                        console.log(d);
 
                         Swal.fire({
                             icon: 'warning',
-                            title: `${d.destination} ${d.destProvince} ต้องการคนขับรถ`,
+                            title: `กรุณาเลือกคนขับรถ`,
                             showConfirmButton: false,
                             timer: 1500
                         })
@@ -349,63 +367,97 @@ const Car = ({ testt }) => {
                         return
 
                     } else {
-                        insertData.push({
-                            user: d.emp_id,
-                            status: 'free',
-                            car: parseInt(d.destCarId),
-                            driver: driverName,
-                            booking: d.id
-                        })
+                        bookingId.push(d.id)
+                        // insertData.push({
+                        //     user: d.emp_id,
+                        //     status: 'free',
+                        //     car: parseInt(d.destCarId),
+                        //     driver: driverName,
+                        //     booking: d.id,
+                        //     date: d.date
+                        // })
                     }
 
                 } else {
-                    insertData.push({
-                        user: d.emp_id,
-                        status: 'free',
-                        car: parseInt(d.destCarId),
-                        booking: d.id
-                    })
+                    if (driverName != null) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: `มีงานที่ไม่ต้องการคนขับรถ`,
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setloading(false)
+                        return
+                    }
+                    // insertData.push({
+                    //     user: d.emp_id,
+                    //     status: 'free',
+                    //     car: parseInt(d.destCarId),
+                    //     booking: d.id,
+                    //     date: d.date
+                    // })
                 }
-                // bookingId = d.id
-                // console.log(insertData);
             }
 
 
         }
-        // console.log(insertData);
-        insertData.map(async insert => {
-            // console.log(insert);
-            await addTrips(insert, insert.booking).then(async res => {
-
-                let newTrip = res, newBooking, countData = 0
-                await getBookingDispatch().then(d => {
-                    d.map(data => {
-                        countData += 1
-                    })
-                    newBooking = d
-                })
-                let clearTrips = state.booking
-                data.map((d, index) => {
-                    if (d.destCarId && d.destCarId != carData.id) {
-                        newTrip.push(d)
-                    }
-                })
-                setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
-                setloading(false)
-
-                Swal.fire({
-
-                    icon: 'success',
-                    title: 'บันทึกข้อมูลสำเร็จ',
-                    showConfirmButton: false,
-                    timer: 1500
-                })
-            }).catch(err => {
-                setloading(false)
-
-                console.log(err)
+        if (editable == true) {
+            insertData.push({
+                status: 'free',
+                car: parseInt(carId),
+                driver: driverName,
+                booking: bookingId,
+                date: date
             })
-        })
+        } else {
+            insertData.push({
+                status: 'free',
+                car: parseInt(carId),
+                driver: driverName,
+                booking: bookingId,
+                date: date
+            })
+        }
+
+
+
+        console.log(insertData);
+
+
+
+        // await addTrips(insertData[0], insertData[0].booking).then(async res => {
+
+        //     let newTrip = res, newBooking, countData = 0
+        //     await getBookingDispatch().then(d => {
+        //         d.map(data => {
+        //             countData += 1
+        //         })
+        //         newBooking = d
+        //     })
+        //     let clearTrips = state.booking
+        //     data.map((d, index) => {
+        //         if (d.destCarId && d.destCarId != carData.id) {
+        //             newTrip.push(d)
+        //         }
+        //     })
+        //     setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
+        //     setloading(false)
+
+        //     Swal.fire({
+
+        //         icon: 'success',
+        //         title: 'บันทึกข้อมูลสำเร็จ',
+        //         showConfirmButton: false,
+        //         timer: 1500
+        //     })
+        // }).catch(err => {
+        //     setloading(false)
+
+        //     console.log(err)
+        // })
+
+        // }
+        console.log(editable)
         setloading(false)
         // console.log(disatchInsertById);
     }
@@ -414,6 +466,7 @@ const Car = ({ testt }) => {
     } else {
         var device = 'vertical'
     }
+    // console.log(state.trips)
     return (
         <div className='horizonScroll'>
             <div className='ScrollCar'>
@@ -472,38 +525,74 @@ const Car = ({ testt }) => {
                                             <div className='Scroll'>
                                                 {/* <div> */}
                                                 {state.trips.map((data, index) =>
+                                                    data.bookings ? data.bookings.map((d, i) =>
 
-                                                    data.car && data.car.id == res.id
-                                                        || data.destCarId && res.id == data.destCarId
-                                                        ?
-                                                        <Draggable
-                                                            key={data.id}
-                                                            draggableId={`trip${data.id}`}
-                                                            index={index}
-                                                            isDragDisabled={!data.destCarId}
-                                                        >
-                                                            {provided => (
-                                                                <div
-                                                                    // style={{ width: '100%' }}
-                                                                    ref={provided.innerRef}
 
-                                                                    {...provided.draggableProps}
-                                                                >
-                                                                    <div className='font' style={data.status == null || data.status == 'free' ?
-                                                                        { position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                        : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                    } >
+                                                        data.car && data.car.id == res.id
+                                                            || data.destCarId && !data.bookings && res.id == data.destCarId
+                                                            ?
+                                                            <Draggable
+                                                                key={data.id}
+                                                                draggableId={`trip${data.id}`}
+                                                                index={index}
+                                                            // isDragDisabled={!data.destCarId}
+                                                            >
+                                                                {provided => (
+                                                                    <div
+                                                                        // style={{ width: '100%' }}
+                                                                        ref={provided.innerRef}
+                                                                        {...provided.draggableProps}
+                                                                    >
+                                                                        <div className='font' style={data.status == null || data.status != 'trip' ?
+                                                                            { position: 'relative', width: '100%', background: '#5A67D8', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                            : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                        } >
 
-                                                                        {data.destCarId ? <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-                                                                            : null}  <p>{data.booking && data.booking.destination || data.destination} {data.booking && data.booking.destProvince || data.destProvince}</p>
-                                                                        <p>{data.booking && data.booking.startTime || data.startTime} - {data.booking && data.booking.endTime || data.endTime}</p>
+
+                                                                            <img src={dragicon} {...provided.dragHandleProps} style={{ color: 'red', position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
+
+                                                                            <p>{d && (JSON.parse(d.destination) + " ") || (JSON.parse(d.destination) + " ")} {d && (JSON.parse(d.destProvince) + " ") || (JSON.parse(d.destProvince) + " ")}</p>
+                                                                            <p>{d && d.startTime || data.startTime} - {d && d.endTime || data.endTime}</p>
+                                                                        </div>
+
+
                                                                     </div>
+                                                                )}
+                                                            </Draggable>
+                                                            : null
+                                                    ) :
+                                                        data.car && data.car.id == res.id
+                                                            || data.destCarId && res.id == data.destCarId
+                                                            ?
+                                                            <Draggable
+                                                                key={data.id}
+                                                                draggableId={`trip${data.id}`}
+                                                                index={index}
+                                                            // isDragDisabled={!data.destCarId}
+                                                            >
+                                                                {provided => (
+                                                                    <div
+                                                                        // style={{ width: '100%' }}
+                                                                        ref={provided.innerRef}
+
+                                                                        {...provided.draggableProps}
+                                                                    >
+                                                                        <div className='font' style={data.status == null || data.status != 'trip' ?
+                                                                            { position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                            : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                        } >
+
+                                                                            <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
+
+                                                                            <p>{data.booking && (JSON.parse(data.booking.destination) + " ") || (JSON.parse(data.destination) + " ")} {data.booking && (JSON.parse(data.booking.destProvince) + " ") || (JSON.parse(data.destProvince) + " ")}</p>
+                                                                            <p>{data && data.startTime || data.startTime} - {data && data.endTime || data.endTime}</p>
+                                                                        </div>
 
 
-                                                                </div>
-                                                            )}
-                                                        </Draggable>
-                                                        : null
+                                                                    </div>
+                                                                )}
+                                                            </Draggable>
+                                                            : null
                                                 )}
 
                                             </div>
@@ -549,8 +638,10 @@ const General = () => {
     const [sidebar, setSidebar] = useState(true)
     const wrapperRef = useRef(null);
     React.useMemo(async () => {
-        let booking, cars, drivers, trips, countData = 0
-
+        let booking, cars, drivers, trips, countData = 0, bookingDispatched
+        await getBookingDispatched().then(res => {
+            bookingDispatched = res
+        })
         await getBookingDispatch().then(res => {
             res.map(data => {
                 countData += 1
@@ -573,43 +664,84 @@ const General = () => {
             i++
         }
 
-        setState({ ...state, cars: cars, booking: booking, drivers: driverArr, trips: trips, count: countData })
+        setState({ ...state, bookingDispatched: bookingDispatched, cars: cars, booking: booking, drivers: driverArr, trips: trips, count: countData })
     }, [])
 
     const move = (source, destination, droppableSource, droppableDestination) => {
         console.log(source, destination, droppableSource, droppableDestination);
+        // console.log(source[0].bookings)
         const sourceClone = Array.from(source);
         const result = {};
         let removed = {}
         const destClone = Array.from(destination);
-        // console.log(sourceClone);
-        // console.log(droppableDestination.index, droppableSource.index);
-        if (droppableDestination.droppableId != 'droppable1') {
-            let [removed] = sourceClone.splice(droppableSource.index, 1);
-            if (!removed.destCarId) {
-                console.log(484);
-                removed = { ...removed, destCarId: droppableDestination.droppableId }
-                destClone.splice(droppableDestination.index, 0, removed); // insert to state
-                result['droppableId1'] = sourceClone;
-                result['trips'] = destClone;
+        if (source[0].bookings) {
+
+            if (droppableDestination.droppableId != 'droppable1') {
+                // console.log(droppableSource.index)
+                let [removed] = sourceClone.splice(droppableSource.index, 1);
+                if (!removed.destCarId) {
+                    removed = { ...removed, car: { id: droppableDestination.droppableId, status: 'edit' } }
+                    sourceClone.splice(droppableDestination.index, 0, removed); // insert to state
+                    result['droppableId1'] = state.booking;
+                    console.log(sourceClone)
+                    result['trips'] = sourceClone;
+                } else {
+                    destination.map(res => {
+                        if (res.id == removed.id) {
+                            removed.destCarId = droppableDestination.droppableId
+                        }
+                    })
+                    result['droppableId1'] = state.booking;
+                    result['trips'] = destClone;
+                }
+
             } else {
-                destination.map(res => {
-                    if (res.id == removed.id) {
-                        removed.destCarId = droppableDestination.droppableId
-                    }
+                // let [removed] = sourceClone.splice(droppableSource.index, 1);
+                Swal.fire({
+                    icon: 'warning',
+                    title: `ไม่สามารถลากได้ เนื่องจากงานนี้ถูกเลือกแล้ว`,
+                    showConfirmButton: false,
+                    timer: 1500
                 })
-                result['droppableId1'] = state.booking;
-                result['trips'] = destClone;
+                // destClone.splice(droppableDestination.index, 0, removed);
+                result['trips'] = sourceClone;
+                result['droppableId1'] = destClone;
             }
-
+            console.log(result)
+            return { result, removed };
         } else {
-            let [removed] = sourceClone.splice(droppableSource.index, 1);
 
-            destClone.splice(droppableDestination.index, 0, removed);
-            result['trips'] = sourceClone;
-            result['droppableId1'] = destClone;
+            // console.log(sourceClone);
+            // console.log(droppableDestination.index, droppableSource.index);
+            if (droppableDestination.droppableId != 'droppable1') {
+                let [removed] = sourceClone.splice(droppableSource.index, 1);
+                console.log(removed)
+                if (!removed.destCarId) {
+                    // console.log(484);
+                    removed = { ...removed, destCarId: droppableDestination.droppableId, status: 'add' }
+                    destClone.splice(droppableDestination.index, 0, removed); // insert to state
+                    result['droppableId1'] = sourceClone;
+                    result['trips'] = destClone;
+                } else {
+                    destination.map(res => {
+                        if (res.id == removed.id) {
+                            removed.destCarId = droppableDestination.droppableId
+                        }
+                    })
+                    result['droppableId1'] = state.booking;
+                    result['trips'] = destClone;
+                }
+
+            } else {
+                let [removed] = sourceClone.splice(droppableSource.index, 1);
+
+                destClone.splice(droppableDestination.index, 0, removed);
+                result['trips'] = sourceClone;
+                result['droppableId1'] = destClone;
+            }
+            return { result, removed };
         }
-        return { result, removed };
+
     };
     const getList = id => {
         if (id == 'droppable1') return state.booking //return state from component
@@ -622,6 +754,7 @@ const General = () => {
         return result;
     };
     const onDragEnd = result => {
+        // console.log(result);
         const { source, destination } = result;
         if (!destination) {
             return;
@@ -644,6 +777,7 @@ const General = () => {
                 source,
                 destination
             );
+            console.log(result);
             setState({ ...state, booking: result['droppableId1'], trips: result['trips'] })
         }
     };

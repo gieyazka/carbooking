@@ -2,7 +2,7 @@ import React, { useState, useRef, useReducer, Fragment } from 'react'
 import { DataContext } from "../store/store"
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../form/formrequest.css'
-import { Modal, Spin, Form, Input, Row, Col, Select, InputNumber, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
+import { Modal, Steps, Spin, Form, Input, Row, Col, Select, InputNumber, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
 import forward from '../asset/forward.png'
 import backward from '../asset/backward.png'
 
@@ -17,7 +17,7 @@ import { getAllTrips, editTrips, getBookingStatus } from '../util/index'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 
-
+import { UserOutlined, SolutionOutlined, LoadingOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { Calendar, momentLocalizer } from 'react-big-calendar'
 import moment from 'moment'
 import { set } from 'lodash';
@@ -25,6 +25,7 @@ import 'moment/locale/th';
 var _ = require('lodash');
 
 const Trips = () => {
+    const { Step } = Steps;
     // console.log(moment());
     const [date, setDate] = useState(new moment())
     const localizer = momentLocalizer(moment)
@@ -60,7 +61,7 @@ const Trips = () => {
                 data.push({
                     id: d.id,
                     data: d,
-                    title: `${d.destination} ${d.destProvince}`,
+                    title: `${JSON.parse(d.destination) + " "} ${JSON.parse(d.destProvince) + " "}`,
                     allDay: false,
                     start: moment(d.date, 'DD-MM-YYYY')._d,
                     end: moment(d.date, 'DD-MM-YYYY')._d
@@ -112,17 +113,20 @@ const Trips = () => {
                                 <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.date}    {modalData.tripData.startTime} - {modalData.tripData.endTime}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.destination} {modalData.tripData.destProvince}</span>
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.destination) + " "} &nbsp; {JSON.parse(modalData.tripData.destProvince) + " "}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
                                 <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.totalPassenger} คน</span>
                             </div>
                             <div style={{ position: 'relative', paddingTop: '4%', textAlign: 'center' }}>
                                 <h3>Status</h3>
-                                <div style={{ textAlign: 'left', marginLeft: '25%' }}>
-                                    <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > Manager Approve :  {modalData.tripData.managerApprove ? modalData.tripData.managerApprove === true ? "Yes" : 'No' : "Waiting"} </span>
-                                    <br />  <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > Hr Approve :   {modalData.tripData.hrApprove ? modalData.tripData.hrApprove === true ? "Yes" : 'No' : "Waiting"} </span>
-                                    <br /> <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > Dispatch :  {modalData.tripData.dispatch ? modalData.tripData.dispatch === true ? "Yes" : 'No' : "Waiting"} </span>
+                                <div style={{ marginLeft : '53%',transform : 'translateX(-50%)'}}>
+                                    <Steps current={modalData.tripData.dispatch === false ? modalData.tripData.managerApprove === null ? 0 : modalData.tripData.hrApprove === null || modalData.tripData.hrApprove === false ? 1 : 2 : 2} direction="vertical">
+                                        <Step title="Manager Approve" icon={modalData.tripData.managerApprove !== null? modalData.tripData.managerApprove === true ? <CheckCircleOutlined /> : <CloseCircleOutlined /> : <LoadingOutlined />} />
+                                        <Step title="Hr Approve" icon={modalData.tripData.hrApprove !== null ? modalData.tripData.hrApprove === true ? <CheckCircleOutlined /> : <CloseCircleOutlined /> : <LoadingOutlined />} />
+                                        <Step title="Dispatch" icon={modalData.tripData.dispatch ? modalData.tripData.dispatch === true ? <CheckCircleOutlined /> : <LoadingOutlined /> : <LoadingOutlined />} />
+
+                                    </Steps>
                                 </div>
                             </div>
                         </div>

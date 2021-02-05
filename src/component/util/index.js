@@ -17,7 +17,7 @@ const socket = io('https://ess.aapico.com');
 export const loginCheck = async (identifier, password) => {
     // console.log(identifier, password)
     return await axios.post(`${loginApi}`, {
-        identifier : identifier.toUpperCase(),
+        identifier: identifier.toUpperCase(),
         password
     }).then(res => {
         // console.log(res)
@@ -64,7 +64,7 @@ export const saveBooking = async (formData) => {
         company: formData.company,
         mobile: formData.mobile_phone,
         tel: formData.company_phone,
-        date: moment(formData.date).format('DD-MM-yyyy'),
+        date: moment(formData.date).format('YYYYMMDD'),
         startTime: moment(formData.time[0]).format('HH:mm'),
         endTime: moment(formData.time[1]).format('HH:mm'),
         carType: formData.car_type,
@@ -115,8 +115,8 @@ export const getTrips = async () => {
     })
 }
 export const getTripsBybooking = async (bookingId) => {
-    return await axios.get(`${tripApi}?booking=${bookingId}`).then(res => {
-        // console.log(res);
+    return await axios.get(`${tripApi}?bookings=${bookingId}`).then(res => {
+        console.log(res);
         return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
 }
@@ -127,28 +127,39 @@ export const getAllTrips = async () => {
     })
 }
 export const addTrips = async (data, bookingId) => {
-    console.log(data, bookingId);
-    return await axios.post(`${tripApi}`, data).then(async res => {
-        await axios.put(`${bookingApi}/${bookingId}`, { dispatch: true }).then(async () => {
+    // console.log(data, bookingId);
+    await axios.post(`${tripApi}`, {
+        status: "free",
+        car: data.car,
+        driver: data.driver,
+        date: data.date,
+        bookings: bookingId
+    })
+    for (const id of bookingId) {
+        console.log(id);
+        await axios.put(`${bookingApi}/${id}`, { dispatch: true }).then(async () => {
             if (data.driver) {
-                // console.log(data.driver);
                 await getDriversByid(data.driver).then(async res => {
-                    console.log(res.data.emp_id);
-                    const tripData = await getTripsBybooking(bookingId)
-                    // console.log(tripData);
+                    console.log(res.data);
+
+                    const tripData = await getTripsBybooking(id)
+                    console.log(tripData);
+
                     socket.emit('dispatch', tripData[0])
                     await sendFirebaseNotification(res.data.emp_id)
 
                 })
             }
         })
+    }
 
-        return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
-            // console.log(res);
 
-            return _.sortBy(res.data, [function (o) { return o.id; }]);
-        })
 
+
+    return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+        // console.log(res);
+
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
 }
 export const getBooking = async () => {
@@ -415,6 +426,12 @@ export const getDriverbyempId = async (id) => {
 }
 export const getBookingDispatch = async () => {
     return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=false`).then(res => {
+
+        return res.data
+    })
+}
+export const getBookingDispatched = async () => {
+    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=true&status=false`).then(res => {
 
         return res.data
     })

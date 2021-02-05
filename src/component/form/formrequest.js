@@ -30,6 +30,22 @@ const FromRequest = () => {
     });
     const [destState, setDestState] = useState([{}])
     const [loading, setloading] = useState(false)
+    React.useMemo(() => {
+        var provinceArray = []
+
+        var i = 0
+        for (const data in dataProvince) {
+            provinceArray.push(<Option key={i} value={dataProvince[data].name.th}>{dataProvince[data].name.th}</Option>);
+            i++
+        }
+        let typeCar = []
+        typeCar.push(<Option key={0} value='Car (เก๋ง)'>Car (เก๋ง)</Option>);
+        typeCar.push(<Option key={1} value='Pick up (กระบะ)'>Pick up (กระบะ)</Option>);
+        typeCar.push(<Option key={2} value='Bus (ตู้)'>Bus (ตู้)</Option>);
+        typeCar.push(<Option key={3} value='PPV'>PPV</Option>);
+        typeCar.push(<Option key={4} value='SUV'>SUV</Option>);
+        setState({ ...state, province: provinceArray, typeCar: typeCar })
+    }, [])
     const checkPhone = e => {
         let value = e.target.value
         value = value.replaceAll('-', '')
@@ -109,7 +125,7 @@ const FromRequest = () => {
                 timer: 1500
             }).then(() => {
                 // form.resetFields()
-                // history.push('/user/status')
+                history.push('/user/status')
 
             })
         }).catch(err => {
@@ -401,7 +417,7 @@ const FromRequest = () => {
                             <p >จังหวัด (Province)</p>
                             {destState.map((res, index) =>
                             (
-                                <>
+                                <div style={{ position: 'relative' }}>
 
                                     <Form.Item
 
@@ -424,14 +440,15 @@ const FromRequest = () => {
                                         >
                                             {state.province}
                                         </Select>
-                                        {index === 0
-                                            ? <img src={addForm} onClick={() => addFormData()} style={{ marginLeft: '12px', width: '24px', height: '24px', cursor: 'pointer' }} />
-                                            : index === destState.length - 1 ? <img src={deleteForm} onClick={() => removeFormData()} style={{ cursor: 'pointer', marginLeft: '12px', width: '24px', height: '24px' }} />
-                                                : null
-                                        }
+
 
                                     </Form.Item>
-                                </>
+                                    {index === 0
+                                        ? <img src={addForm} onClick={() => addFormData()} style={{ position: 'absolute', top: '4px', right: 0, marginLeft: '12px', width: '24px', height: '24px', cursor: 'pointer' }} />
+                                        : index === destState.length - 1 ? <img src={deleteForm} onClick={() => removeFormData()} style={{ position: 'absolute', top: '4px', right: 0, cursor: 'pointer', marginLeft: '12px', width: '24px', height: '24px' }} />
+                                            : null
+                                    }
+                                </div>
                             )
                             )}
                         </Col>
