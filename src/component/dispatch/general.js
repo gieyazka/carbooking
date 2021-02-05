@@ -330,10 +330,10 @@ const Car = () => {
         for (const d of data) {
             // console.log(d.date || d.booking.date);
             // if (d.car && d.car.status == 'edit') {
-            if (d.bookings) {
-                editable = true
-                // break ;
-            }
+            // if (d.bookings) {
+            //     editable = true
+            //      break ;
+            // }
             if (state.selectCar) {
                 for (const nameDriver of state.selectCar) {
                     if (nameDriver.carId == d.destCarId) {
@@ -341,8 +341,8 @@ const Car = () => {
                     }
                 }
             }
-            if (carData.id == d.destCarId) {
-
+            if (carData.id == d.destCarId || carData.id == d.car.id) {
+                console.log(d);
                 if (d.date != date) {
                     Swal.fire({
                         icon: 'warning',
@@ -353,7 +353,7 @@ const Car = () => {
                     setloading(false)
                     return
                 }
-                carId = d.destCarId
+                carId = d.destCarId || d.car.id
                 if (d.needDriver == true) {
                     if (driverName == null) {
 
