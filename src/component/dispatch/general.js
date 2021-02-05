@@ -324,6 +324,7 @@ const Car = () => {
         let bookingId = []
         let carId = null
         let date = null
+        let test = []
         // var bookingId
         let i = 0
         date = data[0].date
@@ -354,6 +355,7 @@ const Car = () => {
                     return
                 }
                 carId = d.destCarId || d.car.id
+                test.push(d.bookings.id || d.id)
                 if (d.needDriver == true) {
                     if (driverName == null) {
 
@@ -419,7 +421,7 @@ const Car = () => {
             })
         }
 
-
+        console.log(test);
 
         console.log(insertData);
 
