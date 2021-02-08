@@ -238,9 +238,9 @@ const AppLayout = () => {
                         {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="view" icon={<FolderViewOutlined />}>
                             View Job<Link to="/user/view" />
                         </Menu.Item> : null}
-                        {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="editTrip" icon={<EditOutlined />}>
+                        {/* {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Menu.Item key="editTrip" icon={<EditOutlined />}>
                             Edit trip<Link to="/user/edittrip" />
-                        </Menu.Item> : null}
+                        </Menu.Item> : null} */}
                         {loginState && loginState.role == 'hr' || loginState && loginState.role == 'admin' ? <Menu.Item key="he" icon={<SettingOutlined />}>
                             Hr Approve<Link to="/user/hr" />
                         </Menu.Item> : null}
@@ -288,7 +288,7 @@ const AppLayout = () => {
 
                         <Switch location={location} key={location.key}>
                             {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/view" component={View} /> : null}
-                            {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/edittrip" component={EditTrips} /> : null}
+                            {/* {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/edittrip" component={EditTrips} /> : null} */}
                             {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/dispatch" component={Dispatch} /> : null}
                             {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/driver" component={ManageDriver} /> : null}
                             {loginState && loginState.role == 'dispatcher' || loginState && loginState.role == 'admin' ? <Route path="/user/history" component={History} /> : null}

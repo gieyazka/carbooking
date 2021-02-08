@@ -16,7 +16,7 @@ import people from '../asset/people.png'
 import statusdriver2 from '../asset/statusdriver2.png'
 import noDriver from '../asset/noDriver.png'
 import clearIcon from '../asset/clearIcon.png'
-import { getTrips } from '../util/index'
+import { getCars, getBookingDispatched } from '../util/index'
 
 const App = () => {
     const [state, setState] = React.useContext(DataContext);
@@ -37,10 +37,10 @@ const App = () => {
     const showData = (d) => {
         // console.log(d.driver.name);
         if (!d.driver) {
-            setModal({ ...modal, open: true, booking: d.booking })
+            setModal({ ...modal, open: true, booking: d })
 
         } else {
-            setModal({ ...modal, open: true, booking: d.booking, driver: d.driver.name })
+            setModal({ ...modal, open: true, booking: d, driver: d.driver.name })
 
         }
 
@@ -98,6 +98,7 @@ const App = () => {
         date: null,
         province: null
     })
+    console.log(state);
     const [count, setCount] = useState(0)
     const filterBooking = (dataFilter, filter) => {
         // console.log(dataFilter, filter);
@@ -114,14 +115,14 @@ const App = () => {
             setFilter({ ...filerBooking, search: true, province: dataFilter })
         }
     }
-    // console.log(state.trips);
+    // console.log(state.BookingDispatched);
     useEffect(() => {
         // filter
         if (filerBooking.search == true) {
             let countBooking = 0
-            state.trips.map(d => {
+            state.BookingDispatched.map(d => {
                 // console.log(res.destProvince);
-                const res = d.booking
+                const res = d
                 // console.log(res);s
                 if (res.company == filerBooking.company) {
                     countBooking += 1
@@ -162,9 +163,10 @@ const App = () => {
 
     React.useEffect(async () => {
         const countTrip = async () => {
-            const test = await getTrips().then(res => {
+            const cars = await getCars()
+            const test = await getBookingDispatched().then(res => {
                 setCount(res.length)
-                setState({ ...state, trips: res })
+                setState({ ...state, BookingDispatched: res, cars: cars })
             })
 
             // setCount(countData)
@@ -181,6 +183,7 @@ const App = () => {
             date: null,
             province: null
         })
+        setCount(state.BookingDispatched.length)
         let countData = 0
     }
     useOutsideAlerter(wrapperRef);
@@ -192,7 +195,7 @@ const App = () => {
     } else {
         var device = 'vertical'
     }
-    // console.log(state.trips);
+    // console.log(state.BookingDispatched);
     return (
         <div>
             <div className={!sidebar == true ? 'contentFilter' : 'red'}></div>
@@ -360,7 +363,7 @@ const App = () => {
 
                             <Card key={res.id} className='cardMobile' style={{ paddingBottom: "16px", backgroundColor: "#FFF", borderColor: '#000000', borderRadius: '20px', border: '1px solid rgba(0, 0, 0, .38)' }}>
                                 <Row gutter={{ xs: 16, sm: 16 }}>
-                                    <Col xs={{ span: 24 }} sm={{ span: 5 }} align='center'>
+                                    <Col xs={{ span: 24 }} sm={{ span: 8 }} align='center'>
                                         <div className='carPos' >
                                             <img src={res.picture[res.picture.length - 1] ? `https://ess.aapico.com${res.picture[res.picture.length - 1].url}` :
                                                 'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
@@ -378,61 +381,62 @@ const App = () => {
 
                                     {/* </div> */}
                                     {/* </Col> */}
-                                    <Col xs={{ span: 24 }} sm={{ span: 19 }} >
+                                    <Col xs={{ span: 24 }} sm={{ span: 16 }} >
                                         <div className='Scroll'>
                                             {/* <div> */}
 
                                             <Row >
-                                                {state.trips ? state.trips.map((d, index) =>
+                                                {state.BookingDispatched ? state.BookingDispatched.map((d, index) =>
 
                                                     d.car && d.car.id == res.id
-                                                        && d.booking.company == filerBooking.company && d.car.id == res.id
-                                                        || d.booking.department == filerBooking.department && d.car.id == res.id
-                                                        || d.booking.reason == filerBooking.reason && d.car.id == res.id
-                                                        || d.booking.date == filerBooking.date && d.car.id == res.id
-                                                        || d.booking.destProvince == filerBooking.province && d.car.id == res.id
+                                                        && d.company == filerBooking.company && d.car.id == res.id
+                                                        || d.department == filerBooking.department && d.car.id == res.id
+                                                        || d.reason == filerBooking.reason && d.car.id == res.id
+                                                        || d.date == filerBooking.date && d.car.id == res.id
+                                                        || d.destProvince == filerBooking.province && d.car.id == res.id
 
                                                         ?
                                                         <Col xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
                                                             <div onClick={() => { showData(d) }} className='font'
                                                                 style={d.status == 'free' ?
-                                                                    { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
-                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
+                                                                    { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
+                                                                    : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
                                                                 } >
-                                                                <p>{(JSON.parse(d.booking.destination)+ " ")} {(JSON.parse(d.booking.destProvince) + " ")}</p>
-                                                                <p>{d.booking.startTime} - {d.booking.endTime}</p>
+                                                                <p>{(JSON.parse(d.destination) + " ")} {(JSON.parse(d.destProvince) + " ")}</p>
+                                                                <p>{d.startTime} - {d.endTime}</p>
                                                             </div>
 
                                                         </Col>
                                                         :
 
-                                                        filerBooking.search == false && d.car && d.car.id == res.id ?
-                                                            <Col  xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
+                                                        filerBooking.search == false && d.car.id == res.id ?
+                                                            <Col xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
                                                                 <div onClick={() => { showData(d) }} className='font'
                                                                     style={d.status == 'free' ?
                                                                         { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
                                                                         : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
                                                                     } >
-                                                                    <p>{(JSON.parse(d.booking.destination)+ " ")} {(JSON.parse(d.booking.destProvince) + " ")}</p>
-                                                                    <p>{d.booking.startTime} - {d.booking.endTime}</p>
+
+                                                                    <p>{(JSON.parse(d.destination) + " ")} {(JSON.parse(d.destProvince) + " ")}</p>
+                                                                    <p>{d.startTime} - {d.endTime}</p>
 
                                                                 </div>
 
                                                             </Col>
                                                             :
                                                             d.car && d.car.id == res.id && filerBooking.company == 'Other'
-                                                                && d.booking.company != 'AH' && d.booking.company != 'AHP' && d.booking.company != 'AHT' && d.booking.company != 'AITS' && d.booking.company != 'ASICO'
-                                                                || filerBooking.department == 'Other' && d.car.id == res.id && d.booking.department != 'Production' && d.booking.department != 'production' && d.booking.department != 'Marketing' && d.booking.department != 'marketing' && d.booking.department != 'QA & QC' && d.booking.department != 'Personnel' && d.booking.department != 'personnel' && d.booking.department != 'IT' && d.booking.department != 'it' && d.booking.department != 'Business Deverlopment' && d.booking.department != 'business deverlopment' && d.booking.department != 'Purchasing' && d.booking.department != 'purchasing' && d.booking.department != 'Safety' && d.booking.department != 'Safety'
+                                                                && d.company != 'AH' && d.company != 'AHP' && d.company != 'AHT' && d.company != 'AITS' && d.company != 'ASICO'
+                                                                || filerBooking.department == 'Other' && d.car.id == res.id && d.department != 'Production' && d.department != 'production' && d.department != 'Marketing' && d.department != 'marketing' && d.department != 'QA & QC' && d.department != 'Personnel' && d.department != 'personnel' && d.department != 'IT' && d.department != 'it' && d.department != 'Business Deverlopment' && d.department != 'business deverlopment' && d.department != 'Purchasing' && d.department != 'purchasing' && d.department != 'Safety' && d.department != 'Safety'
 
-                                                                || filerBooking.reason == 'Other' && d.car.id == res.id && d.booking.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && d.booking.reason != 'ส่งของ' && d.booking.reason != 'รับ - ส่งแขก' && d.booking.reason != 'ติดต่อลูกค้า'
+                                                                || filerBooking.reason == 'Other' && d.car.id == res.id && d.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && d.reason != 'ส่งของ' && d.reason != 'รับ - ส่งแขก' && d.reason != 'ติดต่อลูกค้า'
                                                                 ? <Col xs={{ span: 24 }} sm={{ span: 6 }} key={d.id} className='jobView'>
                                                                     <div onClick={() => { showData(d) }} className='font'
                                                                         style={d.status == 'free' ?
-                                                                            { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
-                                                                            : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px',  marginTop: '4%' }
+                                                                            { cursor: 'pointer', position: 'relative', background: '#1D366D', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
+                                                                            : { cursor: 'pointer', position: 'relative', background: '#FEAB20', borderRadius: '10px', zIndex: '2', padding: '8px 12px 6px 12px', marginTop: '4%' }
                                                                         } >
-                                                                        <p>{(JSON.parse(d.booking.destination)+ " ")} {(JSON.parse(d.booking.destProvince) + " ")}</p>
-                                                                        <p>{d.booking.startTime} - {d.booking.endTime}</p>
+                                                                        <p>{(JSON.parse(d.destination) + " ")} {(JSON.parse(d.destProvince) + " ")}</p>
+                                                                        <p>{d.startTime} - {d.endTime}</p>
 
                                                                     </div>
 
@@ -479,7 +483,7 @@ const App = () => {
                         <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modal.booking.date}    {modal.booking.startTime} - {modal.booking.endTime}</span>
                     </div>
                     <div style={{ paddingTop: '4%' }} >
-                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {(JSON.parse(modal.booking.destination)+ " ")} {(JSON.parse(modal.booking.destProvince)+ " ")}</span>
+                        <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {(JSON.parse(modal.booking.destination) + " ")} {(JSON.parse(modal.booking.destProvince) + " ")}</span>
                     </div>
                     <div style={{ paddingTop: '4%' }}>
                         <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modal.booking.totalPassenger} คน</span>
@@ -492,7 +496,7 @@ const App = () => {
                         <p>เหตุผลที่ต้องการใช้รถ  : Meeting AHR</p>
                     </div> */}
                     <div style={{ paddingTop: '4%' }}>
-                        <p>รายละเอียดอื่น ๆ   : {modal.booking.comment || '-'}</p>
+                        <p>รายละเอียดอื่น ๆ   : {modal.comment || '-'}</p>
                     </div>
                 </Modal>
                 : null}

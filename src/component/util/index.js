@@ -126,6 +126,72 @@ export const getAllTrips = async () => {
         return _.sortBy(res.data, [function (o) { return o.booking.date; }], [function (o) { return o.booking.startTime; }]);
     })
 }
+export const checkTrips = async (date, carId) => {
+    return await axios.get(`${tripApi}?date=${date}&car=${carId}&status_ne=finish`).then(res => {
+        return res.data
+    })
+
+}
+
+
+export const addOldTrip = async (bookingId, tripData, bookId) => {
+    await getTripsBybooking(bookId).then(async res => {
+        console.log(res);
+        let newBookId = []
+        if (res[0]) {
+
+            for (const d of res[0].bookings) {
+                if (bookId != d.id) {
+                    console.log(d);
+                    newBookId.push(d.id)
+                }
+            }
+            console.log(res[0].status);
+            if (!newBookId[0]) {
+                await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: 'finish' })
+
+            } else {
+                await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: res[0].status })
+            }
+        }
+        await axios.put(`${tripApi}/${tripData.id}`, {
+            bookings: bookingId
+        }).then(async () => {
+            console.log(bookId, tripData);
+
+            await axios.put(`${bookingApi}/${bookId}`, { dispatch: true, car: tripData.car.id, status: tripData.status || 'free' })
+            socket.emit('dispatch', tripData)
+            await sendFirebaseNotification(tripData.driver.emp_id)
+        })
+    })
+
+}
+
+export const addNewTrip = async (insertData, bookingData) => {
+    console.log(insertData, bookingData);
+    await axios.post(`${tripApi}`, {
+        status: "free",
+        car: insertData.car,
+        driver: insertData.driver,
+        date: insertData.date,
+        bookings: insertData.bookings
+    }).catch(err => console.log(err))
+    await axios.put(`${bookingApi}/${insertData.bookings}`, { dispatch: true, car: insertData.car })
+    if (insertData.driver) {
+        await getDriversByid(insertData.driver).then(async res => {
+
+            const tripData = await getTripsBybooking(insertData.bookings)
+            socket.emit('dispatch', tripData[0])
+            await sendFirebaseNotification(res.data.emp_id)
+        })
+    }
+
+    return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+        // console.log(res);
+
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
 export const addTrips = async (data, bookingId) => {
     // console.log(data, bookingId);
     await axios.post(`${tripApi}`, {
@@ -140,11 +206,7 @@ export const addTrips = async (data, bookingId) => {
         await axios.put(`${bookingApi}/${id}`, { dispatch: true }).then(async () => {
             if (data.driver) {
                 await getDriversByid(data.driver).then(async res => {
-                    console.log(res.data);
-
                     const tripData = await getTripsBybooking(id)
-                    console.log(tripData);
-
                     socket.emit('dispatch', tripData[0])
                     await sendFirebaseNotification(res.data.emp_id)
 
@@ -427,13 +489,13 @@ export const getDriverbyempId = async (id) => {
 export const getBookingDispatch = async () => {
     return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=false`).then(res => {
 
-        return res.data
+        return _.sortBy(res.data, [function (o) { return o.date; }]);
     })
 }
 export const getBookingDispatched = async () => {
-    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=true&status=false`).then(res => {
+    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=true&status_ne=finish`).then(res => {
+        return _.sortBy(res.data, [function (o) { return o.date; }]);
 
-        return res.data
     })
 }
 export const getBookingStatus = async (id) => {
@@ -643,7 +705,7 @@ export const sendFirebaseNotification = async (driverId) => {
 
 }
 export const getSubscriberByempId = async (emp_id) => {
-    // console.log(emp_id);
+
 
     return await axios.get(`${subscribersApi}?empID=${emp_id}&app_name=Carbooking`).then(res => {
         // console.log(res.data);

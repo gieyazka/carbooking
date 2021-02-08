@@ -31,7 +31,8 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { getBookingDispatched, addTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
+import { getBookingDispatched, addTrips, addOldTrip, addNewTrip, checkTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
+import { remove } from 'lodash';
 
 const testVaraint = {
     hidden: {
@@ -114,16 +115,16 @@ const RequestCar = ({ filerBooking }) => {
                                                             </div>
                                                         </div>
                                                         <div style={{ paddingTop: '4%' }}>
-                                                            <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name ? res.name : res.booking.name} ({res.company ? res.company : res.booking.company})  </span>
+                                                            <img src={user} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.name ? res.name : res.bookings.name} ({res.company ? res.company : res.bookings.company})  </span>
                                                         </div>
                                                         <div style={{ paddingTop: '4%' }}>
-                                                            <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? moment(res.date, 'YYYYMMDD').format('DD-MM-YYYY') : moment(res.booking.date, 'YYYYMMDD').format('DD-MM-YYYY')} &nbsp; {res.booking ? res.booking.startTime : res.startTime} - {res.booking ? res.booking.endTime : res.endTime}  </span>
+                                                            <img src={calender} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.date ? moment(res.date, 'YYYYMMDD').format('DD-MM-YYYY') : moment(res.bookings.date, 'YYYYMMDD').format('DD-MM-YYYY')} &nbsp; {res.bookings ? res.bookings.startTime : res.startTime} - {res.bookings ? res.bookings.endTime : res.endTime}  </span>
                                                         </div>
                                                         <div style={{ paddingTop: '4%', paddingLeft: '1.5%' }}>
-                                                            <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.booking ? JSON.parse(res.booking.destination) + " " : JSON.parse(res.destination) + " "} {res.booking ? JSON.parse(res.booking.destProvince) + " " : JSON.parse(res.destProvince) + " "}  </span>
+                                                            <img src={location} /> <span className='font' style={{ position: 'relative', paddingLeft: '4.5%' }} > {res.bookings ? JSON.parse(res.bookings.destination) + " " : JSON.parse(res.destination) + " "} {res.bookings ? JSON.parse(res.bookings.destProvince) + " " : JSON.parse(res.destProvince) + " "}  </span>
                                                         </div>
                                                         <div style={{ paddingTop: '4%' }}>
-                                                            <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.booking ? res.booking.reason : res.reason}  </span>
+                                                            <img src={message} /> <span className='font' style={{ position: 'relative', paddingLeft: '4%' }} > {res.bookings ? res.bookings.reason : res.reason}  </span>
                                                         </div>
                                                         <div onClick={() => showData(res)} style={{ cursor: 'pointer', paddingTop: '4%' }}>
                                                             <img src={detail} /> <span className='font' style={{ color: '#47F044', position: 'relative', paddingLeft: '4%' }} > ดูรายละเอียดเพิ่มเติม  </span>
@@ -290,17 +291,31 @@ const Car = () => {
     });
     const clearData = (data, id) => {
         let clearTrips = state.booking
+        let dispatched = state.bookingDispatched
         let trips = data
+
+        console.log(dispatched);
         data.map((d, index) => {
-            if (id == d.destCarId) {
-                // console.log(d);
+
+            if (id == d.destCarId && d.car) {
+                console.log(d.id);
+                // console.log(dispatched.findIndex(data => data.id == d.id))
+                let [removed] = dispatched.splice(dispatched.findIndex(data => data.id == d.id), 1)
+                delete d.destCarId
+                d.car = removed.carId
+                // console.log(oldCar);
+                dispatched.push(d)
+            } else if (id == d.destCarId) {
+                console.log(d);
                 delete d.destCarId
                 // console.log(d);
                 clearTrips.push(d)
             }
+
         })
+        console.log(dispatched);
         const filter = data.filter(res => res.destCarId != id)
-        setState({ ...state, booking: clearTrips, trips: filter });
+        setState({ ...state, bookingDispatched: dispatched, booking: clearTrips, trips: filter });
 
     }
     const changeDriver = (value, carId) => {
@@ -312,118 +327,198 @@ const Car = () => {
     }
     // console.log(state);
     const [loading, setloading] = useState(false)
+    // console.log(state);
     const saveDispatch = async (data, carData) => {
-        console.log(data, carData);
         let editable = false
 
-        console.log(data)
-        // setloading(true)
-        // if (!editable) {
+        setloading(true)
         var driverName = null
-        let insertData = []
+        let insertData = {}
         let bookingId = []
+        let status = true
         let carId = null
         let date = null
-        let test = []
-        // var bookingId
+        let oldData = []
         let i = 0
-        date = data[0].date
         for (const d of data) {
+            if (d.destCarId == carData.id) { // select Car
+                if (d.needDriver == true) {
+                    if (state.selectCar) {
+                        for (const nameDriver of state.selectCar) {
+                            if (nameDriver.carId == d.destCarId) {
+                                driverName = nameDriver.value
+                            }
+                        }
+                    }
+                }
+                await checkTrips(d.date, carData.id).then(async res => {
+                    if (res[0] == null) {
+                        if (driverName == null) {
+                            Swal.fire({
+                                icon: 'warning',
+                                title: `กรุณาเลือกคนขับรถ`,
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                            setloading(false)
+                            status = false
+                            return
+                        }
+                        const newData = {
+                            status: 'free',
+                            driver: driverName,
+                            car: parseInt(d.destCarId),
+                            bookings: d.id,
+                            date: d.date
+                        }
+                        await addNewTrip(newData, d).then(() => {
+                            Swal.fire({
+
+                                icon: 'success',
+                                title: 'บันทึกข้อมูลสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
+
+                    } else { // edit car
+                        for (const bookingTrip of res[0].bookings) {
+                            bookingId.push(bookingTrip.id);
+                        }
+                        bookingId.push(d.id)
+                        await addOldTrip(bookingId, res[0], d.id).then(() => {
+                            Swal.fire({
+
+                                icon: 'success',
+                                title: 'แก้ไขข้อมูลสำเร็จ',
+                                showConfirmButton: false,
+                                timer: 1500
+                            })
+                        })
+
+                    }
+                })
+
+                // } else if (!d.car.plateNo) {
+
+                //     console.log(335, d);
+
+                // }
+                // insertData = {
+                //     ...insertData,
+                //     status: 'free',
+                //     car: parseInt(d.destCarId),
+                //     bookings: bookingId,
+                //     date: d.date
+                // }
+                // console.log(insertData);
+            } else {
+                if (d.destCarId) {
+                    oldData.push(d)
+                }
+            }
+            // console.log(d.statusControl);
+            // if (d.statusControl && d.statusControl == 'edit') {
+            //     console.log(d);
+            // } else if (d.statusControl && d.statusControl == 'add') {
+            //     console.log(336);
+            // }
             // console.log(d.date || d.booking.date);
             // if (d.car && d.car.status == 'edit') {
             // if (d.bookings) {
             //     editable = true
             //      break ;
             // }
-            if (state.selectCar) {
-                for (const nameDriver of state.selectCar) {
-                    if (nameDriver.carId == d.destCarId) {
-                        driverName = nameDriver.value
-                    }
-                }
-            }
-            if (carData.id == d.destCarId || carData.id == d.car.id) {
-                console.log(d);
-                if (d.date != date) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: `วันที่ไม่ตรงกัน`,
-                        showConfirmButton: false,
-                        timer: 1500
-                    })
-                    setloading(false)
-                    return
-                }
-                carId = d.destCarId || d.car.id
-                test.push(d.bookings.id || d.id)
-                if (d.needDriver == true) {
-                    if (driverName == null) {
+            // if (state.selectCar) {
+            //     for (const nameDriver of state.selectCar) {
+            //         if (nameDriver.carId == d.destCarId) {
+            //             driverName = nameDriver.value
+            //         }
+            //     }
+            // }
+            // if (carData.id == d.destCarId || carData.id == d.car.id) {
+            //     // console.log(d);
+            //     if (d.date != date) {
+            //         // Swal.fire({
+            //         //     icon: 'warning',
+            //         //     title: `วันที่ไม่ตรงกัน`,
+            //         //     showConfirmButton: false,
+            //         //     timer: 1500
+            //         // })
+            //         // setloading(false)
+            //         // return
+            //     }
+            //     // console.log(d.bookings.id, d.id);
+            //     // carId = d.destCarId || d.car.id
+            //     // test.push(d.id || d.bookings.id)
+            //     if (d.needDriver == true) {
+            //         if (driverName == null) {
 
-                        Swal.fire({
-                            icon: 'warning',
-                            title: `กรุณาเลือกคนขับรถ`,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        setloading(false)
-                        return
+            //             // Swal.fire({
+            //             //     icon: 'warning',
+            //             //     title: `กรุณาเลือกคนขับรถ`,
+            //             //     showConfirmButton: false,
+            //             //     timer: 1500
+            //             // })
+            //             // setloading(false)
+            //             // return
 
-                    } else {
-                        bookingId.push(d.id)
-                        // insertData.push({
-                        //     user: d.emp_id,
-                        //     status: 'free',
-                        //     car: parseInt(d.destCarId),
-                        //     driver: driverName,
-                        //     booking: d.id,
-                        //     date: d.date
-                        // })
-                    }
+            //         } else {
+            //             // bookingId.push(d.id)
+            //             // insertData.push({
+            //             //     user: d.emp_id,
+            //             //     status: 'free',
+            //             //     car: parseInt(d.destCarId),
+            //             //     driver: driverName,
+            //             //     booking: d.id,
+            //             //     date: d.date
+            //             // })
+            //         }
 
-                } else {
-                    if (driverName != null) {
-                        Swal.fire({
-                            icon: 'warning',
-                            title: `มีงานที่ไม่ต้องการคนขับรถ`,
-                            showConfirmButton: false,
-                            timer: 1500
-                        })
-                        setloading(false)
-                        return
-                    }
-                    // insertData.push({
-                    //     user: d.emp_id,
-                    //     status: 'free',
-                    //     car: parseInt(d.destCarId),
-                    //     booking: d.id,
-                    //     date: d.date
-                    // })
-                }
-            }
+            //     } else {
+            //         // if (driverName != null) {
+            //         //     Swal.fire({
+            //         //         icon: 'warning',
+            //         //         title: `มีงานที่ไม่ต้องการคนขับรถ`,
+            //         //         showConfirmButton: false,
+            //         //         timer: 1500
+            //         //     })
+            //         //     setloading(false)
+            //         //     return
+            //         // }
+            //         // insertData.push({
+            //         //     user: d.emp_id,
+            //         //     status: 'free',
+            //         //     car: parseInt(d.destCarId),
+            //         //     booking: d.id,
+            //         //     date: d.date
+            //         // })
+            //     }
+            // }
 
 
         }
-        if (editable == true) {
-            insertData.push({
-                status: 'free',
-                car: parseInt(carId),
-                driver: driverName,
-                booking: bookingId,
-                date: date
-            })
-        } else {
-            insertData.push({
-                status: 'free',
-                car: parseInt(carId),
-                driver: driverName,
-                booking: bookingId,
-                date: date
-            })
-        }
+        // if (editable == true) {
+        //     insertData.push({
+        //         status: 'free',
+        //         car: parseInt(carId),
+        //         driver: driverName,
+        //         booking: bookingId,
+        //         date: date
+        //     })
+        // } else {
+        //     insertData.push({
+        //         status: 'free',
+        //         car: parseInt(carId),
+        //         driver: driverName,
+        //         booking: bookingId,
+        //         date: date
+        //     })
+        // }
 
-        console.log(test);
+        // console.log(test);
 
-        console.log(insertData);
+        // console.log(insertData);
 
 
 
@@ -459,8 +554,27 @@ const Car = () => {
         // })
 
         // }
-        console.log(editable)
-        setloading(false)
+        // console.log(editable)
+        if (status == true) {
+            let bookingDispatched, booking, countData = 0
+            await getBookingDispatch().then(res => {
+                res.map(data => {
+                    countData += 1
+                })
+                booking = res
+            })
+            await getBookingDispatched().then(res => {
+                bookingDispatched = res
+            })
+            oldData.map(r => {
+                bookingDispatched.splice(bookingDispatched.findIndex(d => d.id == r.id), 1)
+                bookingDispatched.push(r)
+            })
+
+            setState({ ...state, bookingDispatched: bookingDispatched, count: countData, selectCar: null })
+            setloading(false)
+        }
+
         // console.log(disatchInsertById);
     }
     if (innerWidth <= 575) {
@@ -526,12 +640,49 @@ const Car = () => {
                                         <Col xs={{ span: 24 }} sm={{ span: 6 }} >
                                             <div className='Scroll'>
                                                 {/* <div> */}
-                                                {state.trips.map((data, index) =>
+                                                {state.bookingDispatched && state.bookingDispatched.map((d, i) =>
+
+
+                                                    d.car && d.car.id == res.id || d.destCarId && !d.bookings && res.id == d.destCarId
+                                                        ?
+                                                        <Draggable
+                                                            key={d.id}
+                                                            draggableId={`trip${d.id}`}
+                                                            index={i}
+                                                        // isDragDisabled={!d.destCarId}
+                                                        >
+                                                            {provided => (
+                                                                <div
+                                                                    // style={{ width: '100%' }}
+                                                                    ref={provided.innerRef}
+                                                                    {...provided.draggableProps}
+                                                                >
+                                                                    <div className='font' style={d.status == null || d.status != 'trip' && d.dispatch == true ?
+                                                                        { position: 'relative', width: '100%', background: '#5A67D8', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                        : d.status == 'trip' ? { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+                                                                            : { position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
+
+                                                                    } >
+
+                                                                        <img src={dragicon} {...provided.dragHandleProps} style={{ color: 'red', position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
+
+                                                                        <p>{d && (JSON.parse(d.destination) + " ") || (JSON.parse(d.destination) + " ")} {d && (JSON.parse(d.destProvince) + " ") || (JSON.parse(d.destProvince) + " ")}</p>
+                                                                        <p>{d && moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')} </p>
+                                                                        <p>{d && d.startTime || d.startTime} - {d && d.endTime || d.endTime}</p>
+                                                                    </div>
+
+
+                                                                </div>
+                                                            )}
+                                                        </Draggable>
+                                                        : null
+                                                )
+                                                }
+                                                {/* {state.trips.map((data, index) =>
                                                     data.bookings ? data.bookings.map((d, i) =>
 
 
-                                                        data.car && data.car.id == res.id
-                                                            || data.destCarId && !data.bookings && res.id == data.destCarId
+                                                        data.car && data.car.id == res.id || data.destCarId && !data.bookings && res.id == data.destCarId
                                                             ?
                                                             <Draggable
                                                                 key={data.id}
@@ -549,7 +700,7 @@ const Car = () => {
                                                                             { position: 'relative', width: '100%', background: '#5A67D8', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
                                                                             : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
                                                                         } >
-
+                                                                            {index}
 
                                                                             <img src={dragicon} {...provided.dragHandleProps} style={{ color: 'red', position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
 
@@ -595,14 +746,14 @@ const Car = () => {
                                                                 )}
                                                             </Draggable>
                                                             : null
-                                                )}
+                                                )}  */}
 
                                             </div>
                                         </Col>
                                         <Col xs={{ span: 24 }} sm={{ span: 5 }}  >
                                             <div className='posGeneralBtn'  >
-                                                <Button className='fontGeneralBtn' onClick={() => { saveDispatch(state.trips, res) }} style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button>
-                                                <Button className='fontGeneralBtn' onClick={(e) => clearData(state.trips, res.id)} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button>
+                                                <Button className='fontGeneralBtn' onClick={() => { saveDispatch(state.bookingDispatched, res) }} style={{ fontSize: '1em', backgroundColor: '#2CC84D', color: '#FFF' }}  > <img src={senddatabtn} /><span style={{ paddingLeft: '8px' }}>มอบหมายงาน</span ></Button>
+                                                <Button className='fontGeneralBtn' onClick={(e) => clearData(state.bookingDispatched, res.id)} style={{ fontSize: '1em', backgroundColor: '#40A9FF', color: '#FFF', }}  ><img src={cleardata} /><span style={{ paddingLeft: '8px' }}>เคลียค่า</span></Button>
                                             </div>
                                         </Col>
                                     </Row>
@@ -666,88 +817,81 @@ const General = () => {
             i++
         }
 
-        setState({ ...state, bookingDispatched: bookingDispatched, cars: cars, booking: booking, drivers: driverArr, trips: trips, count: countData })
+        setState({ ...state, bookingDispatched: bookingDispatched, cars: cars, booking: booking, drivers: driverArr, allTrip: trips, trips: trips, count: countData })
     }, [])
 
-    const move = (source, destination, droppableSource, droppableDestination) => {
-        console.log(source, destination, droppableSource, droppableDestination);
+    const move = (source, destination, droppableSource, droppableDestination, souceDropId) => {
+        // console.log(source, destination, droppableSource, droppableDestination);
         // console.log(source[0].bookings)
+        // console.log(souceDropId);
         const sourceClone = Array.from(source);
         const result = {};
         let removed = {}
         const destClone = Array.from(destination);
-        if (source[0].bookings) {
+        let status = []
+        if (droppableDestination.droppableId != 'droppable1') {
+            // console.log(sourceClone, droppableSource.index);
+            [removed] = sourceClone.splice(droppableSource.index, 1);
+            // console.log(removed)
+            if (!removed.destCarId || removed.car) {
 
-            if (droppableDestination.droppableId != 'droppable1') {
-                // console.log(droppableSource.index)
-                let [removed] = sourceClone.splice(droppableSource.index, 1);
-                if (!removed.destCarId) {
-                    removed = { ...removed, car: { id: droppableDestination.droppableId, status: 'edit' } }
-                    sourceClone.splice(droppableDestination.index, 0, removed); // insert to state
-                    result['droppableId1'] = state.booking;
-                    console.log(sourceClone)
-                    result['trips'] = sourceClone;
-                } else {
-                    destination.map(res => {
-                        if (res.id == removed.id) {
-                            removed.destCarId = droppableDestination.droppableId
-                        }
-                    })
-                    result['droppableId1'] = state.booking;
+                let carId = droppableDestination.droppableId
+                if (souceDropId == 'droppable1') {
+                    // console.log(777);
+                    result['droppableId1'] = sourceClone;
+                    removed = { ...removed, destCarId: droppableDestination.droppableId }
+                    destClone.splice(droppableDestination.index, 0, removed); // insert to state
+                    // console.log(destClone);
                     result['trips'] = destClone;
+                } else {
+                    // console.log(780);
+                    result['droppableId1'] = state.booking;
+                    removed = { ...removed, car: { id: droppableDestination.droppableId }, carId: removed.car, destCarId: droppableDestination.droppableId }
+                    sourceClone.splice(droppableDestination.index, 0, removed); // insert to state
+                    // console.log(sourceClone);
+                    result['trips'] = sourceClone;
                 }
-
             } else {
-                // let [removed] = sourceClone.splice(droppableSource.index, 1);
+                console.log(885);
+                destination.map(res => {
+                    if (res.id == removed.id) {
+                        removed.destCarId = droppableDestination.droppableId
+                    }
+                })
+                result['droppableId1'] = state.booking;
+                result['trips'] = destClone;
+            }
+
+        } else {
+
+            let [removed] = sourceClone.splice(droppableSource.index, 1);
+            if (removed.car) {
                 Swal.fire({
                     icon: 'warning',
                     title: `ไม่สามารถลากได้ เนื่องจากงานนี้ถูกเลือกแล้ว`,
                     showConfirmButton: false,
                     timer: 1500
                 })
-                // destClone.splice(droppableDestination.index, 0, removed);
+                sourceClone.splice(droppableDestination.index, 0, removed);
+                // console.log(sourceClone);
                 result['trips'] = sourceClone;
-                result['droppableId1'] = destClone;
+                result['droppableId1'] = state.booking;
+                return { result, removed };
             }
-            console.log(result)
-            return { result, removed };
-        } else {
+            // delete removed.destCarId
 
-            // console.log(sourceClone);
-            // console.log(droppableDestination.index, droppableSource.index);
-            if (droppableDestination.droppableId != 'droppable1') {
-                let [removed] = sourceClone.splice(droppableSource.index, 1);
-                console.log(removed)
-                if (!removed.destCarId) {
-                    // console.log(484);
-                    removed = { ...removed, destCarId: droppableDestination.droppableId, status: 'add' }
-                    destClone.splice(droppableDestination.index, 0, removed); // insert to state
-                    result['droppableId1'] = sourceClone;
-                    result['trips'] = destClone;
-                } else {
-                    destination.map(res => {
-                        if (res.id == removed.id) {
-                            removed.destCarId = droppableDestination.droppableId
-                        }
-                    })
-                    result['droppableId1'] = state.booking;
-                    result['trips'] = destClone;
-                }
-
-            } else {
-                let [removed] = sourceClone.splice(droppableSource.index, 1);
-
-                destClone.splice(droppableDestination.index, 0, removed);
-                result['trips'] = sourceClone;
-                result['droppableId1'] = destClone;
-            }
-            return { result, removed };
+            destClone.splice(droppableDestination.index, 0, removed);
+            result['trips'] = sourceClone;
+            result['droppableId1'] = destClone;
         }
+        console.log(result);
+        return { result, removed };
+        // }
 
     };
     const getList = id => {
         if (id == 'droppable1') return state.booking //return state from component
-        else return state.trips
+        else return state.bookingDispatched
     }
     const reorder = (list, startIndex, endIndex) => {
         const result = Array.from(list);
@@ -777,13 +921,14 @@ const General = () => {
                 getList(source.droppableId),
                 getList(destination.droppableId),
                 source,
-                destination
+                destination,
+                source.droppableId
             );
-            console.log(result);
-            setState({ ...state, booking: result['droppableId1'], trips: result['trips'] })
+            // console.log(result);
+            setState({ ...state, booking: result['droppableId1'], bookingDispatched: result['trips'] })
         }
     };
-
+    // console.log(state)
     const toggleSidebar = () => {
         setSidebar(!sidebar)
     }
@@ -852,6 +997,7 @@ const General = () => {
             setFilter({ ...filerBooking, search: true, province: dataFilter })
         }
     }
+    // console.log(filerBooking);
     useEffect(() => {
         // filter
         let countBooking = 0
@@ -888,7 +1034,6 @@ const General = () => {
                     countBooking += 1
                 } else if (filerBooking.reason == 'Other' && res.reason != 'ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร' && res.reason != 'ส่งของ' && res.reason != 'รับ - ส่งแขก' && res.reason != 'ติดต่อลูกค้า') {
                     countBooking += 1
-
                 }
             })
             // console.log(countBooking);
@@ -921,12 +1066,8 @@ const General = () => {
             <Row style={{ color: 'black' }}>
                 <Col span={24} >
                     <div >
-
                         <div className='padDate' style={{ marginBottom: '16px', fontFamily: 'Bai Jamjuree', fontSize: '1.3em' }} >
                             <p style={{ paddingTop: '4px' }} >{new moment().format('DD-MM-YYYY')}  </p>
-
-
-
                             <div style={{ position: 'relative' }}>
                                 <img style={{ height: '16px', width: '16px' }} src={countRequest} /> {state.count} รายการ
 
