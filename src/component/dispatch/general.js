@@ -31,7 +31,7 @@ import statusdriver2 from '../asset/statusdriver2.png'
 import user1 from '../asset/hruser.png'
 import calender1 from '../asset/hrcarender.png'
 import clearIcon from '../asset/clearIcon.png'
-import { getBookingDispatched, addTrips, addOldTrip, addNewTrip, checkTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
+import { getBookingDispatched, addTrips, checkDriver, addOldTrip, addNewTrip, checkTrips, getBooking, getBookingDispatch, sendEmail, getCars, getDrivers, getTrips } from '../util/index'
 import { remove } from 'lodash';
 
 const testVaraint = {
@@ -347,214 +347,168 @@ const Car = () => {
                         for (const nameDriver of state.selectCar) {
                             if (nameDriver.carId == d.destCarId) {
                                 driverName = nameDriver.value
+                                const driverCheck = await checkDriver(d.date, driverName).then(res => res[0])
+                                if (driverCheck) {
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: `วันที่ ${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')}  ${driverCheck.driver.name} มีงานแล้ว`,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                    setloading(false)
+                                    return
+                                }
+
                             }
                         }
                     }
                 }
                 await checkTrips(d.date, carData.id).then(async res => {
+                    console.log((res));
                     if (res[0] == null) {
-                        if (driverName == null) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: `กรุณาเลือกคนขับรถ`,
-                                showConfirmButton: false,
-                                timer: 1500
-                            })
-                            setloading(false)
-                            status = false
-                            return
-                        }
-                        const newData = {
-                            status: 'free',
-                            driver: driverName,
-                            car: parseInt(d.destCarId),
-                            bookings: d.id,
-                            date: d.date
-                        }
-                        await addNewTrip(newData, d).then(() => {
-                            Swal.fire({
+                        if (d.needDriver == true) {
+                            if (driverName == null) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: `กรุณาเลือกคนขับรถ`,
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                                setloading(false)
+                                status = false
+                                return
+                            }
+                            const newData = {
+                                status: 'free',
+                                driver: driverName,
+                                car: parseInt(d.destCarId),
+                                bookings: d.id,
+                                date: d.date
+                            }
+                            await addNewTrip(newData, d).then(() => {
+                                setloading(false)
+                                Swal.fire({
 
-                                icon: 'success',
-                                title: 'บันทึกข้อมูลสำเร็จ',
-                                showConfirmButton: false,
-                                timer: 1500
+                                    icon: 'success',
+                                    title: 'บันทึกข้อมูลสำเร็จ',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
                             })
-                        })
+                        } else {
+                            const newData = {
+                                status: 'free',
+                                user: d.emp_id,
+                                car: parseInt(d.destCarId),
+                                bookings: d.id,
+                                date: d.date
+                            }
+                            await addNewTrip(newData, d).then(() => {
+                                setloading(false)
+                                Swal.fire({
 
+                                    icon: 'success',
+                                    title: 'บันทึกข้อมูลสำเร็จ',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+                            })
+                        }
                     } else { // edit car
-                        for (const bookingTrip of res[0].bookings) {
-                            bookingId.push(bookingTrip.id);
+                        console.log(406);
+                        let typeTrip = 'add'
+                        const filter = res.filter(d => !d.user)
+                        const filter1 = filter.filter(d => d.status != 'finish')
+                        console.log(filter1);
+                        if (filter1[0]) {
+                            typeTrip = 'edit'
                         }
-                        bookingId.push(d.id)
-                        await addOldTrip(bookingId, res[0], d.id).then(() => {
-                            Swal.fire({
+                        // for (const r of res) {
+                        //     console.log(r.status, r.user, r.driver);
+                        //     if (!d.needDriver) {
+                        //         typeTrip = 'add'
+                        //         break;
+                        //     } else if (r.status == 'finish' && !r.driver && r.user) {
+                        //         console.log(413)
+                        //     }
+                        console.log(typeTrip);
 
-                                icon: 'success',
-                                title: 'แก้ไขข้อมูลสำเร็จ',
-                                showConfirmButton: false,
-                                timer: 1500
+                        // }
+                        if (typeTrip == 'edit') {
+
+                            for (const bookingTrip of res[0].bookings) {
+                                bookingId.push(bookingTrip.id);
+                            }
+                            bookingId.push(d.id)
+
+                            await addOldTrip(bookingId, res[0], d.id).then(() => {
+                                Swal.fire({
+
+                                    icon: 'success',
+                                    title: 'แก้ไขข้อมูลสำเร็จ',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
                             })
-                        })
+                        } else {
+                            // console.log(429);
+                            if (d.needDriver == true) {
+                                if (driverName == null) {
+                                    setloading(false)
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: `กรุณาเลือกคนขับรถ`,
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
 
+                                    status = false
+                                    return
+                                }
+                                const newData = {
+                                    status: 'free',
+                                    driver: driverName,
+                                    car: parseInt(d.destCarId),
+                                    bookings: d.id,
+                                    date: d.date
+                                }
+                                await addNewTrip(newData, d).then(() => {
+                                    setloading(false)
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'บันทึกข้อมูลสำเร็จ',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                })
+                            } else {
+                                const newData = {
+                                    status: 'free',
+                                    user: d.emp_id,
+                                    car: parseInt(d.destCarId),
+                                    bookings: d.id,
+                                    date: d.date
+                                }
+                                await addNewTrip(newData, d).then(() => {
+                                    setloading(false)
+                                    Swal.fire({
+
+                                        icon: 'success',
+                                        title: 'บันทึกข้อมูลสำเร็จ',
+                                        showConfirmButton: false,
+                                        timer: 1500
+                                    })
+                                })
+                            }
+                        }
                     }
                 })
-
-                // } else if (!d.car.plateNo) {
-
-                //     console.log(335, d);
-
-                // }
-                // insertData = {
-                //     ...insertData,
-                //     status: 'free',
-                //     car: parseInt(d.destCarId),
-                //     bookings: bookingId,
-                //     date: d.date
-                // }
-                // console.log(insertData);
             } else {
                 if (d.destCarId) {
                     oldData.push(d)
                 }
             }
-            // console.log(d.statusControl);
-            // if (d.statusControl && d.statusControl == 'edit') {
-            //     console.log(d);
-            // } else if (d.statusControl && d.statusControl == 'add') {
-            //     console.log(336);
-            // }
-            // console.log(d.date || d.booking.date);
-            // if (d.car && d.car.status == 'edit') {
-            // if (d.bookings) {
-            //     editable = true
-            //      break ;
-            // }
-            // if (state.selectCar) {
-            //     for (const nameDriver of state.selectCar) {
-            //         if (nameDriver.carId == d.destCarId) {
-            //             driverName = nameDriver.value
-            //         }
-            //     }
-            // }
-            // if (carData.id == d.destCarId || carData.id == d.car.id) {
-            //     // console.log(d);
-            //     if (d.date != date) {
-            //         // Swal.fire({
-            //         //     icon: 'warning',
-            //         //     title: `วันที่ไม่ตรงกัน`,
-            //         //     showConfirmButton: false,
-            //         //     timer: 1500
-            //         // })
-            //         // setloading(false)
-            //         // return
-            //     }
-            //     // console.log(d.bookings.id, d.id);
-            //     // carId = d.destCarId || d.car.id
-            //     // test.push(d.id || d.bookings.id)
-            //     if (d.needDriver == true) {
-            //         if (driverName == null) {
-
-            //             // Swal.fire({
-            //             //     icon: 'warning',
-            //             //     title: `กรุณาเลือกคนขับรถ`,
-            //             //     showConfirmButton: false,
-            //             //     timer: 1500
-            //             // })
-            //             // setloading(false)
-            //             // return
-
-            //         } else {
-            //             // bookingId.push(d.id)
-            //             // insertData.push({
-            //             //     user: d.emp_id,
-            //             //     status: 'free',
-            //             //     car: parseInt(d.destCarId),
-            //             //     driver: driverName,
-            //             //     booking: d.id,
-            //             //     date: d.date
-            //             // })
-            //         }
-
-            //     } else {
-            //         // if (driverName != null) {
-            //         //     Swal.fire({
-            //         //         icon: 'warning',
-            //         //         title: `มีงานที่ไม่ต้องการคนขับรถ`,
-            //         //         showConfirmButton: false,
-            //         //         timer: 1500
-            //         //     })
-            //         //     setloading(false)
-            //         //     return
-            //         // }
-            //         // insertData.push({
-            //         //     user: d.emp_id,
-            //         //     status: 'free',
-            //         //     car: parseInt(d.destCarId),
-            //         //     booking: d.id,
-            //         //     date: d.date
-            //         // })
-            //     }
-            // }
-
-
         }
-        // if (editable == true) {
-        //     insertData.push({
-        //         status: 'free',
-        //         car: parseInt(carId),
-        //         driver: driverName,
-        //         booking: bookingId,
-        //         date: date
-        //     })
-        // } else {
-        //     insertData.push({
-        //         status: 'free',
-        //         car: parseInt(carId),
-        //         driver: driverName,
-        //         booking: bookingId,
-        //         date: date
-        //     })
-        // }
-
-        // console.log(test);
-
-        // console.log(insertData);
-
-
-
-        // await addTrips(insertData[0], insertData[0].booking).then(async res => {
-
-        //     let newTrip = res, newBooking, countData = 0
-        //     await getBookingDispatch().then(d => {
-        //         d.map(data => {
-        //             countData += 1
-        //         })
-        //         newBooking = d
-        //     })
-        //     let clearTrips = state.booking
-        //     data.map((d, index) => {
-        //         if (d.destCarId && d.destCarId != carData.id) {
-        //             newTrip.push(d)
-        //         }
-        //     })
-        //     setState({ ...state, trips: newTrip, booking: clearTrips, count: countData, selectCar: null })
-        //     setloading(false)
-
-        //     Swal.fire({
-
-        //         icon: 'success',
-        //         title: 'บันทึกข้อมูลสำเร็จ',
-        //         showConfirmButton: false,
-        //         timer: 1500
-        //     })
-        // }).catch(err => {
-        //     setloading(false)
-
-        //     console.log(err)
-        // })
-
-        // }
-        // console.log(editable)
         if (status == true) {
             let bookingDispatched, booking, countData = 0
             await getBookingDispatch().then(res => {
@@ -575,14 +529,14 @@ const Car = () => {
             setloading(false)
         }
 
-        // console.log(disatchInsertById);
+
     }
     if (innerWidth <= 575) {
         var device = 'horizontal'
     } else {
         var device = 'vertical'
     }
-    // console.log(state.trips)
+
     return (
         <div className='horizonScroll'>
             <div className='ScrollCar'>
@@ -665,7 +619,7 @@ const Car = () => {
                                                                     } >
 
                                                                         <img src={dragicon} {...provided.dragHandleProps} style={{ color: 'red', position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-
+                                                                        {/* {d.needDriver ? 1 : 0} */}
                                                                         <p>{d && (JSON.parse(d.destination) + " ") || (JSON.parse(d.destination) + " ")} {d && (JSON.parse(d.destProvince) + " ") || (JSON.parse(d.destProvince) + " ")}</p>
                                                                         <p>{d && moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')} </p>
                                                                         <p>{d && d.startTime || d.startTime} - {d && d.endTime || d.endTime}</p>
@@ -878,7 +832,7 @@ const General = () => {
                 result['droppableId1'] = state.booking;
                 return { result, removed };
             }
-            // delete removed.destCarId
+            delete removed.destCarId
 
             destClone.splice(droppableDestination.index, 0, removed);
             result['trips'] = sourceClone;

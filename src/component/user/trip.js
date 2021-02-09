@@ -179,25 +179,29 @@ const Trips = () => {
     React.useMemo(async () => {
         await getAllTrips().then(res => {
             for (const d of res) {
+                console.log(d)
+                for (const book of d.bookings) {
+                    if (book.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id
+                        || d.driver && JSON.parse(sessionStorage.getItem('user')).role == 'driver'
+                        // || d.driver 
+                        && d.driver.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id) {
+                        data.push({
+                            id: book.id,
+                            data: book,
+                            title: `${JSON.parse(book.destination) + " "} ${JSON.parse(book.destProvince) + " "}`,
+                            allDay: false,
+                            start: moment(book.date, 'YYYYMMDD')._d,
+                            end: moment(book.date, 'YYYYMMDD')._d
+                        })
+                    }
 
-                if (d.user == JSON.parse(sessionStorage.getItem('user')).emp_id
-                    || d.driver && JSON.parse(sessionStorage.getItem('user')).role == 'driver'
-                    // || d.driver 
-                    && d.driver.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id) {
-                    data.push({
-                        id: d.id,
-                        data: d,
-                        title: `${JSON.parse(d.booking.destination)+ " "} ${JSON.parse(d.booking.destProvince)+ " "}`,
-                        allDay: false,
-                        start: moment(d.booking.date, 'DD-MM-YYYY')._d,
-                        end: moment(d.booking.date, 'DD-MM-YYYY')._d
-                    })
                 }
             }
+            console.log(data);
             setTripDetail({ allTrips: res, events: data })
         })
     }, [])
-    // console.log(tripDetail);
+    console.log(tripDetail);
     var i = 0
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
     return (
@@ -206,6 +210,33 @@ const Trips = () => {
                 <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
             </div >
 
+
+            <div className='tripCard'>
+                {tripDetail.allTrips && tripDetail.allTrips.map((r, index) =>
+                    // r.bookings.map(res => (
+
+                    r.status != 'finish'
+                        && r.user == JSON.parse(sessionStorage.getItem('user')).emp_id
+                        || r.driver && r.status != 'finish' && JSON.parse(sessionStorage.getItem('user')).role == 'driver'
+                        && r.driver.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id
+                        ?     
+                        (
+                            <Card key={r.id} style={r.status == 'trip' ?
+                                { backgroundColor: '#FEAB20', color: '#FFF', borderRadius: '10px', position: 'relative', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                                :
+                                { position: 'relative', borderRadius: '10px', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', background: '#FFF', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                            }>
+                                {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
+                                {r.id}
+                                <p style={{ fontSize: '24px' }}>{r.date} &nbsp; {r.startTime}</p>
+                                {/* <p >{JSON.parse(r.destination) + " "} &nbsp; {JSON.parse(r.destProvince) + " "}</p> */}
+                                {i++ == 0 ? <img src={r.status == 'free' ? playIcon : pause} onClick={() => tripsControl(r)} style={{ cursor: 'pointer', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />
+                                    : <img src={r.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
+                            </Card>
+                        ) : null
+                    // ))
+                )}
+            </div>
             <div className='driverCalendar' >
                 <h2 style={{ position: 'relative', padding: '12px', textAlign: 'center', color: '#FFF' }}><img src={backward} onClick={() => { setDate(moment(date).subtract(1, 'months')) }} style={{ cursor: 'pointer' }} /> &nbsp; {date.locale('th').format('MMMM YYYY')} &nbsp; <img src={forward} onClick={() => { setDate(moment(date).add(1, 'months')) }} style={{ cursor: 'pointer' }} /></h2>
                 <Calendar
@@ -223,27 +254,6 @@ const Trips = () => {
                     onSelectEvent={event => handleCalendarEvent(event.data)}
 
                 />
-            </div>
-            <div className='tripCard'>
-                {tripDetail.allTrips && tripDetail.allTrips.map((res, index) =>
-                    res.status != 'finish' && res.user == JSON.parse(sessionStorage.getItem('user')).emp_id
-                        || res.driver && res.status != 'finish' && JSON.parse(sessionStorage.getItem('user')).role == 'driver'
-                        && res.driver.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id ?
-
-                        (
-                            <Card key={res.id} style={res.status == 'trip' ?
-                                { backgroundColor: '#FEAB20', color: '#FFF', borderRadius: '10px', position: 'relative', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
-                                :
-                                { position: 'relative', borderRadius: '10px', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', background: '#FFF', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
-                            }>
-                                {/* {res.driver && res.driver.emp_id} */}
-                                <p style={{ fontSize: '24px' }}>{res.booking.date} &nbsp; {res.booking.startTime}</p>
-                                <p >{JSON.parse(res.booking.destination)+ " "} &nbsp; {JSON.parse(res.booking.destProvince)+ " "}</p>
-                                {i++ == 0 ? <img src={res.status == 'free' ? playIcon : pause} onClick={() => tripsControl(res)} style={{ cursor: 'pointer', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />
-                                    : <img src={res.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
-                            </Card>
-                        ) : null
-                )}
             </div>
             <Modal visible={tripModal.open} onCancel={handleTripCancel}
                 footer={[
@@ -290,7 +300,7 @@ const Trips = () => {
                                 <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.booking.destination)+ " "} &nbsp; {JSON.parse(modalData.tripData.booking.destProvince)+ " "}</span>
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.booking.destination) + " "} &nbsp; {JSON.parse(modalData.tripData.booking.destProvince) + " "}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
                                 <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>

@@ -98,7 +98,7 @@ const App = () => {
         date: null,
         province: null
     })
-    console.log(state);
+  
     const [count, setCount] = useState(0)
     const filterBooking = (dataFilter, filter) => {
         // console.log(dataFilter, filter);

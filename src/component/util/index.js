@@ -123,11 +123,17 @@ export const getTripsBybooking = async (bookingId) => {
 export const getAllTrips = async () => {
     return await axios.get(`${tripApi}`).then(res => {
         // console.log(res);
-        return _.sortBy(res.data, [function (o) { return o.booking.date; }], [function (o) { return o.booking.startTime; }]);
+        return _.sortBy(res.data, [function (o) { return o.date; }]);
     })
 }
 export const checkTrips = async (date, carId) => {
     return await axios.get(`${tripApi}?date=${date}&car=${carId}&status_ne=finish`).then(res => {
+        return res.data
+    })
+
+}
+export const checkDriver = async (date, driverId) => {
+    return await axios.get(`${tripApi}?date=${date}&driver=${driverId}&status_ne=finish`).then(res => {
         return res.data
     })
 
@@ -170,6 +176,7 @@ export const addOldTrip = async (bookingId, tripData, bookId) => {
 export const addNewTrip = async (insertData, bookingData) => {
     console.log(insertData, bookingData);
     await axios.post(`${tripApi}`, {
+        user: insertData.user,
         status: "free",
         car: insertData.car,
         driver: insertData.driver,
