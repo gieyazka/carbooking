@@ -23,7 +23,7 @@ function App() {
             <Route exact path="/" component={Login} />
 
             <Route path="/login" component={Login} />
-            <Route path="/approve/:id/:uuid" component={Approve} />
+            <Route path="/approve/:id/:uuid/:type" component={Approve} />
             <Route path="/user" component={Layout} />
             <Route path="/flow" component={Flow} />
             <Route path="/*" component={Layout} />

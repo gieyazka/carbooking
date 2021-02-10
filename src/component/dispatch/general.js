@@ -107,10 +107,13 @@ const RequestCar = ({ filerBooking }) => {
                                                 >
                                                     <Card className='cardMobile' >
                                                         <div style={{ position: 'relative', width: 'auto' }}>
-                                                            <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.booking ? res.booking.carType : res.carType} </span>
+                                                            <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
                                                             {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
-                                                            <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
-                                                                <img src={dragicon1}    {...provided.dragHandleProps} />
+                                                            <div style={{ position: 'absolute', bottom: '-4px', left: '50%', width: '100%', top: 0 }}>
+                                                                {res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} />
+                                                                    : <img style={{}} src={noDriver1} />}
+                                                                <span className='font' style={{ paddingLeft: '2%', position: 'absolute', top: '50%', transform: 'translateY(-50%)' }} > {res.needDriver ? 'ต้องการคนขับรถ' : 'ไม่ต้องการคนขับรถ'} </span>
+                                                                <img src={dragicon1} style={{ paddingLeft: '2%', position: 'absolute', left: '50%', transform: 'translateX(-60%)' }}    {...provided.dragHandleProps} />
 
                                                             </div>
                                                         </div>
@@ -151,8 +154,11 @@ const RequestCar = ({ filerBooking }) => {
                                                             <div style={{ position: 'relative', width: 'auto' }}>
                                                                 <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
                                                                 {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
-                                                                <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
-                                                                    <img src={dragicon1}    {...provided.dragHandleProps} />
+                                                                <div style={{ position: 'absolute', bottom: '-4px', left: '50%', width: '100%', top: 0 }}>
+                                                                    {res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} />
+                                                                        : <img style={{}} src={noDriver1} />}
+                                                                    <span className='font' style={{ paddingLeft: '2%', position: 'absolute', top: '50%', transform: 'translateY(-50%)' }} > {res.needDriver ? 'ต้องการคนขับรถ' : 'ไม่ต้องการคนขับรถ'} </span>
+                                                                    <img src={dragicon1} style={{ paddingLeft: '2%', position: 'absolute', left: '50%', transform: 'translateX(-60%)' }}    {...provided.dragHandleProps} />
 
                                                                 </div>
                                                             </div>
@@ -196,8 +202,11 @@ const RequestCar = ({ filerBooking }) => {
                                                                 <div style={{ position: 'relative', width: 'auto' }}>
                                                                     <img src={iconCar} /> <span className='font' style={{ paddingLeft: '4%' }} > {res.carType || res.booking.carType} </span>
                                                                     {/* <img src={Statusdriver} style={{ paddingLeft: '20%' }} /> <span className='font' style={{ position: 'relative', paddingLeft: '2%' }} > คนขับรถ </span> */}
-                                                                    <div style={{ position: 'absolute', bottom: '-4px', left: '60%', width: '100%' }}>{res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} /> : <img style={{}} src={noDriver1} />} <span className='font' style={{ paddingLeft: '2%' }} > คนขับรถ </span>
-                                                                        <img src={dragicon1}    {...provided.dragHandleProps} />
+                                                                    <div style={{ position: 'absolute', bottom: '-4px', left: '50%', width: '100%', top: 0 }}>
+                                                                        {res.needDriver || res.booking && res.booking.needDriver ? <img style={{}} src={Statusdriver} />
+                                                                            : <img style={{}} src={noDriver1} />}
+                                                                        <span className='font' style={{ paddingLeft: '2%', position: 'absolute', top: '50%', transform: 'translateY(-50%)' }} > {res.needDriver ? 'ต้องการคนขับรถ' : 'ไม่ต้องการคนขับรถ'} </span>
+                                                                        <img src={dragicon1} style={{ paddingLeft: '2%', position: 'absolute', left: '50%', transform: 'translateX(-60%)' }}    {...provided.dragHandleProps} />
 
                                                                     </div>
                                                                 </div>
@@ -592,7 +601,8 @@ const Car = () => {
                                             </div>
                                         </Col>
                                         <Col xs={{ span: 24 }} sm={{ span: 6 }} >
-                                            <div className='Scroll'>
+                                            {/* <div className='Scroll' style={{overflowY : 'scroll' ,height : '300px'}}> */}
+                                            <div className='Scroll' >
                                                 {/* <div> */}
                                                 {state.bookingDispatched && state.bookingDispatched.map((d, i) =>
 

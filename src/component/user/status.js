@@ -54,24 +54,24 @@ const Trips = () => {
 
     React.useMemo(async () => {
         await getBookingStatus(loginEmpId).then(res => {
-            console.log(res);
+            // console.log(res);
             for (const d of res) {
-                console.log(d.date);
-                console.log(moment('03-02-2021', 'DD-MM-YYYY')._d);
+                // console.log(d.date);
+                // console.log(moment('03-02-2021', 'DD-MM-YYYY')._d);
                 data.push({
                     id: d.id,
                     data: d,
                     title: `${JSON.parse(d.destination) + " "} ${JSON.parse(d.destProvince) + " "}`,
                     allDay: false,
-                    start: moment(d.date, 'DD-MM-YYYY')._d,
-                    end: moment(d.date, 'DD-MM-YYYY')._d
+                    start: moment(d.date, 'YYYYMMDD')._d,
+                    end: moment(d.date, 'YYYYMMDD')._d
                 })
             }
-            console.log(data)
+            // console.log(data)
             setTripDetail({ ...tripDetail, allTrips: res, events: data })
         })
     }, [])
-    console.log(tripDetail.events);
+    // console.log(tripDetail.events);
     var i = 0
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
     return (
@@ -120,9 +120,9 @@ const Trips = () => {
                             </div>
                             <div style={{ position: 'relative', paddingTop: '4%', textAlign: 'center' }}>
                                 <h3>Status</h3>
-                                <div style={{ marginLeft : '53%',transform : 'translateX(-50%)'}}>
+                                <div style={{ marginLeft: '53%', transform: 'translateX(-50%)' }}>
                                     <Steps current={modalData.tripData.dispatch === false ? modalData.tripData.managerApprove === null ? 0 : modalData.tripData.hrApprove === null || modalData.tripData.hrApprove === false ? 1 : 2 : 2} direction="vertical">
-                                        <Step title="Manager Approve" icon={modalData.tripData.managerApprove !== null? modalData.tripData.managerApprove === true ? <CheckCircleOutlined /> : <CloseCircleOutlined /> : <LoadingOutlined />} />
+                                        <Step title="Manager Approve" icon={modalData.tripData.managerApprove !== null ? modalData.tripData.managerApprove === true ? <CheckCircleOutlined /> : <CloseCircleOutlined /> : <LoadingOutlined />} />
                                         <Step title="Hr Approve" icon={modalData.tripData.hrApprove !== null ? modalData.tripData.hrApprove === true ? <CheckCircleOutlined /> : <CloseCircleOutlined /> : <LoadingOutlined />} />
                                         <Step title="Dispatch" icon={modalData.tripData.dispatch ? modalData.tripData.dispatch === true ? <CheckCircleOutlined /> : <LoadingOutlined /> : <LoadingOutlined />} />
 

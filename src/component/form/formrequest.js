@@ -183,6 +183,7 @@ const FromRequest = () => {
         });
     };
     const onSearch = async (value) => {
+        setloading(true)
         let department = null
         await getEmployeeById(value).then(async res => {
             // console.log(res);
@@ -217,6 +218,7 @@ const FromRequest = () => {
                 fullname: empDetail.name
             });
         }).catch(err => err)
+        setloading(false)
 
     }
     React.useEffect(() => {

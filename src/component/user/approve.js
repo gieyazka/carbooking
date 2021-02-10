@@ -1,85 +1,96 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Card, Input } from 'antd';
-import password from '../asset/password1.png'
-import car from '../asset/login.png'
-import { EyeInvisibleOutlined, EyeTwoTone } from '@ant-design/icons';
-import { loginCheck, checkBookingById, updateManangerStatus } from '../util/index.js'
+
+import { loginCheck, checkBookingById, updateManangerStatus, rejectManangerStatus } from '../util/index.js'
 import { Redirect, useHistory, useLocation, useParams } from "react-router-dom";
 import Swal from 'sweetalert2'
+import loadingLogin from '../asset/wheel.gif'
+import GifLoader from 'react-gif-loader';
 const Approve = () => {
-    let { id, uuid } = useParams();
-    React.useMemo(async () => {
+    const [loading, setloading] = useState(true)
+    let { id, uuid, type } = useParams();
+    console.log(type);
+    React.useEffect(async () => {
 
-        await checkBookingById(id).then(async res => {
-            console.log(res.data[0], uuid);
-            if (res.data[0].uuid == uuid) {
-                await updateManangerStatus(id).then(d => {
-                    console.log(d.data);
-                    Swal.fire({
+        if (type == 'approve') {
 
-                        icon: 'success',
-                        title: 'Approve success',
-                        text: `อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
-                        showConfirmButton: false,
-                        // timer: 1500
+            await checkBookingById(id).then(async res => {
+                // console.log(res.data[0], uuid);
+                if (res.data[0].uuid == uuid) {
+                    await updateManangerStatus(id).then(d => {
+                        // console.log(d.data);
+
+                        Swal.fire({
+
+                            icon: 'success',
+                            title: 'Approve success',
+                            text: `อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
+                            showConfirmButton: false,
+                            // timer: 1500
+                        })
+                    }
+                    ).catch(err => {
+
+                        Swal.fire({
+
+                            icon: 'error',
+                            title: 'Approve fail',
+                            text: 'please try again ',
+                            showConfirmButton: false,
+                            // timer: 1500
+                        })
                     })
+                } else {
+                    window.open(window.location.origin, "_self");
+                    // window.close();
                 }
-                ).catch(err => {
-                    Swal.fire({
 
-                        icon: 'error',
-                        title: 'Approve fail',
-                        text: 'please try again ',
-                        showConfirmButton: false,
-                        // timer: 1500
+                // setBooking(res)
+            })
+        } else if (type == 'reject') {
+            await checkBookingById(id).then(async res => {
+                // console.log(res.data[0], uuid);
+                if (res.data[0].uuid == uuid) {
+                    await rejectManangerStatus(id).then(d => {
+                        // console.log(d.data);
+
+                        Swal.fire({
+
+                            icon: 'info',
+                            title: 'Reject success',
+                            text: `ไม่อนุมัติคำขอของ ${d.data.name} สำเร็จ`,
+                            showConfirmButton: false,
+                            // timer: 1500
+                        })
+                    }
+                    ).catch(err => {
+
+                        Swal.fire({
+
+                            icon: 'error',
+                            title: 'Reject fail',
+                            text: 'please try again ',
+                            showConfirmButton: false,
+                            // timer: 1500
+                        })
                     })
-                })
-            } else {
-                window.open(window.location.origin, "_self");
-                // window.close();
-            }
+                } else {
+                    window.open(window.location.origin, "_self");
+                    // window.close();
+                }
 
-            // setBooking(res)
-        })
-    })
+                // setBooking(res)
+            })
+        }
+
+        setloading(false)
+    },[])
 
     return (
-        <div>
-            {/* {id} */}
-
-            {/* <h1 style={{ fontFamily: 'Bai Jamjuree', marginLeft: '2em', fontSize: '3em', marginTop: '16%' }}>{language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</h1>
-                <Row justify='end' style={{ marginRight: '16vw' }}>
-                    <Col>
-                        <p onClick={() => { switchLanguage('EN') }}
-                            style={language == 'TH' ? { cursor: 'pointer', fontWeight: 'normal' } : { cursor: 'pointer', fontWeight: 'Bold' }}
-                        >EN </p>
-                    </Col>
-                    <Col>
-                        <p>  &nbsp; | &nbsp; </p>
-
-                    </Col>
-                    <Col>
-                        <p onClick={() => { switchLanguage('TH') }}
-                            style={language == 'TH' ? { cursor: 'pointer', fontWeight: 'Bold' } : { cursor: 'pointer', fontWeight: 'normal' }}
-                        >TH</p>
-
-                    </Col>
-                    <div style={{ marginLeft: '5em' }}>
-                        <Input style={{ fontSize: 'Bai Jamjuree' }} onChange={(e) => { setData({ ...data, username: e.target.value }) }} placeholder={language == 'TH' ? 'ชื่อผู้ใช้' : 'Username'} />
-                        <Input.Password style={{ marginTop: '24px', border: ' 1px solid #d9d9d9', borderRadius: '8px' }} onChange={(e) => { setData({ ...data, password: e.target.value }) }}
-                            placeholder={language == 'TH' ? 'รหัสผ่าน' : 'Password'}
-                            iconRender={visible => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
-                        />
-                    </div>
-                    <div style={{ marginTop: '24px', textAlign: 'center' }}>
-                        <button style={{ border: '1.5px solid ', borderColor: '#1D366D', borderRadius: '10px', color: '#1D366D', padding: '3px 12px ' }}> {language == 'TH' ? 'สมัครสมาชิก' : 'Register'}</button>
-
-                        <button onClick={(e) => onLogin(e)} style={{ marginLeft: '8px', backgroundColor: '#1D366D', borderRadius: '10px', color: '#FFF', border: '0', padding: '4px 12px ' }}> {language == 'TH' ? 'เข้าสู่ระบบ' : 'Sign In'}</button>
-
-                    </div>
-                </Row>
-                <img src={car} style={{ position: 'absolute', width: '80vw', bottom: '8vh', left: '10vw', height: '40vh' }} /> */}
-        </div>
+        <React.Fragment>
+            < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
+                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+            </div >
+        </React.Fragment>
     )
 }
 

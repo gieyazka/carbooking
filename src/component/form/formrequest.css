@@ -5,6 +5,25 @@
 #bwheel{
     width: 100vw;
 }
+
+.button5 {
+    display:   inline-block;
+    padding : 8px 16px;
+    margin:0 0.2em 0.2em 0;
+    border-radius:10px;
+    box-sizing: border-box;
+    text-decoration:none;
+    color:#FFFFFF;
+    background-color:#FFFFFF;
+    text-align:center;
+    transition: all 0.15s;
+    }
+    .button5:hover{
+    text-shadow: 0 0 2em rgba(255,255,255,1);
+    color:#FFFFFF;
+    border-color:#FFFFFF;
+    }
+
 .MuiTableRow-root:hover{
     background-color: rgba(178,202,255,1);
 }
@@ -275,9 +294,10 @@ color: rgba(0, 0, 0, 0.6);
 }
 .Scroll {
 
-    width: 33vh;
+    width: 100%;
 
-    overflow: auto;
+    overflow-y: scroll;
+    height: 240px;
 }
 .cardMobile {
     background-color: #1D366D ;
@@ -318,12 +338,7 @@ color: rgba(0, 0, 0, 0.6);
     /* left : 50% ; */
     /* transform: translate(0%,50%)  ; */
 }
-.Scroll {
-    /* margin-top : 20px; */
-    width: 100%;
-    /* height: 24vh; */
-    /* overflow: auto; */
-}
+
 .ScrollCar {
     /* margin-top : 20px; */
     width: 100%;

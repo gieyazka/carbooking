@@ -19,7 +19,7 @@ import pause from '../asset/pause.png'
 import playIconDisable from '../asset/playIconDisable.png'
 import clearIcon from '../asset/clearIcon.png'
 import { getTrips } from '../util/index'
-import { getAllTrips, editTrips } from '../util/index'
+import { getBookingAllStatus, editTrips } from '../util/index'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 
 
@@ -45,15 +45,15 @@ const History = () => {
         setModalData({ ...modalData, open: false });
     };
     React.useMemo(async () => {
-        await getAllTrips().then(res => {
+        await getBookingAllStatus().then(res => {
             for (const d of res) {
                 data.push({
                     id: d.id,
                     data: d,
-                    title: `${JSON.parse(d.booking.destination)+ " "} ${JSON.parse(d.booking.destProvince)+ " "}`,
+                    title: `${JSON.parse(d.destination)+ " "} ${JSON.parse(d.destProvince)+ " "}`,
                     allDay: false,
-                    start: moment(d.booking.date, 'DD-MM-YYYY')._d,
-                    end: moment(d.booking.date, 'DD-MM-YYYY')._d
+                    start: moment(d.date, 'YYYYMMDD')._d,
+                    end: moment(d.date, 'YYYYMMDD')._d
                 })
 
             }
@@ -90,29 +90,29 @@ const History = () => {
 
                         < div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
                             <div >
-                                <img src={car} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.driver && modalData.tripData.driver.name + " " + modalData.tripData.driver.lastname} &nbsp;  {modalData.tripData.booking.carType}   </span>
+                                <img src={car} /> <span style={{ position: 'relative', paddingLeft: '2%' }} > {modalData.tripData.driver && modalData.tripData.driver.name + " " + modalData.tripData.driver.lastname} &nbsp;  {modalData.tripData.carType}   </span>
 
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                {modalData.tripData.booking.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  <span style={{ position: 'relative', paddingLeft: '5%' }} >  คนขับรถ  </span>
+                                {modalData.tripData.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  <span style={{ position: 'relative', paddingLeft: '5%' }} >  คนขับรถ  </span>
                             </div>
 
 
                             <div style={{ paddingTop: '4%' }}>
-                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
+                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.date}    {modalData.tripData.startTime} - {modalData.tripData.endTime}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.booking.destination)+ " "} &nbsp; {JSON.parse(modalData.tripData.booking.destProvince)+ " "}</span>
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.destination)+ " "} &nbsp; {JSON.parse(modalData.tripData.destProvince)+ " "}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
-                                <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>
+                                <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.totalPassenger} คน</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
-                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.reason}</span>
+                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.reason}</span>
                             </div>
 
                             <div style={{ paddingTop: '4%' }}>
-                                <p>รายละเอียดอื่น ๆ   : {modalData.tripData.booking.comment || '-'}</p>
+                                <p>รายละเอียดอื่น ๆ   : {modalData.tripData.comment || '-'}</p>
                             </div>
                         </div>
                     </>

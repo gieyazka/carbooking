@@ -220,15 +220,27 @@ const AppLayout = () => {
 
         <div >
             <Layout >
-                <Sider theme="dark" breakpoint="lg" collapsedWidth="0" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
-                    <div style={!state.collapsed ? { color: '#FFF', position: 'absolute', top: '0vh', left: '75%', backgroundColor: '#1D366D', height: '100vh' } : null}> {state.collapsed ? null : React.createElement(MenuFoldOutlined, {
-                        className: 'trigger',
-                        onClick: toggle,
-                    })}</div>
+                <Sider theme="dark" breakpoint="lg" style={{ backgroundColor: '#1D366D' }} trigger={null} collapsible collapsed={state.collapsed}>
+                    <div style={!state.collapsed ?
+                        { color: '#FFF', position: 'absolute', top: '0vh', left: '65%', backgroundColor: '#1D366D', height: '100vh' }
+                        : null
+                        // { color: '#FFF', position: 'absolute', top: '0vh', left: '0%', backgroundColor: '#1D366D', height: '100vh' }
+                    }>
+                        {!state.collapsed ? React.createElement(MenuFoldOutlined, {
+                            className: 'trigger',
+
+                            onClick: toggle,
+                        }) : null
+                            //  React.createElement(MenuUnfoldOutlined, {
+                            //     className: 'trigger',
+                            //     onClick: toggle,
+                            // })
+                        }
+                    </div>
                     {/* <div className="logo" style={{ position: 'relative', fontSize: '1.5em', textAlign: 'center', width: 'auto', color: '#FFF' }}>
 
                 </div> */}
-                    <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ marginTop: '48px', backgroundColor: '#1D366D', color: 'white' }}  >
+                    <Menu theme="dark" mode="inline" defaultSelectedKeys={[currentPath]} style={{ marginTop: '60px', backgroundColor: '#1D366D', color: 'white' }}  >
                         <Menu.Item key="requestform" icon={<FormOutlined />}>
                             Request form<Link to="/user" />
                         </Menu.Item>
@@ -270,15 +282,30 @@ const AppLayout = () => {
                     <img onClick={() => { onLogout() }} style={{ position: 'absolute', top: '18px', right: '2vw', width: '24px', cursor: 'pointer' }} src={logout} />
 
                     <Header className="site-layout-background" style={{ padding: 0, backgroundColor: '#1D366D' }}>
-                        {React.createElement(state.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined, {
-                            className: 'trigger',
-                            onClick: toggle,
-                        })}
+                        {state.collapsed &&
+
+                            React.createElement(MenuUnfoldOutlined, {
+                                className: 'trigger',
+                                style: { marginLeft: '80px' },
+                                onClick: toggle,
+                            })
+
+                            // :
+
+                            // React.createElement(MenuFoldOutlined, {
+                            //     className: 'trigger',
+                            //     style: { marginLeft: '180px' },
+                            //     onClick: toggle,
+                            // })
+
+                        }
+
                     </Header>
                     <Content
                         className="site-layout-background"
                         style={{
                             height: 'calc(100vh - 64px)',
+                            marginLeft: '80px',
                         }}
                     >
 

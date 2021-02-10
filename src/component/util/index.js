@@ -51,6 +51,15 @@ export const updateManangerStatus = async (id) => {
         return res
     }).catch(err => err)
 }
+export const rejectManangerStatus = async (id) => {
+    return await axios.put(`${bookingApi}/${id}`, {
+        managerApprove: false
+
+    }).then(res => {
+        //   console.log(res);
+        return res
+    }).catch(err => err)
+}
 
 export const saveBooking = async (formData) => {
     // console.log((formData));
@@ -157,7 +166,8 @@ export const addOldTrip = async (bookingId, tripData, bookId) => {
                 await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: 'finish' })
 
             } else {
-                await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: res[0].status })
+                await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId })
+                // await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: res[0].status })
             }
         }
         await axios.put(`${tripApi}/${tripData.id}`, {
@@ -172,7 +182,13 @@ export const addOldTrip = async (bookingId, tripData, bookId) => {
     })
 
 }
+export const editBookingStatus = async (d, status, tripId) => {
+    return await axios.put(`${bookingApi}/${d.id}`, { status: status }).then(r => {
 
+        return [r.data]
+    })
+    // console.log(d);
+}
 export const addNewTrip = async (insertData, bookingData) => {
     console.log(insertData, bookingData);
     await axios.post(`${tripApi}`, {
@@ -505,6 +521,12 @@ export const getBookingDispatched = async () => {
 
     })
 }
+export const getBookingAllStatus = async () => {
+    return await axios.get(`${bookingApi}?hrApprove=true&managerApprove=true&dispatch=true`).then(res => {
+        return _.sortBy(res.data, [function (o) { return o.date; }]);
+
+    })
+}
 export const getBookingStatus = async (id) => {
     return await axios.get(`${bookingApi}?emp_id=${id}`).then(res => {
 
@@ -585,7 +607,7 @@ export const sendEmail = async (booking) => {
     // myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     const path = window.location.origin;
     var urlencoded = new URLSearchParams();
-    urlencoded.append("form", "sudarat.t@aapico.com");
+    urlencoded.append("form", "CarBookingSystem@aapico.com");
     urlencoded.append("formdetail", "Carbooking System");
     urlencoded.append("to", "pokkate.e@aapico.com");
     urlencoded.append("cc", "");
@@ -597,7 +619,7 @@ export const sendEmail = async (booking) => {
         href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet">   
       <body >
-<table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="style='border-collapse: collapse;">
+<table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
   <tr>
       <td style="   
                  background : #1D366D   ;
@@ -624,12 +646,12 @@ export const sendEmail = async (booking) => {
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>วันที่ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.date}  ${booking.data.startTime} -
+              <td style='padding : 4px 0px ; text-align :center ;'>${moment(booking.data.date, "YYYYDDMM").format('MM-DD-YYYY')}  ${booking.data.startTime} -
               ${booking.data.endTime} </td>
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>สถานที่ไป </td>
-              <td style='padding : 4px 0px ;  text-align :center ;'>${booking.data.destination} ${booking.data.destProvince} </td>
+              <td style='padding : 4px 0px ;  text-align :center ;'>${JSON.parse(booking.data.destination) + " "} ${JSON.parse(booking.data.destProvince) + " "} </td>
           </tr>
            <tr> 
             <td style='padding : 4px 0px ; text-align :center ;'>เหตุผล </td>
@@ -639,21 +661,36 @@ export const sendEmail = async (booking) => {
             <td style='padding : 4px 0px ; text-align :center ;'>รายละเอียดอื่น ๆ </td>
               <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.comment || '-'} </td>
           </tr>
+          <tr>
+          <td span='2'>
+          <!--[if mso]>
+          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/reject" style="height:40px;v-text-anchor:middle;width:100px;" arcsize="10%" strokecolor="#E53E3E" fillcolor="#E53E3E">
+            <w:anchorlock/>
+            <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Reject</center>
+          </v:roundrect>
+        <![endif]--><a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/reject"  target="_blank"
+        style="background-color:#E53E3E;border:1px solid #E53E3E;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Reject</a>
+     
+          <!--[if mso]>
+  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/approve" style="height:40px;v-text-anchor:middle;width:100px;" arcsize="10%" strokecolor="#1D366D" fillcolor="#1D366D">
+    <w:anchorlock/>
+    <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Approve</center>
+  </v:roundrect>
+<![endif]--><a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/approve" target="_blank"
+style="background-color:#1D366D;border:1px solid #1D366D;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Approve</a>
+          </td>
+          </tr>
     </table>
     <br>
-    <table align='center' width="100%" border="0" cellspacing="0" cellpadding="0" >
-    <tr style='margin-top : 8px ;'>
-      <td>
-        <table align='center' border="0" cellspacing="0" cellpadding="0">
-          <tr>
-            <td align="center" style="border: 1px solid #1D366D; border-radius: 8px;" bgcolor="#1D366D">
-            <a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}" target="_blank" style="font-size: 16px; font-family: Bai Jamjuree; color: #ffffff; text-decoration: none; text-decoration: none;border-radius: 8px; padding: 12px 18px; border: 1px solid #1D366D; display: inline-block;">APPROVE</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
+
+
+
+
+
+
+
+
+ 
     </td>
     </tr>
 

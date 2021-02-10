@@ -22,7 +22,7 @@ import pause from '../asset/pause.png'
 import playIconDisable from '../asset/playIconDisable.png'
 import clearIcon from '../asset/clearIcon.png'
 import { getTrips } from '../util/index'
-import { getAllTrips, editTrips } from '../util/index'
+import { getAllTrips, editTrips, editBookingStatus } from '../util/index'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css"
 import loadingLogin from '../asset/wheel.gif'
 import { Calendar, momentLocalizer } from 'react-big-calendar'
@@ -47,15 +47,22 @@ const Trips = () => {
     const valueEndRef = useRef();
     const [modalData, setModalData] = useState({ open: false });
     const [tripModal, setTripModal] = useState({ open: false });
+    const [dataBooking, setDataBooking] = useState({ open: false });
     const handleCancel = () => {
         setModalData({ ...modalData, open: false });
     };
     const handleTripCancel = () => {
         setTripModal({ ...tripModal, open: false });
     };
+    const handleDataBookingCancel = () => {
+        setDataBooking({ ...dataBooking, open: false });
+    };
     const tripsControl = async (d) => {
 
         setTripModal({ ...tripModal, updateTrip: d, open: true });
+    }
+    const viewJob = async (d) => {
+        setDataBooking({ open: true, bookings: d })
     }
     const loginEmpId = JSON.parse(sessionStorage.getItem('user')).emp_id
     // console.log(loginEmpId);
@@ -85,11 +92,87 @@ const Trips = () => {
 
         };
     });
+    const editBooking = async (d, status, trip) => {
+        console.log(trip);
+        if (status == 'trip') {
+            Swal.fire({
+                title: `ยืนยันการเริ่มงานของ ${d.name} `,
+                text: `วันที่ ${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')} เวลา ${d.startTime} - ${d.endTime}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: 'ยืนยัน',
+                reverseButtons: true
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    setloading(true)
+                    await editBookingStatus(d, status).then(async res => {
+                        console.log(res[0].id);
+                        let newTripData = trip.bookings.filter(r => r.id != res[0].id)
+                        newTripData.push(res[0])
+                        // console.log(newTripData);
+                        await getAllTrips().then(res => {
+                            setTripDetail({ ...tripDetail, allTrips: res })
+                        })
+                        newTripData = _.sortBy(newTripData, [function (o) { return o.status; }]);
+                        setDataBooking({ open: true, bookings: { ...dataBooking.bookings, bookings: newTripData } })
+                        setloading(false)
+                    })
+                }
+            })
+        } else if (status == 'finish') {
+            Swal.fire({
+                title: `ยืนยันการสิ้นสุดงานของ ${d.name} `,
+                text: `วันที่ ${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')} เวลา ${d.startTime} - ${d.endTime}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                cancelButtonText: 'ยกเลิก',
+                confirmButtonText: 'ยืนยัน',
+                reverseButtons: true
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    setloading(true)
+                    await editBookingStatus(d, status).then(async res => {
+                        console.log(res[0].id);
+                        let newBookingData = trip.bookings.filter(r => r.id != res[0].id)
+                        newBookingData.push(res[0])
 
+
+                        // console.log(newTripData);
+                        await getAllTrips().then(res => {
+                            let newTripData = []
+                            for (const d of res) {
+                                const checkStatus = d.bookings.filter(book => book.status != 'finish')
+                                // console.log(264, checkStatus);
+                                if (checkStatus[0]) {
+                                    newTripData.push(d)
+                                } else {
+                                    const test = { ...d, newStatus: 'finish' }
+                                    newTripData.push(test)
+                                }
+                            }
+                            setTripDetail({ ...tripDetail, allTrips: newTripData })
+                        })
+
+                        newBookingData = _.orderBy(newBookingData, [status], ['desc']);
+                        setDataBooking({ open: true, bookings: { ...dataBooking.bookings, bookings: newBookingData } })
+                        setloading(false)
+                    })
+                }
+            })
+        }
+        setloading(false)
+
+
+    }
 
     const sendStartMile = async (d) => {
 
-
+        console.log(d);
         if (d.status == 'free') {
             if (valueRef.current.state.value == null) {
                 Swal.fire({
@@ -102,7 +185,8 @@ const Trips = () => {
                 return
             }
             Swal.fire({
-                title: `ยืนยันการเริ่มงานของ ${d.booking.name}`,
+                title: `ยืนยันการเริ่มงานวันที่ `,
+                text: `${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -115,12 +199,14 @@ const Trips = () => {
                     setloading(true)
                     let startMile = valueRef.current.state.inputValue
                     valueRef.current.state.inputValue = null
-                    // console.log(valueRef.current.state);
+                    console.log(202);
 
-                    editTrips(d, startMile).then(res => {
+                    await editTrips(d, startMile).then(res => {
                         setTripDetail({ ...tripDetail, allTrips: res })
                         setTripModal({ open: false });
-
+                        const BookingsTrip = res.filter(data => d.id == data.id)
+                        console.log(BookingsTrip);
+                        setDataBooking({ open: true, bookings: BookingsTrip[0] })
                         // console.log(res);
                     })
                     setloading(false)
@@ -140,7 +226,7 @@ const Trips = () => {
                 return
             }
             console.log(d, parseInt(d.startMileage), parseInt(valueEndRef.current.state.value));
-            if (parseInt(d.startMileage) > parseInt(valueEndRef.current.state.value)) {
+            if (parseInt(d.startMileage) >= parseInt(valueEndRef.current.state.value)) {
                 Swal.fire({
                     icon: 'warning',
                     title: `เลขไมล์น้อยกว่าเลขไมล์เริ่มต้น ${d.startMileage}`,
@@ -152,7 +238,7 @@ const Trips = () => {
             let endMile = valueEndRef.current.state.inputValue
             // console.log(valueEndRef.current.state);
             Swal.fire({
-                title: `ยืนยันการเริ่มงานของ ${d.booking.name}`,
+                title: `ยืนยันการสิ้นสุดงาน ${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')}`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
@@ -176,10 +262,21 @@ const Trips = () => {
 
         // console.log(d);
     }
+
+    console.log(dataBooking)
     React.useMemo(async () => {
-        await getAllTrips().then(res => {
+        await getAllTrips().then(async res => {
+            let newTripData = []
             for (const d of res) {
-                console.log(d)
+                const checkStatus = d.bookings.filter(book => book.status != 'finish')
+                // console.log(264, checkStatus);
+                if (checkStatus[0]) {
+                    newTripData.push(d)
+                } else {
+                    const test = { ...d, newStatus: 'finish' }
+                    newTripData.push(test)
+                }
+                // console.log(d)
                 for (const book of d.bookings) {
                     if (book.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id
                         || d.driver && JSON.parse(sessionStorage.getItem('user')).role == 'driver'
@@ -197,13 +294,13 @@ const Trips = () => {
 
                 }
             }
-            console.log(data);
-            setTripDetail({ allTrips: res, events: data })
+            setTripDetail({ allTrips: newTripData, events: data })
         })
     }, [])
-    console.log(tripDetail);
+    // console.log(tripDetail);
     var i = 0
     // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
+
     return (
         <Fragment >
             < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
@@ -219,19 +316,24 @@ const Trips = () => {
                         && r.user == JSON.parse(sessionStorage.getItem('user')).emp_id
                         || r.driver && r.status != 'finish' && JSON.parse(sessionStorage.getItem('user')).role == 'driver'
                         && r.driver.emp_id == JSON.parse(sessionStorage.getItem('user')).emp_id
-                        ?     
+                        ?
                         (
                             <Card key={r.id} style={r.status == 'trip' ?
-                                { backgroundColor: '#FEAB20', color: '#FFF', borderRadius: '10px', position: 'relative', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                                { marginTop: '8px', backgroundColor: '#FEAB20', color: '#FFF', borderRadius: '10px', position: 'relative', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
                                 :
-                                { position: 'relative', borderRadius: '10px', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', background: '#FFF', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                                { marginTop: '8px', position: 'relative', borderRadius: '10px', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', background: '#FFF', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
                             }>
                                 {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
+
                                 {r.id}
-                                <p style={{ fontSize: '24px' }}>{r.date} &nbsp; {r.startTime}</p>
-                                {/* <p >{JSON.parse(r.destination) + " "} &nbsp; {JSON.parse(r.destProvince) + " "}</p> */}
-                                {i++ == 0 ? <img src={r.status == 'free' ? playIcon : pause} onClick={() => tripsControl(r)} style={{ cursor: 'pointer', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />
-                                    : <img src={r.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
+                                <p style={{ fontSize: '24px' }}>{moment(r.date, 'YYYYMMDD').format('DD-MM-YYYY')} &nbsp; {r.startTime}</p>
+                                <p style={{ fontSize: '24px' }}> คุณมี {r.bookings.filter(d => d.status != 'finish').length} สถานที่  </p>
+                                {r.newStatus}
+                                {i++ == 0 ? r.status == 'free' ? <a className="button5" onClick={() => tripsControl(r)} style={{ backgroundColor: "rgba(47,133,90,1)", position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }}>เริ่มงาน</a>
+                                    : !r.newStatus ? <a className="button5" onClick={() => viewJob(r)} style={{ backgroundColor: "#FFF", color: 'black', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }}>รายละเอียดงาน</a>
+                                        : <a className="button5" onClick={() => tripsControl(r)} style={{ backgroundColor: "#FFF", color: 'black', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }}>สิ้นสุดงาน</a>
+                                    // : <img src={r.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
+                                    : null}
                             </Card>
                         ) : null
                     // ))
@@ -255,6 +357,37 @@ const Trips = () => {
 
                 />
             </div>
+            <Modal visible={dataBooking.open} onCancel={handleDataBookingCancel}
+                footer={[
+
+                ]}>
+
+                {dataBooking.bookings ?
+                    dataBooking.bookings.bookings.map(res =>
+
+                        <Card key={res.id} style={res.status == 'trip' ?
+                            { marginTop: '12px', backgroundColor: '#FEAB20', color: '#FFF', borderRadius: '10px', position: 'relative', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                            : res.status == 'finish' ? { marginTop: '12px', color: '#FFF', position: 'relative', borderRadius: '10px', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', background: '#309E48', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                                :
+                                { marginTop: '12px', position: 'relative', borderRadius: '10px', boxShadow: ' 0px 4px 4px rgba(0, 0, 0, 0.05)', width: '100%', background: '#FFF', fontSize: '16px', fontFamily: 'Bai Jamjuree' }
+                        }>
+                            {res.id}
+                            {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
+                            <p >{JSON.parse(res.destination) + " "} &nbsp; {JSON.parse(res.destProvince) + " "}</p>
+                            <p >{res.startTime} - {res.endTime}</p>
+
+                            {res.status == 'free' ?
+                                <img onClick={() => editBooking(res, 'trip', dataBooking.bookings)} src={playIcon} style={{ cursor: 'pointer', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />
+                                : res.status == 'trip' ?
+                                    < img src={pause} onClick={() => editBooking(res, 'finish', dataBooking.bookings)} style={{ cursor: 'pointer', position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />
+                                    : null
+                            }
+
+                        </Card>
+                    )
+
+                    : null}
+            </Modal>
             <Modal visible={tripModal.open} onCancel={handleTripCancel}
                 footer={[
 
@@ -288,29 +421,29 @@ const Trips = () => {
 
                         < div style={{ position: 'relative', fontFamily: 'Bai Jamjuree', fontStyle: 'normal', fontWeight: '500', fontSize: '16px', lineHeight: '140%' }}  >
                             <div>
-                                <img src={car} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.driver && modalData.tripData.driver.name + " " + modalData.tripData.driver.lastname} &nbsp;  {modalData.tripData.booking.carType}   </span>
+                                <img src={car} /> <span style={{ position: 'relative', paddingLeft: '2%' }} > {modalData.tripData.driver && modalData.tripData.driver.name + " " + modalData.tripData.driver.lastname} &nbsp;  {modalData.tripData.carType}   </span>
 
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                {modalData.tripData.booking.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  <span style={{ position: 'relative', paddingLeft: '5%' }} >  คนขับรถ  </span>
+                                {modalData.tripData.needDriver ? <img style={{}} src={statusdriver2} /> : <img src={noDriver} />}  <span style={{ position: 'relative', paddingLeft: '5%' }} >  คนขับรถ  </span>
                             </div>
 
 
                             <div style={{ paddingTop: '4%' }}>
-                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.date}    {modalData.tripData.booking.startTime} - {modalData.tripData.booking.endTime}</span>
+                                <img src={calender} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {moment(modalData.tripData.date, 'YYYYMMDD').format('DD-MM-YYYY')}    {modalData.tripData.startTime} - {modalData.tripData.endTime}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }} >
-                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.booking.destination) + " "} &nbsp; {JSON.parse(modalData.tripData.booking.destProvince) + " "}</span>
+                                <img src={location} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {JSON.parse(modalData.tripData.destination) + " "} &nbsp; {JSON.parse(modalData.tripData.destProvince) + " "}</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
-                                <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.booking.totalPassenger} คน</span>
+                                <img src={people} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > จำนวน  {modalData.tripData.totalPassenger} คน</span>
                             </div>
                             <div style={{ paddingTop: '4%' }}>
-                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.booking.reason}</span>
+                                <img src={hrmessage} /> <span style={{ position: 'relative', paddingLeft: '4%' }} > {modalData.tripData.reason}</span>
                             </div>
 
                             <div style={{ paddingTop: '4%' }}>
-                                <p>รายละเอียดอื่น ๆ   : {modalData.tripData.booking.comment || '-'}</p>
+                                <p>รายละเอียดอื่น ๆ   : {modalData.tripData.comment || '-'}</p>
                             </div>
                         </div>
                     </>
