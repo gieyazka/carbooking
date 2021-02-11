@@ -136,19 +136,19 @@ export const getTripsBybooking = async (bookingId) => {
     })
 }
 export const getAllTrips = async () => {
-    return await axios.get(`${tripApi}`).then(res => {
+    return await axios.get(`${tripApi}&status_ne='off'`).then(res => {
         // console.log(res);
         return _.sortBy(res.data, [function (o) { return o.date; }]);
     })
 }
 export const checkTrips = async (date, carId) => {
-    return await axios.get(`${tripApi}?date=${date}&car=${carId}&status_ne=finish`).then(res => {
+    return await axios.get(`${tripApi}?date=${date}&car=${carId}&status_ne=finish&status_ne='off'`).then(res => {
         return res.data
     })
 
 }
 export const checkDriver = async (date, driverId) => {
-    return await axios.get(`${tripApi}?date=${date}&driver=${driverId}&status_ne=finish`).then(res => {
+    return await axios.get(`${tripApi}?date=${date}&driver=${driverId}&status_ne=finish&status_ne='off'`).then(res => {
         return res.data
     })
 
@@ -215,7 +215,7 @@ export const addNewTrip = async (insertData, bookingData) => {
         })
     }
 
-    return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+    return await axios.get(`${tripApi}?status_ne=finish&status_ne='off'`).then(res => {
         // console.log(res);
 
         return _.sortBy(res.data, [function (o) { return o.id; }]);
@@ -247,7 +247,7 @@ export const addTrips = async (data, bookingId) => {
 
 
 
-    return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+    return await axios.get(`${tripApi}?status_ne=finish&status_ne='off'`).then(res => {
         // console.log(res);
 
         return _.sortBy(res.data, [function (o) { return o.id; }]);
