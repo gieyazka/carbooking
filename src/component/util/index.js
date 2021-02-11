@@ -136,7 +136,7 @@ export const getTripsBybooking = async (bookingId) => {
     })
 }
 export const getAllTrips = async () => {
-    return await axios.get(`${tripApi}&status_ne='off'`).then(res => {
+    return await axios.get(`${tripApi}?status_ne='off'`).then(res => {
         // console.log(res);
         return _.sortBy(res.data, [function (o) { return o.date; }]);
     })

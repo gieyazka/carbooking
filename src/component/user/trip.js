@@ -82,7 +82,7 @@ const Trips = () => {
             })
             setTripDetail({ ...tripDetail, allTrips: oldTrip })
         })
-
+console.log(tripDetail);
 
         return () => {
             socket.off('connect');
