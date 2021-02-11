@@ -356,17 +356,17 @@ const Car = () => {
                         for (const nameDriver of state.selectCar) {
                             if (nameDriver.carId == d.destCarId) {
                                 driverName = nameDriver.value
-                                const driverCheck = await checkDriver(d.date, driverName).then(res => res[0])
-                                if (driverCheck) {
-                                    Swal.fire({
-                                        icon: 'warning',
-                                        title: `วันที่ ${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')}  ${driverCheck.driver.name} มีงานแล้ว`,
-                                        showConfirmButton: false,
-                                        timer: 1500
-                                    })
-                                    setloading(false)
-                                    return
-                                }
+                                // const driverCheck = await checkDriver(d.date, driverName).then(res => res[0])
+                                // if (driverCheck) {
+                                //     Swal.fire({
+                                //         icon: 'warning',
+                                //         title: `วันที่ ${moment(d.date, 'YYYYMMDD').format('DD-MM-YYYY')}  ${driverCheck.driver.name} มีงานแล้ว`,
+                                //         showConfirmButton: false,
+                                //         timer: 1500
+                                //     })
+                                //     setloading(false)
+                                //     return
+                                // }
 
                             }
                         }
