@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Link, useLocation, Switch } from "react
 import DataContextProvider from './component/store/store'
 
 import Login from './component/user/login'
+import Guard from './component/user/guard'
 import Approve from './component/user/approve'
 import Flow from './component/flow'
 
@@ -23,6 +24,7 @@ function App() {
             <Route exact path="/" component={Login} />
 
             <Route path="/login" component={Login} />
+            <Route path="/guard" component={Guard} />
             <Route path="/approve/:id/:uuid/:type" component={Approve} />
             <Route path="/user" component={Layout} />
             <Route path="/flow" component={Flow} />

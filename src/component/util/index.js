@@ -118,13 +118,19 @@ export const editTrips = async (d, Mileage) => {
     }
 }
 export const getTrips = async () => {
-    return await axios.get(`${tripApi}?status_ne=finish`).then(res => {
+    return await axios.get(`${tripApi}?status_ne=finish&status_ne='off'`).then(res => {
         // console.log(res);
         return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
 }
+export const getTripsSinceDate = async (date) => {
+    return await axios.get(`${tripApi}?date_gte=${date}&status_ne='off'`).then(res => {
+        
+        return _.sortBy(res.data, [function (o) { return o.id; }]);
+    })
+}
 export const getTripsBybooking = async (bookingId) => {
-    return await axios.get(`${tripApi}?bookings=${bookingId}`).then(res => {
+    return await axios.get(`${tripApi}?bookings=${bookingId}&status_ne='off'`).then(res => {
         console.log(res);
         return _.sortBy(res.data, [function (o) { return o.id; }]);
     })
@@ -163,7 +169,7 @@ export const addOldTrip = async (bookingId, tripData, bookId) => {
             }
             console.log(res[0].status);
             if (!newBookId[0]) {
-                await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: 'finish' })
+                await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: 'off' })
 
             } else {
                 await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId })
@@ -601,7 +607,7 @@ export const getManagerEmail = (company, department) => {
 
 
 export const sendEmail = async (booking) => {
-    console.log(booking.data);
+    // console.log(booking.data);
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
     // myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
@@ -619,93 +625,98 @@ export const sendEmail = async (booking) => {
         href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;1,200;1,300;1,400;1,500;1,600;1,700&display=swap"
         rel="stylesheet">   
       <body >
-<table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse;">
-  <tr>
-      <td style="   
-                 background : #1D366D   ;
-                 padding : 40px;
-                 font-size : 3em ;
-                 text-align :center ;
-                 color : #FFF
-                 ">
-          <p style="font-family : Bai Jamjuree ;margin: 0;">Car Booking System </p>
-      </td>
-  </tr>
-  <tr style='text-align : center ;  '>
-      <td style="   
-                 background : #FFF   ;
-                 padding : 20px;
-                 text-align :center ;
-                 color : #121212
-                 ">
-          <p style="font-family: Arial ;margin: 0 0 16 0;font-size : 2em;">ข้อมูลการจองรถ</p>
-        <table align="center" border="1" cellpadding="0" cellspacing="0" width="400" style='font-family : Bai Jamjuree ;font-size : 16px ;'> 
-          <tr> 
-            <td style='padding : 4px 0px ; text-align :center ;'>ชื่อ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.name} </td>
-          </tr>
-           <tr> 
-            <td style='padding : 4px 0px ; text-align :center ;'>วันที่ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${moment(booking.data.date, "YYYYDDMM").format('MM-DD-YYYY')}  ${booking.data.startTime} -
-              ${booking.data.endTime} </td>
-          </tr>
-           <tr> 
-            <td style='padding : 4px 0px ; text-align :center ;'>สถานที่ไป </td>
-              <td style='padding : 4px 0px ;  text-align :center ;'>${JSON.parse(booking.data.destination) + " "} ${JSON.parse(booking.data.destProvince) + " "} </td>
-          </tr>
-           <tr> 
-            <td style='padding : 4px 0px ; text-align :center ;'>เหตุผล </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.reason} </td>
-          </tr>
-           <tr> 
-            <td style='padding : 4px 0px ; text-align :center ;'>รายละเอียดอื่น ๆ </td>
-              <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.comment || '-'} </td>
-          </tr>
-          <tr>
-          <td span='2'>
-          <!--[if mso]>
-          <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/reject" style="height:40px;v-text-anchor:middle;width:100px;" arcsize="10%" strokecolor="#E53E3E" fillcolor="#E53E3E">
-            <w:anchorlock/>
-            <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Reject</center>
-          </v:roundrect>
-        <![endif]--><a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/reject"  target="_blank"
-        style="background-color:#E53E3E;border:1px solid #E53E3E;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Reject</a>
-     
-          <!--[if mso]>
-  <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/approve" style="height:40px;v-text-anchor:middle;width:100px;" arcsize="10%" strokecolor="#1D366D" fillcolor="#1D366D">
+      <table align="center" border="1" cellpadding="0" cellspacing="0" width="600" style="style='border-collapse: collapse;">
+      <tr>
+          <td style="   
+                     background : #1D366D   ;
+                     padding : 40px;
+                     font-size : 3em ;
+                     text-align :center ;
+                     color : #FFF
+                     ">
+              <p style="font-family : Bai Jamjuree ;margin: 0;">Car Booking System </p>
+          </td>
+      </tr>
+      <tr style='text-align : center ;  '>
+          <td style="   
+                     background : #FFF   ;
+                     padding : 20px;
+                     text-align :center ;
+                     color : #121212
+                     ">
+              <p style="font-family: Arial ;margin: 0 0 16 0;font-size : 2em;">ข้อมูลการจองรถ</p>
+            <table align="center" border="1" cellpadding="0" cellspacing="0" width="400" style='font-family : Bai Jamjuree ;font-size : 16px ;'> 
+              <tr> 
+                <td style='padding : 4px 0px ; text-align :center ;'>ชื่อ </td>
+                  <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.name} </td>
+              </tr>
+               <tr> 
+                <td style='padding : 4px 0px ; text-align :center ;'>วันที่ </td>
+                  <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.date}  ${booking.data.startTime} -
+                  ${booking.data.endTime} </td>
+              </tr>
+               <tr> 
+                <td style='padding : 4px 0px ; text-align :center ;'>สถานที่ไป </td>
+                  <td style='padding : 4px 0px ;  text-align :center ;'>${JSON.parse(booking.data.destination)+ " "} ${JSON.parse(booking.data.destProvince)+ " "} </td>
+              </tr>
+               <tr> 
+                <td style='padding : 4px 0px ; text-align :center ;'>เหตุผล </td>
+                  <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.reason} </td>
+              </tr>
+               <tr> 
+                <td style='padding : 4px 0px ; text-align :center ;'>รายละเอียดอื่น ๆ </td>
+                  <td style='padding : 4px 0px ; text-align :center ;'>${booking.data.comment || '-'} </td>
+              </tr>
+        </table>
+        <br>
+        <table align='center' width="100%" border="0" cellspacing="0" cellpadding="0" >
+        <tr style='margin-top : 8px ;'>
+          <td >
+            <table align='center' border="0" cellspacing="0" cellpadding="0">
+              <tr>
+                <td span='2' align="center" style="border-radius: 8px;" bgcolor="">
+            <!--[if mso]>
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/reject" style="height:40px;v-text-anchor:middle;width:100px;" arcsize="10%" strokecolor="#E53E3E" fillcolor="#E53E3E">
+      <w:anchorlock/>
+      <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Reject</center>
+    </v:roundrect>
+    <![endif]-->
+    <a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/reject"  target="_blank"
+    style="background-color:#E53E3E;border:1px solid #E53E3E;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Reject</a>
+       
+             
+        
+      <!--[if mso]>
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/approve" style="height:40px;v-text-anchor:middle;width:100px;" arcsize="10%" strokecolor="#1D366D" fillcolor="#1D366D">
     <w:anchorlock/>
     <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Approve</center>
-  </v:roundrect>
-<![endif]--><a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/approve" target="_blank"
-style="background-color:#1D366D;border:1px solid #1D366D;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Approve</a>
+    </v:roundrect>
+    <![endif]--><a href="${path}/carbooking/#/approve/${booking.data.id}/${booking.data.uuid}/approve" target="_blank"
+    style="background-color:#1D366D;border:1px solid #1D366D;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Approve</a>
+    
+    
+    
+     </td>
+            </td>
+          </table>
           </td>
-          </tr>
+        </tr>
+      </table>
+        </td>
+        </tr>
+     
+      <tr>
+          <td  style="   
+                     background : #1D366D   ;
+                     padding : 20px;
+                     text-align :center ;
+                     color : #FFF
+                     ">
+              <p style="margin: 0;"> Copyright &copy; AAIPICO HITECH 2021</p>
+          </td>
+      </tr>
     </table>
-    <br>
-
-
-
-
-
-
-
-
  
-    </td>
-    </tr>
-
-  <tr>
-      <td  style="   
-                 background : #1D366D   ;
-                 padding : 20px;
-                 text-align :center ;
-                 color : #FFF
-                 ">
-          <p style="margin: 0;"> Copyright &copy; AAIPICO HITECH 2021</p>
-      </td>
-  </tr>
-</table>
-
 </body>
   
 </html>`

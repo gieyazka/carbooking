@@ -28,13 +28,13 @@
     background-color: rgba(178,202,255,1);
 }
 
-.MTableToolbar-highlight-6{
+/* .MuiToolbar-root{
    background-color : #1D366D !important;
     color: #FFF !important;
-}
-.MuiTypography-h6{
+} */
+/* .MuiTypography-h6{
     color: #FFF !important;
-}
+} */
 .MuiCheckbox-colorSecondary.Mui-checked{
     color: #1D366D !important;
 }

@@ -373,7 +373,7 @@ const Car = () => {
                     }
                 }
                 await checkTrips(d.date, carData.id).then(async res => {
-                    console.log((res));
+                    // console.log((res));
                     if (res[0] == null) {
                         if (d.needDriver == true) {
                             if (driverName == null) {
@@ -440,7 +440,7 @@ const Car = () => {
                         //     } else if (r.status == 'finish' && !r.driver && r.user) {
                         //         console.log(413)
                         //     }
-                        console.log(typeTrip);
+                        // console.log(typeTrip);
 
                         // }
                         if (typeTrip == 'edit') {

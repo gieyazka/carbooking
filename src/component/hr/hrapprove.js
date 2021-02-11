@@ -1,29 +1,23 @@
 import React, { useState, useEffect, useRef, forwardRef } from 'react'
-import MaterialTable, { MTableBodyRow } from 'material-table'
+import MaterialTable, { MTableBodyRow, MTableToolbar } from 'material-table'
 import { DataContext } from "../store/store"
 import moment from 'moment'
 import { Form, Input, Row, Col, Select, Button, DatePicker, Space, TimePicker, Radio, Card, Modal } from 'antd';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import iconCar from '../asset/iconcar.png'
-import department from '../asset/hrdepartment.png'
 import user from '../asset/hruser.png'
 import calender from '../asset/hrcarender.png'
 import location from '../asset/hrlocation.png'
 import hrmessage from '../asset/hrmessage.png'
-import hrdescription from '../asset/hrdescription.png'
 import noDriver from '../asset/noDriver.png'
-import xicon from '../asset/xicon.png'
-import assignicon from '../asset/assignicon.png'
 import statusdriver2 from '../asset/statusdriver2.png'
 import countRequest from '../asset/countRequest.png'
 import clearIcon from '../asset/clearIcon.png'
 import car from '../asset/carblack.png'
 import people from '../asset/people.png'
 import Swal from 'sweetalert2'
-import loadingLogin from '../asset/wheel.gif'
-// import statusdriver2 from '../asset/statusdriver2.png'
-import SearchIcon from '@material-ui/icons/Search';
 import filer from '../asset/filer.png'
+import '../form/formrequest.css'
+import { createMuiTheme } from '@material-ui/core/styles';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { getBookingHr, handleHrApprove } from '../util/index'
 import { AddBox, ArrowDownward, Clear, Check, ChevronLeft, ChevronRight, DeleteOutline, Edit, FilterList, FirstPage, LastPage, Remove, SaveAlt, Search, ViewColumn } from '@material-ui/icons'
 import VisibilityIcon from '@material-ui/icons/Visibility';
@@ -338,7 +332,17 @@ const Hrapprove = () => {
         ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
         ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
     };
+    const theme = createMuiTheme({
+        palette: {
+            primary: {
+                main: '#1D366D',
+            },
+            secondary: {
+                main: '#1D366D',
+            },
+        },
 
+    });
     // console.log(bookingData[0] && JSON.parse(bookingData[0].destProvince)[0]);
     return (
         <div>
@@ -493,56 +497,69 @@ const Hrapprove = () => {
 
                 <Row gutter={{ xs: 24, sm: 24 }}>
                     <Col span={24}>
-                        <MaterialTable
-                            actions={[
-                                {
-                                    icon: () => <VisibilityIcon />,
-                                    tooltip: 'View detail',
-                                    onClick: (event, rowData) => showData(rowData),
-                                    position: "row"
-                                },
+                        <MuiThemeProvider theme={theme}>
+                            <MaterialTable
+                            components={{
+                                Toolbar: props => (
+                                <div style={{ backgroundColor: '#1D366D' }}>
+                                <MTableToolbar {...props} />
+                                </div>
+                                ),
+                                }}
+                                actions={[
+                                    {
+                                        icon: () => <VisibilityIcon />,
+                                        tooltip: 'View detail',
+                                        onClick: (event, rowData) => showData(rowData),
+                                        position: "row"
+                                    },
 
-                                {
-                                    tooltip: 'Reject',
-                                    icon: () => <ThumbDownAltOutlinedIcon style={{ color: 'white' }} />,
-                                    onClick: (evt, data) => hrCancleClick(data)
-                                },
-                                {
-                                    tooltip: 'Approve',
-                                    icon: () => <ThumbUpAltOutlinedIcon style={{ color: 'white' }} />,
-                                    onClick: (evt, data) => hrApproveClick(data)
-                                },
-                            ]}
-                            data={bookingData}
-                            icons={tableIcons}
-                            columns={[
-                                { title: 'ชื่อ', field: 'name' },
-                                { title: 'แผนก', field: 'department' },
-                                { title: 'สถานที่ไป', render: (rowData) => JSON.parse(rowData.destination) + " " },
-                                { title: 'จังหวัด', render: (rowData) => JSON.parse(rowData.destProvince) + " " },
-                                { title: 'เหตุผล', field: 'reason' },
-                                { title: 'วันที่', field: 'date' },
-                                { title: 'เวลา', render: (rowData) => rowData.startTime + " - " + rowData.endTime }
-                            ]}
-                            localization={{
+                                    {
+                                        tooltip: 'Reject',
+                                        icon: () => <ThumbDownAltOutlinedIcon style={{ color: '#1D366D' }} />,
+                                        onClick: (evt, data) => hrCancleClick(data)
+                                    },
+                                    {
+                                        tooltip: 'Approve',
+                                        icon: () => <ThumbUpAltOutlinedIcon style={{ color: '#1D366D' }} />,
+                                        onClick: (evt, data) => hrApproveClick(data)
+                                    },
+                                ]}
+                                data={bookingData}
+                                icons={tableIcons}
+                                columns={[
+                                    { title: 'ชื่อ', field: 'name' },
+                                    { title: 'แผนก', field: 'department' },
+                                    { title: 'สถานที่ไป', render: (rowData) => JSON.parse(rowData.destination) + " " },
+                                    { title: 'จังหวัด', render: (rowData) => JSON.parse(rowData.destProvince) + " " },
+                                    { title: 'เหตุผล', field: 'reason' },
+                                    { title: 'วันที่', field: 'date' },
+                                    { title: 'เวลา', render: (rowData) => rowData.startTime + " - " + rowData.endTime }
+                                ]}
+                                localization={{
 
-                                toolbar: {
-                                    nRowsSelected: '{0} booking is selected'
-                                },
-                                header: {
-                                    actions: ''
-                                },
+                                    toolbar: {
+                                        nRowsSelected: '{0} booking is selected'
+                                    },
+                                    header: {
+                                        actions: ''
+                                    },
 
-                            }}
-                            options={{
-                                actionsColumnIndex: -1,
-                                selection: true,
-                                search: false,
-                                sorting: true,
+                                }}
+                                options={{
 
-                            }}
-                            title=""
-                        />
+
+                                    rowStyle: rowData => ({ backgroundColor: rowData.tableData.checked ? '#37b15933' : '#FFF' }),
+                                    searchFieldStyle: { background: 'red' },
+                                    actionsColumnIndex: -1,
+                                    selection: true,
+                                    search: false,
+                                    sorting: true,
+
+                                }}
+                                title=""
+                            />
+                        </MuiThemeProvider>
                     </Col>
                 </Row>
             </div>
