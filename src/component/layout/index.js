@@ -739,7 +739,7 @@ const AppLayout = () => {
                       top: "50%",
                     }}
                   >
-                    Request form
+                    Request&nbsp;form
                   </p>
                 </div>
               </Link>
@@ -1010,7 +1010,7 @@ const AppLayout = () => {
             ) : null}
             {loginState ? (
               <Link
-                to="/user/trip"
+                to="/user/status"
                 style={{ color: "#FFF", marginLeft: "4px" }}
               >
                 <div
