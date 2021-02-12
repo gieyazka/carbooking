@@ -552,7 +552,10 @@ const AppLayout = () => {
               ) : null}
               {(loginState && loginState.role == "dispatcher") ||
               (loginState && loginState.role == "admin") ? (
-                <Menu.Item key="driver" icon={<DriverIcon />}>
+                <Menu.Item
+                  key="driver"
+                  icon={<DriverIcon style={{ width: 14, height: 14 }} />}
+                >
                   Manage driver
                   <Link to="/user/driver" />
                 </Menu.Item>
@@ -581,7 +584,11 @@ const AppLayout = () => {
               {loginState ? (
                 <Menu.Item
                   key="status"
-                  icon={<StatusIcon style={{ textAlign: "center" }} />}
+                  icon={
+                    <StatusIcon
+                      style={{ textAlign: "center", width: 14, height: 14 }}
+                    />
+                  }
                 >
                   Status
                   <Link to="/user/status" />
@@ -1048,10 +1055,7 @@ const AppLayout = () => {
               </Link>
             ) : null}
             {loginState ? (
-              <Link
-                to="/user/trip"
-                style={{ color: "#FFF", marginLeft: "4px" }}
-              >
+              <Link to="/login" style={{ color: "#FFF", marginLeft: "4px" }}>
                 <div
                   style={{
                     position: "relative",
