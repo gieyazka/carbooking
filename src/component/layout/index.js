@@ -1047,6 +1047,51 @@ const AppLayout = () => {
                 </div>
               </Link>
             ) : null}
+            {loginState ? (
+              <Link
+                to="/user/trip"
+                style={{ color: "#FFF", marginLeft: "4px" }}
+              >
+                <div
+                  style={{
+                    position: "relative",
+                    width: "20vw",
+                    height: "64px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <img
+                    onClick={() => {
+                      onLogout();
+                    }}
+                    style={{
+                      position: "absolute",
+                      top: "18%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: 24,
+                      height: 24,
+                      cursor: "pointer",
+                    }}
+                    src={logout}
+                  />
+
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    Logout
+                  </p>
+                </div>
+              </Link>
+            ) : null}
           </div>
           <Content
             className="site-layout-background"
