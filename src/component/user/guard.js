@@ -20,19 +20,24 @@ const Guard = () => {
 
             })
         }
-        getTripipData(moment().format('YYYYMMDD'))
-    }, [])
+        const timeout = setTimeout(() => {
+            getTripipData(moment().format('YYYYMMDD'))
+
+        }, 10000);
+        return () => clearTimeout(timeout);
+    }, [stateTripDatail])
+
     const searchCar = (searchValue) => {
         // console.log(searchValue);
-        let carSearch = stateTripDatail.filter(d => d.car.plateNo == searchValue)
+        let carSearch = stateTripDatail.filter(d => d.car.plateNo == searchValue && d.status != 'finish' && d.status != 'off')
         carSearch = _.sortBy(carSearch, [function (o) { return o.date; }]);
         if (carSearch[0]) {
+            console.log(carSearch[0]);
             setModal({ open: true, tripData: carSearch[0] })
         } else {
             alert('ไม่พบเลขทะเบียนนี้')
         }
     }
-    console.log(modal.tripData);
     return (
         <React.Fragment>
             <div style={{ margin: '24px 36px' }}>
@@ -53,7 +58,7 @@ const Guard = () => {
                         <Col xs={{ span: 6 }} sm={{ span: 6 }} md={{ span: 6 }} lg={{ span: 6 }} >
                             <Card
                                 hoverable
-                                style={{ width: '16vw', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.12)' }}
+                                style={{ width: '20vw', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.12)' }}
                                 cover={<img alt="example" src={res.car.picture[res.car.picture.length - 1] ? `https://ess.aapico.com${res.car.picture[res.car.picture.length - 1].url}` :
                                     'https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp'
                                 } />}
@@ -125,6 +130,7 @@ const Guard = () => {
                                     style={{ width: 'auto', position: 'relative', boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.12)' }}
 
                                 >
+                                    <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>วันที่ : {moment(modal.tripData.date, 'YYYYMMDD').format('DD-MM-YYYY')}</h2>
 
                                     <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>เลขไมล์ออก</h2>
                                     <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>{modal.tripData.startMileage || '-'}</h2>
@@ -145,14 +151,33 @@ const Guard = () => {
                                     <Row>
                                         <Col span={12}>
                                             <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>สถานที่</h2>
-                                            <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>{modal.tripData.bookings.map(res => JSON.parse(res.destination) + ' ') || '-'}</h2>
+                                            {modal.tripData.bookings.map(res =>
+
+                                                <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>{(JSON.parse(res.destination) + " ") || '-'}</h2>
+
+                                            )}
                                         </Col>
                                         <Col span={12}>
                                             <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>จังหวัด</h2>
-                                            <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>{modal.tripData.startMileage || '-'}</h2>
+                                            {modal.tripData.bookings.map(r =>
+
+                                                <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>{(JSON.parse(r.destProvince) + " ") || '-'}</h2>
+
+                                            )} </Col>
+                                    </Row>
+                                    <Row style={{ marginTop: '24px' }}>
+                                        <Col>
+                                            <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>เหตุผลที่ใช้รถ</h2>
+
+                                            {modal.tripData.bookings.map(r =>
+
+                                                <h2 style={{ marginTop: '8px', fontWeight: 400, style: 'normal', lineHeight: '140%' }}>{r.reason || '-'}</h2>
+
+                                            )}
+
+
                                         </Col>
                                     </Row>
-
 
                                 </Card>
                             </Col>
