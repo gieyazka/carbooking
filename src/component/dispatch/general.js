@@ -909,7 +909,7 @@ const Car = () => {
             const filter = res.filter((d) => !d.user);
             const filter1 = filter.filter((d) => d.status != "finish");
             console.log(filter1);
-            if (filter1[0]) {
+            if (filter1[0] && d.needDrive == true) {
               typeTrip = "edit";
             }
             // for (const r of res) {

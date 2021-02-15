@@ -330,6 +330,7 @@ const FromRequest = () => {
           {/* <Row gutter={{ xs: 16, sm: 24 }} justify="center"></Row> */}
           <Row gutter={{ xs: 16, sm: 24 }} justify="center">
             <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+
             <Col xs={{ span: 24 }} sm={{ span: 8 }}>
               <p>รหัสพนักงาน (Employee Id)</p>
               <Form.Item
@@ -373,6 +374,16 @@ const FromRequest = () => {
             <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
             <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <p>ชื่อ - นามสกุล (Full Name)</p>
+            </Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>แผนก / ฝ่าย (Sect./Dept.)</p>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <Form.Item
                 name="fullname"
                 rules={[
@@ -391,85 +402,8 @@ const FromRequest = () => {
                   placeholder="ชื่อ - นามสกุล (Full Name)"
                 />
               </Form.Item>
-              <p>โทรศัพท์มือถือ (Mobile Phone Number)</p>
-              <Form.Item
-                name="mobile_phone"
-                rules={[
-                  {
-                    required: true,
-                    message: "*require",
-                  },
-                  {
-                    len: 12,
-                    pattern: new RegExp(
-                      /(^\d{3})([-]{1})(\d{3})([-]{1})(\d{4})/g
-                    ),
-                    message: "pattern invalid",
-                  },
-                ]}
-              >
-                <Input
-                  maxLength="12"
-                  autoComplete="none"
-                  onChange={(e) => {
-                    checkPhone(e);
-                  }}
-                  placeholder="โทรศัพท์มือถือ (Mobile Phone Number)"
-                />
-              </Form.Item>
-              <p>วันที่ต้องการ (Date Required)</p>
-              <Form.Item
-                name="date"
-                rules={[
-                  {
-                    required: true,
-                    message: "*require",
-                  },
-                ]}
-              >
-                <DatePicker
-                  disabledDate={disabledDate}
-                  placeholder="วันที่ต้องการ (Date Required)"
-                  style={{ width: "100%" }}
-                  onChange={onChange}
-                />
-              </Form.Item>
-              <p>ประเภทรถ (Type of car)</p>
-              <Form.Item
-                name="car_type"
-                rules={[
-                  {
-                    required: true,
-                    message: "*require",
-                  },
-                ]}
-              >
-                <Select
-                  placeholder="ประเภทรถ (Type of car)"
-                  style={{ width: "100%" }}
-                >
-                  {state.typeCar}
-                </Select>
-              </Form.Item>
-
-              <p>สถานที่ไป (Place)</p>
-              {destState.map((res, index) => (
-                <Form.Item
-                  name={["place", index]}
-                  rules={[
-                    {
-                      required: true,
-                      message: "*require",
-                    },
-                  ]}
-                >
-                  <Input placeholder="สถานที่ไป (Place)" />
-                </Form.Item>
-              ))}
             </Col>
-
             <Col xs={{ span: 12 }} sm={{ span: 8 }}>
-              <p>แผนก/ฝ่าย (Sect./Dept.)</p>
               <Form.Item
                 name="department"
                 rules={[
@@ -496,7 +430,76 @@ const FromRequest = () => {
                   {formDropdown.department}
                 </Select>
               </Form.Item>
+            </Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 24 }} sm={{ span: 16 }}>
+              <p>อีเมลล์ของหัวหน้า (Manager's Email)</p>
+              <Form.Item
+                name="manager_email"
+                rules={[
+                  {
+                    required: true,
+                    message: "*require",
+                  },
+                  {
+                    pattern: new RegExp(
+                      /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
+                    ),
+                    message: "Email invalid",
+                  },
+                ]}
+              >
+                <Input
+                  readOnly={true}
+                  placeholder="อีเมลล์ของหัวหน้า (Manager's Email)"
+                  style={{ width: "100%" }}
+                ></Input>
+              </Form.Item>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>โทรศัพท์มือถือ (Mobile Phone Number)</p>
+            </Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <p>โทรศัพท์ภายใน (Telephone Number)</p>
+              {/* <p>วันที่ต้องการ (Date Required)</p> */}
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <Form.Item
+                name="mobile_phone"
+                rules={[
+                  {
+                    required: true,
+                    message: "*require",
+                  },
+                  {
+                    len: 12,
+                    pattern: new RegExp(
+                      /(^\d{3})([-]{1})(\d{3})([-]{1})(\d{4})/g
+                    ),
+                    message: "pattern invalid",
+                  },
+                ]}
+              >
+                <Input
+                  maxLength="12"
+                  autoComplete="none"
+                  onChange={(e) => {
+                    checkPhone(e);
+                  }}
+                  placeholder="โทรศัพท์มือถือ (Mobile Phone Number)"
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <Form.Item
                 name="company_phone"
                 rules={[
@@ -511,7 +514,39 @@ const FromRequest = () => {
                   placeholder="โทรศัพท์ภายใน (Telephone Number)"
                 />
               </Form.Item>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>วันที่ต้องการ (Date Required)</p>
+            </Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <p>เวลา (Time)</p>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <Form.Item
+                name="date"
+                rules={[
+                  {
+                    required: true,
+                    message: "*require",
+                  },
+                ]}
+              >
+                <DatePicker
+                  disabledDate={disabledDate}
+                  placeholder="วันที่ต้องการ (Date Required)"
+                  style={{ width: "100%" }}
+                  onChange={onChange}
+                />
+              </Form.Item>
+            </Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <Form.Item
                 name="time"
                 rules={[
@@ -527,32 +562,35 @@ const FromRequest = () => {
                   format="HH:mm"
                 />
               </Form.Item>
-              <p>จำนวนคน (Amount)</p>
-              <Form.Item
-                name="amout"
-                rules={[
-                  {
-                    required: true,
-                    message: "require",
-                  },
-                ]}
-              >
-                <Select
-                  placeholder="จำนวนคน (Amount)"
-                  style={{ width: "100%" }}
+            </Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>สถานที่ไป (Place)</p>
+            </Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>จังหวัด (Province))</p>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              {destState.map((res, index) => (
+                <Form.Item
+                  name={["place", index]}
+                  rules={[
+                    {
+                      required: true,
+                      message: "*require",
+                    },
+                  ]}
                 >
-                  <Option value="1">1</Option>
-                  <Option value="2">2</Option>
-                  <Option value="3">3</Option>
-                  <Option value="4">4</Option>
-                  <Option value="5">5</Option>
-                  <Option value="6">6</Option>
-                  <Option value="8">8</Option>
-                  <Option value="9">9</Option>
-                  <Option value="10">10</Option>
-                </Select>
-              </Form.Item>
-              <p>จังหวัด (Province)</p>
+                  <Input placeholder="สถานที่ไป (Place)" />
+                </Form.Item>
+              ))}
+            </Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               {destState.map((res, index) => (
                 <div style={{ position: "relative" }}>
                   <Form.Item
@@ -611,17 +649,73 @@ const FromRequest = () => {
                 </div>
               ))}
             </Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>ประเภทรถ (Type of car)</p>
+            </Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>จำนวนคน (Amount)</p>
+            </Col>
 
             <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
             <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
-            <Col xs={{ span: 6 }} sm={{ span: 4 }}>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <Form.Item
+                name="car_type"
+                rules={[
+                  {
+                    required: true,
+                    message: "*require",
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="ประเภทรถ (Type of car)"
+                  style={{ width: "100%" }}
+                >
+                  {state.typeCar}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <Form.Item
+                name="amout"
+                rules={[
+                  {
+                    required: true,
+                    message: "require",
+                  },
+                ]}
+              >
+                <Select
+                  placeholder="จำนวนคน (Amount)"
+                  style={{ width: "100%" }}
+                >
+                  <Option value="1">1</Option>
+                  <Option value="2">2</Option>
+                  <Option value="3">3</Option>
+                  <Option value="4">4</Option>
+                  <Option value="5">5</Option>
+                  <Option value="6">6</Option>
+                  <Option value="8">8</Option>
+                  <Option value="9">9</Option>
+                  <Option value="10">10</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <p>
                 ต้องการคนขับรถ
                 <br />
                 (Driver Required)
               </p>
             </Col>
-            <Col xs={{ span: 6 }} sm={{ span: 4 }}>
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <Form.Item
                 name="driver"
                 rules={[
@@ -637,34 +731,22 @@ const FromRequest = () => {
                 </Radio.Group>
               </Form.Item>
             </Col>
-            <Col xs={{ span: 24 }} sm={{ span: 8 }}>
-              <p>อีเมลล์ของหัวหน้า (Manager's Email)</p>
-              <Form.Item
-                name="manager_email"
-                rules={[
-                  {
-                    required: true,
-                    message: "*require",
-                  },
-                  {
-                    pattern: new RegExp(
-                      /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/
-                    ),
-                    message: "Email invalid",
-                  },
-                ]}
-              >
-                <Input
-                  readOnly={true}
-                  placeholder="อีเมลล์ของหัวหน้า (Manager's Email)"
-                  style={{ width: "100%" }}
-                ></Input>
-              </Form.Item>
-            </Col>
+
             <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
             <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+
             <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <p>เหตุผลที่ต้องการใช้รถ (Purpos of using vehicle)</p>
+            </Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
+              <p>ระบุ</p>
+            </Col>
+
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+            <Col xs={{ span: 0 }} sm={{ span: 4 }}></Col>
+
+            <Col xs={{ span: 12 }} sm={{ span: 8 }}>
               <Form.Item
                 name="purpos"
                 rules={[
@@ -690,7 +772,6 @@ const FromRequest = () => {
               </Form.Item>
             </Col>
             <Col xs={{ span: 12 }} sm={{ span: 8 }}>
-              <p>ระบุ</p>
               <Form.Item
                 name="other_purpos"
                 rules={[
