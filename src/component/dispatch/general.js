@@ -156,7 +156,7 @@ const RequestCar = ({ filerBooking }) => {
                                         style={{
                                           paddingLeft: "2%",
                                           position: "absolute",
-                                          left: "95%",
+                                          left: "90%",
                                           //   transform: "translateX(-60%)",
                                         }}
                                         {...provided.dragHandleProps}
@@ -332,7 +332,7 @@ const RequestCar = ({ filerBooking }) => {
                                         style={{
                                           paddingLeft: "2%",
                                           position: "absolute",
-                                          left: "95%",
+                                          left: "90%",
                                           //   transform: "translateX(-60%)",
                                         }}
                                         {...provided.dragHandleProps}
@@ -531,7 +531,7 @@ const RequestCar = ({ filerBooking }) => {
                                         style={{
                                           paddingLeft: "2%",
                                           position: "absolute",
-                                          left: "95%",
+                                          left: "90%",
                                           //   transform: "translateX(-60%)",
                                         }}
                                         {...provided.dragHandleProps}
