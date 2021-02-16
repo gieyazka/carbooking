@@ -854,7 +854,7 @@ const Car = () => {
           }
         }
         await checkTrips(d.date, carData.id).then(async (res) => {
-          // console.log((res));
+          console.log(res);
           if (res[0] == null) {
             if (d.needDriver == true) {
               if (driverName == null) {
@@ -909,7 +909,8 @@ const Car = () => {
             const filter = res.filter((d) => !d.user);
             const filter1 = filter.filter((d) => d.status != "finish");
             console.log(filter1);
-            if (filter1[0] && d.needDrive == true) {
+            console.log(d.needDriver);
+            if (filter1[0] && d.needDriver == true) {
               typeTrip = "edit";
             }
             // for (const r of res) {
