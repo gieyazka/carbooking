@@ -332,7 +332,8 @@ const ManageDriver = () => {
         });
       } else {
         Swal.fire({
-          title: `บันทึกข้อมูลรถ ${driverstate.driverData.plateNo}`,
+          title: `บันทึกข้อมูลของ ${driverstate.driverData.name}`,
+
           customClass: {
             confirmButton: "swConfirm",
 

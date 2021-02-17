@@ -94,7 +94,7 @@ const Trips = () => {
       setTripDetail({ ...tripDetail, allTrips: res, events: data });
     });
   }, []);
-  console.log(modalData);
+  // console.log(modalData);
   var i = 0;
 
   return (
@@ -241,7 +241,7 @@ const Trips = () => {
                             ? "รอการอนุมัติจาก Manager"
                             : modalData.tripData.managerApprove === true
                             ? modalData.tripData.hrApprove === null
-                              ? "รออนุมัติจาก Hr"
+                              ? "รอการอนุมัติจาก Hr"
                               : modalData.tripData.hrApprove === true
                               ? "Hr อนุมัติแล้ว"
                               : "Hr ไม่อนุมัติ"
