@@ -1093,7 +1093,7 @@ const AppLayout = () => {
                   <BookOutlined
                     style={{
                       position: "absolute",
-                      top: "16%",
+                      top: "22%",
                       left: "50%",
                       transform: "translateX(-50%)",
                       width: 24,
