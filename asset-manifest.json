@@ -1,8 +1,8 @@
 {
   "files": {
     "main.css": "/carbooking/static/css/main.8f7d7b69.chunk.css",
-    "main.js": "/carbooking/static/js/main.719a9ff9.chunk.js",
-    "main.js.map": "/carbooking/static/js/main.719a9ff9.chunk.js.map",
+    "main.js": "/carbooking/static/js/main.569170be.chunk.js",
+    "main.js.map": "/carbooking/static/js/main.569170be.chunk.js.map",
     "runtime-main.js": "/carbooking/static/js/runtime-main.a543b78c.js",
     "runtime-main.js.map": "/carbooking/static/js/runtime-main.a543b78c.js.map",
     "static/css/2.1d8896ef.chunk.css": "/carbooking/static/css/2.1d8896ef.chunk.css",
@@ -42,6 +42,6 @@
     "static/css/2.1d8896ef.chunk.css",
     "static/js/2.48683b3f.chunk.js",
     "static/css/main.8f7d7b69.chunk.css",
-    "static/js/main.719a9ff9.chunk.js"
+    "static/js/main.569170be.chunk.js"
   ]
 }
