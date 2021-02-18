@@ -18,6 +18,9 @@ const NextPageBtn = styled.span`
     cursor: pointer;
   }
 `;
+const NewPage = styled(Page)`
+  width: 100vw;
+`;
 function MyApp(props) {
   console.log(props);
   const [numPages, setNumPages] = useState(null);
@@ -68,7 +71,7 @@ function MyApp(props) {
         }
         onLoadSuccess={onDocumentLoadSuccess}
       >
-        <Page pageNumber={pageNumber} />
+        <Page width={props.device ? 400 : null} pageNumber={pageNumber} />
       </Document>
     </div>
   );

@@ -1076,6 +1076,45 @@ const AppLayout = () => {
               </Link>
             ) : null}
             {loginState ? (
+              <Link
+                to="/user/manual"
+                style={{ color: "#FFF", marginLeft: "4px" }}
+              >
+                <div
+                  style={{
+                    position: "relative",
+                    width: "20vw",
+                    height: "64px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                  }}
+                >
+                  <BookOutlined
+                    style={{
+                      position: "absolute",
+                      top: "16%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                      width: 24,
+                      height: 24,
+                    }}
+                  />
+                  <p
+                    style={{
+                      fontSize: "13px",
+                      position: "absolute",
+                      top: "50%",
+                      left: "50%",
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    Manual
+                  </p>
+                </div>
+              </Link>
+            ) : null}
+            {loginState ? (
               <Link to="/login" style={{ color: "#FFF", marginLeft: "4px" }}>
                 <div
                   style={{
@@ -1155,6 +1194,14 @@ const AppLayout = () => {
               {(loginState && loginState.role == "dispatcher") ||
               (loginState && loginState.role == "admin") ? (
                 <Route path="/user/car" component={Car} />
+              ) : null}
+              {loginState ? (
+                <Route
+                  path="/user/manual"
+                  component={() => (
+                    <Manual device="mobile" loginData={loginState} />
+                  )}
+                />
               ) : null}
               <Route exact path="/user" component={Formrequest} />
               <Route path="*" component={Formrequest} />
