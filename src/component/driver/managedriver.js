@@ -414,42 +414,42 @@ const ManageDriver = () => {
           }}
         />
       </div>
-      <Row>
-        <div
-          className=" padDate"
-          style={{
-            marginBottom: "16px",
-            fontFamily: "Bai Jamjuree",
-            fontSize: "1.3em",
-          }}
-        >
-          <p className="hrfont" style={{ paddingTop: "4px" }}>
-            {new moment().format("DD-MM-YYYY")}{" "}
-          </p>
-          <div style={{ position: "relative" }}>
-            <img style={{ height: "16px", width: "16px" }} src={countRequest} />{" "}
-            <span style={{ color: "black", paddingRight: "8px" }}>
-              {" "}
-              <span style={{ paddingRight: "8px" }}>
-                {(driverstate.allDriver && driverstate.allDriver.length) || 0}{" "}
-                รายการ{" "}
-              </span>
-              <button
-                onClick={(e) => openCreate(e)}
-                style={{
-                  border: "0",
-                  padding: "4px 12px",
-                  backgroundColor: "#1D366D",
-                  color: "#FFFFFF",
-                  borderRadius: "24px",
-                }}
-              >
-                + เพิ่มคนขับรถ
-              </button>
+
+      <div
+        className=" padDate"
+        style={{
+          marginBottom: "16px",
+          fontFamily: "Bai Jamjuree",
+          fontSize: "1.3em",
+        }}
+      >
+        <p className="hrfont" style={{ paddingTop: "4px" }}>
+          {new moment().format("DD-MM-YYYY")}{" "}
+        </p>
+        <div style={{ position: "relative" }}>
+          <img style={{ height: "16px", width: "16px" }} src={countRequest} />{" "}
+          <span style={{ color: "black", paddingRight: "8px" }}>
+            {" "}
+            <span style={{ paddingRight: "8px" }}>
+              {(driverstate.allDriver && driverstate.allDriver.length) || 0}{" "}
+              รายการ{" "}
             </span>
-          </div>
+            <button
+              onClick={(e) => openCreate(e)}
+              style={{
+                border: "0",
+                padding: "4px 12px",
+                backgroundColor: "#1D366D",
+                color: "#FFFFFF",
+                borderRadius: "24px",
+              }}
+            >
+              + เพิ่มคนขับรถ
+            </button>
+          </span>
         </div>
-      </Row>
+      </div>
+
       <div className="margin hrfont">
         <Row gutter={{ xs: 24, sm: 24 }}>
           {driverstate.allDriver &&

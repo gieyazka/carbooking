@@ -415,7 +415,7 @@ const Trips = () => {
                     {r.bookings.filter((d) => d.status != "finish").length}{" "}
                     สถานที่{" "}
                   </p>
-                  {r.newStatus}
+
                   {i++ == 0 ? (
                     r.status == "free" ? (
                       <a
@@ -555,7 +555,6 @@ const Trips = () => {
                       }
                 }
               >
-                {res.id}
                 {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
                 <p>
                   {JSON.parse(res.destination) + " "} &nbsp;{" "}
