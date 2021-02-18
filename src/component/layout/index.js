@@ -9,6 +9,7 @@ import Hrapprove from "../hr/hrapprove";
 import firebase from "../firebase";
 import ManageDriver from "../driver/managedriver";
 import Trip from "../user/trip";
+import Manual from "../user/manual";
 import Status from "../user/status";
 import Car from "../car/car";
 import logout from "../asset/logout.png";
@@ -28,6 +29,7 @@ import {
   Switch,
 } from "react-router-dom";
 import {
+  BookOutlined,
   FormOutlined,
   SelectOutlined,
   MenuUnfoldOutlined,
@@ -594,6 +596,19 @@ const AppLayout = () => {
                   <Link to="/user/status" />
                 </Menu.Item>
               ) : null}
+              {loginState ? (
+                <Menu.Item
+                  key="manual"
+                  icon={
+                    <BookOutlined
+                      style={{ textAlign: "center", width: 14, height: 14 }}
+                    />
+                  }
+                >
+                  Manual
+                  <Link to="/user/manual" />
+                </Menu.Item>
+              ) : null}
             </Menu>
           </Sider>
           <Layout className="site-layout" style={{ position: "relative" }}>
@@ -674,6 +689,12 @@ const AppLayout = () => {
                 {(loginState && loginState.role == "dispatcher") ||
                 (loginState && loginState.role == "admin") ? (
                   <Route path="/user/car" component={Car} />
+                ) : null}
+                {loginState ? (
+                  <Route
+                    path="/user/manual"
+                    component={() => <Manual loginData={loginState} />}
+                  />
                 ) : null}
                 <Route exact path="/user" component={Formrequest} />
                 <Route path="*" component={Formrequest} />
