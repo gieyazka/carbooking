@@ -14,6 +14,7 @@ const Approve = () => {
   const [loading, setloading] = useState(true);
   let { id, uuid, type } = useParams();
   console.log(type);
+
   React.useEffect(async () => {
     if (type == "approve") {
       await checkBookingById(id).then(async (res) => {

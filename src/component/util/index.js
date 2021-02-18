@@ -714,7 +714,7 @@ export const sendEmail = async (booking) => {
   var urlencoded = new URLSearchParams();
   urlencoded.append("form", "CarBookingSystem@aapico.com");
   urlencoded.append("formdetail", "Carbooking System");
-  urlencoded.append("to", "pokkate.e@aapico.com");
+  urlencoded.append("to", booking.data.managerEmail);
   urlencoded.append("cc", "");
   urlencoded.append("bcc ", "");
   urlencoded.append("subject", "Carbooking request");
