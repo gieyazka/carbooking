@@ -1,15 +1,6 @@
-
-
 {
-  "name": "Car Booking System",
   "short_name": "Car Booking",
-  "description": "Booking Car for AAPICO",
-  "start_url": "/carbooking",
-  "display": "standalone",
-  "background_color": "#000000",
-  "theme_color": "#000000",
-  "homepage_url": "http://localhost:3000/carbooking",
-  "prefer_related_applications": false,
+  "name": "Car Booking system",
   "icons": [
     {
       "src": "logo.svg",
@@ -26,5 +17,9 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-  ]
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#000000",
+  "background_color": "#ffffff"
 }

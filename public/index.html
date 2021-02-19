@@ -44,8 +44,12 @@
   const messaging = firebase.messaging();
 
   if ('serviceWorker' in navigator) {
-  
-    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js')
+
+    navigator.serviceWorker
+            .register('/carbooking/testsw.js')
+            .then(function() { console.log("Tada! Your service worker is now registered"); });
+ 
+    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js',{scope : '.'})
       .then(function (reg) {
         messaging.useServiceWorker(reg);
         messaging
