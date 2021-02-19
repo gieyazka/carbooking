@@ -22,85 +22,16 @@
 <script type="text/javascript" src="https://script.cookiewow.com/cwc.js"></script>
 <script id="cookieWow" type="text/javascript" src="https://script.cookiewow.com/configs/N4TZqrjbAsnoKSd4twPsHP3i" data-cwcid="N4TZqrjbAsnoKSd4twPsHP3i"></script>
   <title>Car Booking</title>
-  <style>
-
-
-.hidden {
-  display: none !important;
-}
-
-#installContainer {
-  position: absolute;
-  bottom: 1em;
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-#installContainer button {
-  background-color: inherit;
-  border: 1px solid white;
-  color: white;
-  font-size: 1em;
-  padding: 0.75em;
-}
-  </style>
 </head>
 
 <body>
-  <noscript>You need to enable JavaScript to run this app.</noscript>  
-  <!-- Install button, hidden by default -->
-  <div id="installContainer" class="hidden">
-    <button id="butInstall" type="button">
-      Install
-    </button>
-  </div>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
 
 </body>
 
 </html>
-<script> 
-const divInstall = document.getElementById('installContainer');
-const butInstall = document.getElementById('butInstall');
 
-/* Put code here */
-window.addEventListener('beforeinstallprompt', (event) => {
-  console.log('👍', 'beforeinstallprompt', event);
-  // Stash the event so it can be triggered later.
-  window.deferredPrompt = event;
-  // Remove the 'hidden' class from the install button container
-  divInstall.classList.toggle('hidden', false);
-});
-
-
-
-butInstall.addEventListener('click', async () => {
-  console.log('👍', 'butInstall-clicked');
-  const promptEvent = window.deferredPrompt;
-  if (!promptEvent) {
-    // The deferred prompt isn't available.
-    return;
-  }
-  // Show the install prompt.
-  promptEvent.prompt();
-  // Log the result
-  const result = await promptEvent.userChoice;
-  console.log('👍', 'userChoice', result);
-  // Reset the deferred prompt variable, since
-  // prompt() can only be called once.
-  window.deferredPrompt = null;
-  // Hide the install button.
-  divInstall.classList.toggle('hidden', true);
-});
-
-
-window.addEventListener('appinstalled', (event) => {
-  console.log('👍', 'appinstalled', event);
-  // Clear the deferredPrompt so it can be garbage collected
-  window.deferredPrompt = null;
-});
-</script>
 <script>
   var config = {
     'messagingSenderId': '851373916828',
@@ -113,10 +44,8 @@ window.addEventListener('appinstalled', (event) => {
   const messaging = firebase.messaging();
 
   if ('serviceWorker' in navigator) {
-
-    
-
-    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js')
+  
+    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js',{scope : '.'})
       .then(function (reg) {
         messaging.useServiceWorker(reg);
         messaging
