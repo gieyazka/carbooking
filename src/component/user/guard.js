@@ -20,24 +20,21 @@ const Guard = () => {
   const { Meta } = Card;
   const sarchInput = useRef(null);
   const [date, setDate] = useState(moment().format("YYYYMMDD"));
+  const getTripipData = async (d) => {
+    await getTripsSinceDate(d).then((res) => {
+      // console.log(d);
+      setStateTripDetail(res);
+    });
+  };
+  const timeout = setTimeout(() => {
+    getTripipData(date);
+  }, 3000);
   React.useEffect(async () => {
-    const getTripipData = async (d) => {
-      await getTripsSinceDate(d).then((res) => {
-        // console.log(d);
-        setStateTripDetail(res);
-      });
-    };
-    const timeout = setTimeout(() => {
-      getTripipData(date);
-    }, 5000);
     return () => window.clearTimeout(timeout);
-  }, [stateTripDatail, date]);
+  }, [stateTripDatail]);
   const onChangeDate = async (newDate) => {
     // console.log(newDate);
     setDate(newDate);
-    // await getTripsSinceDate(newDate).then((res) => {
-    //   setStateTripDetail(res);
-    // });
   };
 
   const searchCar = (searchValue) => {
