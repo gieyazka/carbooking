@@ -658,7 +658,7 @@ const Trips = () => {
   } else if (page === 2) {
     return (
       <React.Fragment>
-        <div style={{ margin: "0px 24px" }}>
+        <div style={{ margin: "0px 24px", minHeight: "100vh" }}>
           <div
             style={{
               color: "#1d366d",
