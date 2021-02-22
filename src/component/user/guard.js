@@ -11,7 +11,7 @@ import {
 // import Swal from 'sweetalert2'
 import moment from "moment";
 import _ from "lodash";
-import { Row, Col, Input, Card, Modal } from "antd";
+import { Row, Col, Input, Card, Modal, DatePicker } from "antd";
 import IconCar from "./iconCarGuard.js";
 import aapicoicon from "../asset/AapicoIcon.png";
 const Guard = () => {
@@ -19,17 +19,26 @@ const Guard = () => {
   const [stateTripDatail, setStateTripDetail] = useState();
   const { Meta } = Card;
   const sarchInput = useRef(null);
+  const [date, setDate] = useState(moment().format("YYYYMMDD"));
   React.useEffect(async () => {
-    const getTripipData = async (date) => {
-      await getTripsSinceDate(date).then((res) => {
+    const getTripipData = async (d) => {
+      await getTripsSinceDate(d).then((res) => {
+        // console.log(d);
         setStateTripDetail(res);
       });
     };
     const timeout = setTimeout(() => {
-      getTripipData(moment().format("YYYYMMDD"));
-    }, 10000);
-    return () => clearTimeout(timeout);
-  }, [stateTripDatail]);
+      getTripipData(date);
+    }, 5000);
+    return () => window.clearTimeout(timeout);
+  }, [stateTripDatail, date]);
+  const onChangeDate = async (newDate) => {
+    // console.log(newDate);
+    setDate(newDate);
+    // await getTripsSinceDate(newDate).then((res) => {
+    //   setStateTripDetail(res);
+    // });
+  };
 
   const searchCar = (searchValue) => {
     // console.log(searchValue);
@@ -105,14 +114,32 @@ const Guard = () => {
             </p>
           </Col>
         </Row>
-        <Row gutter={[8, 8]}>
+        <Row justify="space-between ">
+          <Col span={6}>
+            <DatePicker
+              onChange={(v) => {
+                onChangeDate(moment(v).format("YYYYMMDD"));
+              }}
+            />
+          </Col>
+          <Col span={12}>
+            <IconCar color="rgba(0,0,0,0.38)" /> &nbsp; &nbsp;ยังไม่ออกจากบริษัท
+            &nbsp; &nbsp;
+            <IconCar color="#FEAB20" /> &nbsp; &nbsp;กำลังดำเนินการอยู่&nbsp;
+            &nbsp;
+            <IconCar color="#309E48" /> &nbsp; &nbsp;เสร็จงานแล้ว
+          </Col>
+          {/* <Col span={4}>col-4</Col>
+          <Col span={4}>col-4</Col> */}
+        </Row>
+        <Row style={{ marginTop: "24px" }} gutter={[8, 8]}>
           {stateTripDatail &&
             stateTripDatail.map((res) => (
               <Col
-                xs={{ span: 6 }}
-                sm={{ span: 6 }}
-                md={{ span: 6 }}
-                lg={{ span: 6 }}
+                xs={{ span: 8 }}
+                sm={{ span: 8 }}
+                md={{ span: 8 }}
+                lg={{ span: 8 }}
               >
                 <Card
                   hoverable

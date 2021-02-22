@@ -40,12 +40,13 @@ import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import loadingLogin from "../asset/wheel.gif";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
-import { set } from "lodash";
+import { ArrowLeftOutlined } from "@ant-design/icons";
 import "moment/locale/th";
 var _ = require("lodash");
 const socket = io("https://ess.aapico.com");
 const Trips = () => {
   const [loading, setloading] = useState(false);
+  const [page, setPage] = useState(1);
 
   const [date, setDate] = useState(new moment());
   const localizer = momentLocalizer(moment);
@@ -67,13 +68,11 @@ const Trips = () => {
   const handleTripCancel = () => {
     setTripModal({ ...tripModal, open: false });
   };
-  const handleDataBookingCancel = () => {
-    setDataBooking({ ...dataBooking, open: false });
-  };
   const tripsControl = async (d) => {
     setTripModal({ ...tripModal, updateTrip: d, open: true });
   };
   const viewJob = async (d) => {
+    setPage(2);
     setDataBooking({ open: true, bookings: d });
   };
   const loginEmpId = JSON.parse(sessionStorage.getItem("user")).emp_id;
@@ -135,6 +134,7 @@ const Trips = () => {
               open: true,
               bookings: { ...dataBooking.bookings, bookings: newTripData },
             });
+
             setloading(false);
           });
         }
@@ -226,6 +226,7 @@ const Trips = () => {
             const BookingsTrip = res.filter((data) => d.id == data.id);
             // console.log(BookingsTrip);
             setDataBooking({ open: true, bookings: BookingsTrip[0] });
+            setPage(2);
             // console.log(res);
           });
           setloading(false);
@@ -331,56 +332,355 @@ const Trips = () => {
   // console.log(tripDetail);
   var i = 0;
   // console.log(JSON.parse(sessionStorage.getItem('user')).emp_id );
+  if (page === 1) {
+    return (
+      <Fragment>
+        <div
+          style={
+            !loading
+              ? { display: "none" }
+              : {
+                  zIndex: 99999,
+                  height: "calc(100vh + 64px)",
+                  width: "100%",
+                  textAlign: "center",
+                  position: "fixed",
+                  top: "0",
+                  display: "block",
+                  backgroundColor: "rgba(0, 0, 0, 0.5)",
+                }
+          }
+        >
+          <img
+            src="/carbooking/static/media/wheel.7bfd793f.gif"
+            style={{
+              borderRadius: "10px",
+              top: "50%",
+              left: "50%",
+              position: "absolute",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
+        </div>
 
-  return (
-    <Fragment>
-      <div
-        style={
-          !loading
-            ? { display: "none" }
-            : {
-                zIndex: 99999,
-                height: "calc(100vh + 64px)",
-                width: "100%",
-                textAlign: "center",
-                position: "fixed",
-                top: "0",
-                display: "block",
-                backgroundColor: "rgba(0, 0, 0, 0.5)",
-              }
-        }
-      >
-        <img
-          src="/carbooking/static/media/wheel.7bfd793f.gif"
-          style={{
-            borderRadius: "10px",
-            top: "50%",
-            left: "50%",
-            position: "absolute",
-            transform: "translate(-50%, -50%)",
-          }}
-        />
-      </div>
+        <div className="tripCard">
+          {tripDetail.allTrips &&
+            tripDetail.allTrips.map(
+              (r, index) =>
+                // r.bookings.map(res => (
 
-      <div className="tripCard">
-        {tripDetail.allTrips &&
-          tripDetail.allTrips.map(
-            (r, index) =>
-              // r.bookings.map(res => (
+                (r.status != "finish" &&
+                  r.user ==
+                    JSON.parse(sessionStorage.getItem("user")).emp_id) ||
+                (r.driver &&
+                  r.status != "finish" &&
+                  JSON.parse(sessionStorage.getItem("user")).role == "driver" &&
+                  r.driver.emp_id ==
+                    JSON.parse(sessionStorage.getItem("user")).emp_id) ? (
+                  <Card
+                    key={r.id}
+                    style={
+                      r.status == "trip"
+                        ? {
+                            marginTop: "8px",
+                            backgroundColor: "#FEAB20",
+                            color: "#FFF",
+                            borderRadius: "10px",
+                            position: "relative",
+                            boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
+                            width: "100%",
+                            fontSize: "16px",
+                            fontFamily: "Bai Jamjuree",
+                          }
+                        : {
+                            marginTop: "8px",
+                            position: "relative",
+                            borderRadius: "10px",
+                            boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
+                            width: "100%",
+                            background: "#FFF",
+                            fontSize: "16px",
+                            fontFamily: "Bai Jamjuree",
+                          }
+                    }
+                  >
+                    {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
 
-              (r.status != "finish" &&
-                r.user == JSON.parse(sessionStorage.getItem("user")).emp_id) ||
-              (r.driver &&
-                r.status != "finish" &&
-                JSON.parse(sessionStorage.getItem("user")).role == "driver" &&
-                r.driver.emp_id ==
-                  JSON.parse(sessionStorage.getItem("user")).emp_id) ? (
+                    {/* {r.id} */}
+                    <p style={{ fontSize: "24px" }}>
+                      {moment(r.date, "YYYYMMDD").format("DD-MM-YYYY")} &nbsp;{" "}
+                      {r.startTime}
+                    </p>
+                    <p style={{ fontSize: "24px" }}>
+                      {" "}
+                      คุณมี{" "}
+                      {
+                        r.bookings.filter((d) => d.status != "finish").length
+                      }{" "}
+                      สถานที่{" "}
+                    </p>
+
+                    {i++ == 0 ? (
+                      r.status == "free" ? (
+                        <a
+                          className="button5"
+                          onClick={() => tripsControl(r)}
+                          style={{
+                            backgroundColor: "rgba(47,133,90,1)",
+                            position: "absolute",
+                            top: "50%",
+                            right: "2vw",
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          เริ่มงาน
+                        </a>
+                      ) : !r.newStatus ? (
+                        <a
+                          className="button5"
+                          onClick={() => viewJob(r)}
+                          style={{
+                            backgroundColor: "#FFF",
+                            color: "black",
+                            position: "absolute",
+                            top: "50%",
+                            right: "2vw",
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          รายละเอียดงาน
+                        </a>
+                      ) : (
+                        <a
+                          className="button5"
+                          onClick={() => tripsControl(r)}
+                          style={{
+                            backgroundColor: "#FFF",
+                            color: "black",
+                            position: "absolute",
+                            top: "50%",
+                            right: "2vw",
+                            transform: "translateY(-50%)",
+                          }}
+                        >
+                          สิ้นสุดงาน
+                        </a>
+                      )
+                    ) : // : <img src={r.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
+                    null}
+                  </Card>
+                ) : null
+              // ))
+            )}
+        </div>
+        <div className="driverCalendar">
+          <h2
+            style={{
+              position: "relative",
+              padding: "12px",
+              textAlign: "center",
+              color: "#FFF",
+            }}
+          >
+            <img
+              src={backward}
+              onClick={() => {
+                setDate(moment(date).subtract(1, "months"));
+              }}
+              style={{ cursor: "pointer" }}
+            />{" "}
+            &nbsp; {date.locale("th").format("MMMM YYYY")} &nbsp;{" "}
+            <img
+              src={forward}
+              onClick={() => {
+                setDate(moment(date).add(1, "months"));
+              }}
+              style={{ cursor: "pointer" }}
+            />
+          </h2>
+          <Calendar
+            popup
+            culture="ar-AE"
+            localizer={localizer}
+            events={tripDetail.events}
+            startAccessor="start"
+            endAccessor="end"
+            date={date._d}
+            style={{ height: "500px", color: "black" }}
+            views={{ month: true }}
+            toolbar={false}
+            onNavigate={date._d}
+            onSelectEvent={(event) => handleCalendarEvent(event.data)}
+          />
+        </div>
+
+        <Modal visible={tripModal.open} onCancel={handleTripCancel} footer={[]}>
+          {tripModal.open && tripModal.updateTrip.status == "free" ? (
+            <div style={{ textAlign: "center", margin: "0 12%" }}>
+              <h2>Enter mileage before start job</h2>
+              <h2>โปรดกรอกเลขไมล์ก่อนเริ่มงาน</h2>
+              <InputNumber
+                ref={valueRef}
+                style={{ marginTop: "8px", width: "100%" }}
+                defaultValue={tripModal.updateTrip.car.mileage}
+                placeholder="ไมล์เริ่มต้น (Start Mileage)"
+              />
+              <button
+                onClick={() => sendStartMile(tripModal.updateTrip)}
+                style={{
+                  cursor: "pointer",
+                  color: "#FFF",
+                  fontFamily: "Bai Jamjuree",
+                  marginTop: "24px",
+                  padding: "8px 24px",
+                  background: "#309E48",
+                  borderRadius: "10px",
+                  border: 0,
+                  fontSize: "1.3em",
+                }}
+              >
+                Start
+              </button>
+            </div>
+          ) : (
+            <div style={{ textAlign: "center", margin: "0 12%" }}>
+              <h2>Enter mileage before end job</h2>
+              <h2>โปรดกรอกเลขไมล์ก่อนปิดงาน</h2>
+              <h4>
+                เลขไมล์เริ่มต้น (Start Mileage) :{" "}
+                {tripModal.updateTrip && tripModal.updateTrip.startMileage}{" "}
+              </h4>
+              <InputNumber
+                ref={valueEndRef}
+                style={{ marginTop: "8px", width: "100%" }}
+                placeholder="ไมล์สิ้นสุด (End Mileage)"
+              />
+              <button
+                onClick={() => sendStartMile(tripModal.updateTrip)}
+                style={{
+                  cursor: "pointer",
+                  color: "#FFF",
+                  fontFamily: "Bai Jamjuree",
+                  marginTop: "24px",
+                  padding: "8px 24px",
+                  background: "#FB0000",
+                  borderRadius: "10px",
+                  border: 0,
+                  fontSize: "1.3em",
+                }}
+              >
+                End
+              </button>
+            </div>
+          )}
+        </Modal>
+        <Modal visible={modalData.open} onCancel={handleCancel} footer={[]}>
+          {modalData.open ? (
+            <>
+              <div
+                style={{
+                  position: "relative",
+                  fontFamily: "Bai Jamjuree",
+                  fontStyle: "normal",
+                  fontWeight: "500",
+                  fontSize: "16px",
+                  lineHeight: "140%",
+                }}
+              >
+                <div>
+                  <img src={car} />{" "}
+                  <span style={{ position: "relative", paddingLeft: "2%" }}>
+                    {" "}
+                    {modalData.tripData.driver &&
+                      modalData.tripData.driver.name +
+                        " " +
+                        modalData.tripData.driver.lastname}{" "}
+                    &nbsp; {modalData.tripData.carType}{" "}
+                  </span>
+                </div>
+                <div style={{ paddingTop: "4%" }}>
+                  {modalData.tripData.needDriver ? (
+                    <img style={{}} src={statusdriver2} />
+                  ) : (
+                    <img src={noDriver} />
+                  )}{" "}
+                  <span style={{ position: "relative", paddingLeft: "5%" }}>
+                    {" "}
+                    คนขับรถ{" "}
+                  </span>
+                </div>
+
+                <div style={{ paddingTop: "4%" }}>
+                  <img src={calender} />{" "}
+                  <span style={{ position: "relative", paddingLeft: "4%" }}>
+                    {" "}
+                    {moment(modalData.tripData.date, "YYYYMMDD").format(
+                      "DD-MM-YYYY"
+                    )}{" "}
+                    {modalData.tripData.startTime} -{" "}
+                    {modalData.tripData.endTime}
+                  </span>
+                </div>
+                <div style={{ paddingTop: "4%" }}>
+                  <img src={location} />{" "}
+                  <span style={{ position: "relative", paddingLeft: "4%" }}>
+                    {" "}
+                    {JSON.parse(modalData.tripData.destination) +
+                      " "} &nbsp;{" "}
+                    {JSON.parse(modalData.tripData.destProvince) + " "}
+                  </span>
+                </div>
+                <div style={{ paddingTop: "4%" }}>
+                  <img src={people} />{" "}
+                  <span style={{ position: "relative", paddingLeft: "4%" }}>
+                    {" "}
+                    จำนวน {modalData.tripData.totalPassenger} คน
+                  </span>
+                </div>
+                <div style={{ paddingTop: "4%" }}>
+                  <img src={hrmessage} />{" "}
+                  <span style={{ position: "relative", paddingLeft: "4%" }}>
+                    {" "}
+                    {modalData.tripData.reason}
+                  </span>
+                </div>
+
+                <div style={{ paddingTop: "4%" }}>
+                  <p>รายละเอียดอื่น ๆ : {modalData.tripData.comment || "-"}</p>
+                </div>
+              </div>
+            </>
+          ) : null}
+        </Modal>
+      </Fragment>
+      // </div>
+    );
+  } else if (page === 2) {
+    return (
+      <React.Fragment>
+        <div style={{ margin: "0px 24px" }}>
+          <div
+            style={{
+              color: "#1d366d",
+
+              marginTop: "24px",
+            }}
+          >
+            <ArrowLeftOutlined
+              style={{ cursor: "pointer", fontSize: "24px" }}
+              onClick={() => {
+                setPage(1);
+              }}
+            />{" "}
+          </div>
+          {dataBooking.bookings
+            ? dataBooking.bookings.bookings.map((res) => (
                 <Card
-                  key={r.id}
+                  key={res.id}
                   style={
-                    r.status == "trip"
+                    res.status == "trip"
                       ? {
-                          marginTop: "8px",
+                          marginTop: "12px",
                           backgroundColor: "#FEAB20",
                           color: "#FFF",
                           borderRadius: "10px",
@@ -390,8 +690,20 @@ const Trips = () => {
                           fontSize: "16px",
                           fontFamily: "Bai Jamjuree",
                         }
+                      : res.status == "finish"
+                      ? {
+                          marginTop: "12px",
+                          color: "#FFF",
+                          position: "relative",
+                          borderRadius: "10px",
+                          boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
+                          width: "100%",
+                          background: "#309E48",
+                          fontSize: "16px",
+                          fontFamily: "Bai Jamjuree",
+                        }
                       : {
-                          marginTop: "8px",
+                          marginTop: "12px",
                           position: "relative",
                           borderRadius: "10px",
                           boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
@@ -403,339 +715,50 @@ const Trips = () => {
                   }
                 >
                   {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
-
-                  {/* {r.id} */}
-                  <p style={{ fontSize: "24px" }}>
-                    {moment(r.date, "YYYYMMDD").format("DD-MM-YYYY")} &nbsp;{" "}
-                    {r.startTime}
+                  <p>
+                    {JSON.parse(res.destination) + " "} &nbsp;{" "}
+                    {JSON.parse(res.destProvince) + " "}
                   </p>
-                  <p style={{ fontSize: "24px" }}>
-                    {" "}
-                    คุณมี{" "}
-                    {r.bookings.filter((d) => d.status != "finish").length}{" "}
-                    สถานที่{" "}
+                  <p>
+                    {res.startTime} - {res.endTime}
                   </p>
 
-                  {i++ == 0 ? (
-                    r.status == "free" ? (
-                      <a
-                        className="button5"
-                        onClick={() => tripsControl(r)}
-                        style={{
-                          backgroundColor: "rgba(47,133,90,1)",
-                          position: "absolute",
-                          top: "50%",
-                          right: "2vw",
-                          transform: "translateY(-50%)",
-                        }}
-                      >
-                        เริ่มงาน
-                      </a>
-                    ) : !r.newStatus ? (
-                      <a
-                        className="button5"
-                        onClick={() => viewJob(r)}
-                        style={{
-                          backgroundColor: "#FFF",
-                          color: "black",
-                          position: "absolute",
-                          top: "50%",
-                          right: "2vw",
-                          transform: "translateY(-50%)",
-                        }}
-                      >
-                        รายละเอียดงาน
-                      </a>
-                    ) : (
-                      <a
-                        className="button5"
-                        onClick={() => tripsControl(r)}
-                        style={{
-                          backgroundColor: "#FFF",
-                          color: "black",
-                          position: "absolute",
-                          top: "50%",
-                          right: "2vw",
-                          transform: "translateY(-50%)",
-                        }}
-                      >
-                        สิ้นสุดงาน
-                      </a>
-                    )
-                  ) : // : <img src={r.status == 'free' ? playIconDisable : pause} style={{ position: 'absolute', top: '50%', right: '2vw', transform: 'translateY(-50%)' }} />}
-                  null}
+                  {res.status == "free" ? (
+                    <img
+                      onClick={() =>
+                        editBooking(res, "trip", dataBooking.bookings)
+                      }
+                      src={playIcon}
+                      style={{
+                        cursor: "pointer",
+                        position: "absolute",
+                        top: "50%",
+                        right: "2vw",
+                        transform: "translateY(-50%)",
+                      }}
+                    />
+                  ) : res.status == "trip" ? (
+                    <img
+                      src={pause}
+                      onClick={() =>
+                        editBooking(res, "finish", dataBooking.bookings)
+                      }
+                      style={{
+                        cursor: "pointer",
+                        position: "absolute",
+                        top: "50%",
+                        right: "2vw",
+                        transform: "translateY(-50%)",
+                      }}
+                    />
+                  ) : null}
                 </Card>
-              ) : null
-            // ))
-          )}
-      </div>
-      <div className="driverCalendar">
-        <h2
-          style={{
-            position: "relative",
-            padding: "12px",
-            textAlign: "center",
-            color: "#FFF",
-          }}
-        >
-          <img
-            src={backward}
-            onClick={() => {
-              setDate(moment(date).subtract(1, "months"));
-            }}
-            style={{ cursor: "pointer" }}
-          />{" "}
-          &nbsp; {date.locale("th").format("MMMM YYYY")} &nbsp;{" "}
-          <img
-            src={forward}
-            onClick={() => {
-              setDate(moment(date).add(1, "months"));
-            }}
-            style={{ cursor: "pointer" }}
-          />
-        </h2>
-        <Calendar
-          popup
-          culture="ar-AE"
-          localizer={localizer}
-          events={tripDetail.events}
-          startAccessor="start"
-          endAccessor="end"
-          date={date._d}
-          style={{ height: "500px", color: "black" }}
-          views={{ month: true }}
-          toolbar={false}
-          onNavigate={date._d}
-          onSelectEvent={(event) => handleCalendarEvent(event.data)}
-        />
-      </div>
-      <Modal
-        visible={dataBooking.open}
-        onCancel={handleDataBookingCancel}
-        footer={[]}
-      >
-        {dataBooking.bookings
-          ? dataBooking.bookings.bookings.map((res) => (
-              <Card
-                key={res.id}
-                style={
-                  res.status == "trip"
-                    ? {
-                        marginTop: "12px",
-                        backgroundColor: "#FEAB20",
-                        color: "#FFF",
-                        borderRadius: "10px",
-                        position: "relative",
-                        boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
-                        width: "100%",
-                        fontSize: "16px",
-                        fontFamily: "Bai Jamjuree",
-                      }
-                    : res.status == "finish"
-                    ? {
-                        marginTop: "12px",
-                        color: "#FFF",
-                        position: "relative",
-                        borderRadius: "10px",
-                        boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
-                        width: "100%",
-                        background: "#309E48",
-                        fontSize: "16px",
-                        fontFamily: "Bai Jamjuree",
-                      }
-                    : {
-                        marginTop: "12px",
-                        position: "relative",
-                        borderRadius: "10px",
-                        boxShadow: " 0px 4px 4px rgba(0, 0, 0, 0.05)",
-                        width: "100%",
-                        background: "#FFF",
-                        fontSize: "16px",
-                        fontFamily: "Bai Jamjuree",
-                      }
-                }
-              >
-                {/* {r.driver ? r.driver.emp_id : '-'} <br /> {r.user ? r.user : '-'} */}
-                <p>
-                  {JSON.parse(res.destination) + " "} &nbsp;{" "}
-                  {JSON.parse(res.destProvince) + " "}
-                </p>
-                <p>
-                  {res.startTime} - {res.endTime}
-                </p>
-
-                {res.status == "free" ? (
-                  <img
-                    onClick={() =>
-                      editBooking(res, "trip", dataBooking.bookings)
-                    }
-                    src={playIcon}
-                    style={{
-                      cursor: "pointer",
-                      position: "absolute",
-                      top: "50%",
-                      right: "2vw",
-                      transform: "translateY(-50%)",
-                    }}
-                  />
-                ) : res.status == "trip" ? (
-                  <img
-                    src={pause}
-                    onClick={() =>
-                      editBooking(res, "finish", dataBooking.bookings)
-                    }
-                    style={{
-                      cursor: "pointer",
-                      position: "absolute",
-                      top: "50%",
-                      right: "2vw",
-                      transform: "translateY(-50%)",
-                    }}
-                  />
-                ) : null}
-              </Card>
-            ))
-          : null}
-      </Modal>
-      <Modal visible={tripModal.open} onCancel={handleTripCancel} footer={[]}>
-        {tripModal.open && tripModal.updateTrip.status == "free" ? (
-          <div style={{ textAlign: "center", margin: "0 12%" }}>
-            <h2>Enter mileage before start job</h2>
-            <h2>โปรดกรอกเลขไมล์ก่อนเริ่มงาน</h2>
-            <InputNumber
-              ref={valueRef}
-              style={{ marginTop: "8px", width: "100%" }}
-              defaultValue={tripModal.updateTrip.car.mileage}
-              placeholder="ไมล์เริ่มต้น (Start Mileage)"
-            />
-            <button
-              onClick={() => sendStartMile(tripModal.updateTrip)}
-              style={{
-                cursor: "pointer",
-                color: "#FFF",
-                fontFamily: "Bai Jamjuree",
-                marginTop: "24px",
-                padding: "8px 24px",
-                background: "#309E48",
-                borderRadius: "10px",
-                border: 0,
-                fontSize: "1.3em",
-              }}
-            >
-              Start
-            </button>
-          </div>
-        ) : (
-          <div style={{ textAlign: "center", margin: "0 12%" }}>
-            <h2>Enter mileage before end job</h2>
-            <h2>โปรดกรอกเลขไมล์ก่อนปิดงาน</h2>
-            <h4>
-              เลขไมล์เริ่มต้น (Start Mileage) :{" "}
-              {tripModal.updateTrip && tripModal.updateTrip.startMileage}{" "}
-            </h4>
-            <InputNumber
-              ref={valueEndRef}
-              style={{ marginTop: "8px", width: "100%" }}
-              placeholder="ไมล์สิ้นสุด (End Mileage)"
-            />
-            <button
-              onClick={() => sendStartMile(tripModal.updateTrip)}
-              style={{
-                cursor: "pointer",
-                color: "#FFF",
-                fontFamily: "Bai Jamjuree",
-                marginTop: "24px",
-                padding: "8px 24px",
-                background: "#FB0000",
-                borderRadius: "10px",
-                border: 0,
-                fontSize: "1.3em",
-              }}
-            >
-              End
-            </button>
-          </div>
-        )}
-      </Modal>
-      <Modal visible={modalData.open} onCancel={handleCancel} footer={[]}>
-        {modalData.open ? (
-          <>
-            <div
-              style={{
-                position: "relative",
-                fontFamily: "Bai Jamjuree",
-                fontStyle: "normal",
-                fontWeight: "500",
-                fontSize: "16px",
-                lineHeight: "140%",
-              }}
-            >
-              <div>
-                <img src={car} />{" "}
-                <span style={{ position: "relative", paddingLeft: "2%" }}>
-                  {" "}
-                  {modalData.tripData.driver &&
-                    modalData.tripData.driver.name +
-                      " " +
-                      modalData.tripData.driver.lastname}{" "}
-                  &nbsp; {modalData.tripData.carType}{" "}
-                </span>
-              </div>
-              <div style={{ paddingTop: "4%" }}>
-                {modalData.tripData.needDriver ? (
-                  <img style={{}} src={statusdriver2} />
-                ) : (
-                  <img src={noDriver} />
-                )}{" "}
-                <span style={{ position: "relative", paddingLeft: "5%" }}>
-                  {" "}
-                  คนขับรถ{" "}
-                </span>
-              </div>
-
-              <div style={{ paddingTop: "4%" }}>
-                <img src={calender} />{" "}
-                <span style={{ position: "relative", paddingLeft: "4%" }}>
-                  {" "}
-                  {moment(modalData.tripData.date, "YYYYMMDD").format(
-                    "DD-MM-YYYY"
-                  )}{" "}
-                  {modalData.tripData.startTime} - {modalData.tripData.endTime}
-                </span>
-              </div>
-              <div style={{ paddingTop: "4%" }}>
-                <img src={location} />{" "}
-                <span style={{ position: "relative", paddingLeft: "4%" }}>
-                  {" "}
-                  {JSON.parse(modalData.tripData.destination) + " "} &nbsp;{" "}
-                  {JSON.parse(modalData.tripData.destProvince) + " "}
-                </span>
-              </div>
-              <div style={{ paddingTop: "4%" }}>
-                <img src={people} />{" "}
-                <span style={{ position: "relative", paddingLeft: "4%" }}>
-                  {" "}
-                  จำนวน {modalData.tripData.totalPassenger} คน
-                </span>
-              </div>
-              <div style={{ paddingTop: "4%" }}>
-                <img src={hrmessage} />{" "}
-                <span style={{ position: "relative", paddingLeft: "4%" }}>
-                  {" "}
-                  {modalData.tripData.reason}
-                </span>
-              </div>
-
-              <div style={{ paddingTop: "4%" }}>
-                <p>รายละเอียดอื่น ๆ : {modalData.tripData.comment || "-"}</p>
-              </div>
-            </div>
-          </>
-        ) : null}
-      </Modal>
-    </Fragment>
-    // </div>
-  );
+              ))
+            : null}
+        </div>
+      </React.Fragment>
+    );
+  }
 };
 
 export default Trips;

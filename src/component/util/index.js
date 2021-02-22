@@ -146,7 +146,8 @@ export const getTrips = async () => {
 };
 export const getTripsSinceDate = async (date) => {
   return await axios
-    .get(`${tripApi}?date_gte=${date}&status_ne=off`)
+    .get(`${tripApi}?date=${date}&status_ne=off`)
+    // .get(`${tripApi}?date_gte=${date}&status_ne=off`)
     .then((res) => {
       return _.sortBy(res.data, [
         function (o) {
