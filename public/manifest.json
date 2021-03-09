@@ -10,6 +10,7 @@
   "theme_color": "#1d366d",
    "homepage_url": "http://localhost:3000/carbooking",
   "prefer_related_applications": false,
+  "orientation": "portrait",
   "icons": [
     {
       "src": "logo144.png",

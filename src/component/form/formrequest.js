@@ -200,7 +200,7 @@ const FromRequest = () => {
     // console.log(department);
     await getManagerEmail(formDropdown.company, department).then((res) => {
       // console.log(res[0].Approver)
-      console.log(res);
+      // console.log(res);
       if (res[0]) {
         let managerName = res[0].Approver.split("|");
         setFormDropdown({
