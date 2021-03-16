@@ -1399,7 +1399,7 @@ const General = () => {
     for (const data in drivers) {
       driverArr.push(
         <Option key={i} value={drivers[data].id}>
-          {drivers[data].name}
+          {drivers[data].name} {drivers[data].lastname}
         </Option>
       );
       i++;
