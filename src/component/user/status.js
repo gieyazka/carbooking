@@ -265,7 +265,7 @@ const Trips = () => {
                             ? "รอการอนุมัติจาก Hr"
                             : modalData.tripData.hrApprove === true
                             ? modalData.tripData.dispatch
-                              ? "จับคู่รถแล้ว"
+                              ? `จับคู่รถแล้ว ทะเบียนรถคือ ${modalData.tripData.car.plateNo} ${modalData.tripData.car.province}`
                               : "รอจับคู่รถ"
                             : "Hr ไม่อนุมัตื"
                         }
