@@ -6,7 +6,11 @@
 #bwheel {
   width: 100vw;
 }
-
+.horizonScroll {
+  /* overflow-x: scroll; */
+  overflow-y: scroll;
+  /* white-space: nowrap; */
+}
 .ant-menu.ant-menu-dark,
 .ant-menu-dark .ant-menu-sub,
 .ant-menu.ant-menu-dark .ant-menu-sub {
