@@ -831,6 +831,8 @@ const Car = () => {
     let oldData = [];
     let i = 0;
     for (const d of data) {
+      // console.log(d);
+      // return;
       if (d.destCarId == carData.id) {
         // select Car
         if (d.needDriver == true) {
@@ -1053,7 +1055,7 @@ const Car = () => {
           }
         >
           <img
-            src="/carbooking/static/media/wheel.7bfd793f.gif"
+            src="static/media/wheel.7bfd793f.gif"
             style={{
               borderRadius: "10px",
               top: "50%",
@@ -1080,7 +1082,7 @@ const Car = () => {
                       : "#FFF",
                     borderColor: "#000000",
                     borderRadius: "20px",
-                    border: "1px solid rgba(0, 0, 0, .38)",
+                    border: "1px solid rgba(255, 255, 255, 0)",
                   }}
                 >
                   <Row gutter={{ xs: 16, sm: 16 }}>
@@ -1106,7 +1108,10 @@ const Car = () => {
                       </div>
                     </Col>
                     <Col xs={{ span: 24 }} sm={{ span: 5 }} aling="left">
-                      <div style={{ position: "relative" }}>
+                      <div
+                        className="centerDriver"
+                        style={{ position: "relative" }}
+                      >
                         <p className="carfont text"> คนขับรถ </p>
                         <span className="carfont">
                           <Select
@@ -1505,7 +1510,7 @@ const General = () => {
     return result;
   };
   const onDragEnd = (result) => {
-    // console.log(result);
+    console.log(result);
     const { source, destination } = result;
     if (!destination) {
       return;

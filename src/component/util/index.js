@@ -715,6 +715,7 @@ export const sendEmail = async (booking) => {
   var urlencoded = new URLSearchParams();
   urlencoded.append("form", "CarBookingSystem@aapico.com");
   urlencoded.append("formdetail", "Carbooking System");
+  // urlencoded.append("to", "pokkate.e@aapico.com");
   urlencoded.append("to", booking.data.managerEmail);
   urlencoded.append("cc", "");
   urlencoded.append("bcc ", "");
@@ -787,7 +788,7 @@ export const sendEmail = async (booking) => {
               <tr>
                 <td span='2' align="center" style="border-radius: 8px;" bgcolor="">
             <!--[if mso]>
-    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/#/approve/${
       booking.data.id
     }/${
       booking.data.uuid
@@ -796,7 +797,7 @@ export const sendEmail = async (booking) => {
       <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Reject</center>
     </v:roundrect>
     <![endif]-->
-    <a href="${path}/carbooking/#/approve/${booking.data.id}/${
+    <a href="${path}/#/approve/${booking.data.id}/${
       booking.data.uuid
     }/reject"  target="_blank"
     style="background-color:#E53E3E;border:1px solid #E53E3E;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Reject</a>
@@ -804,7 +805,7 @@ export const sendEmail = async (booking) => {
              
         
       <!--[if mso]>
-    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/carbooking/#/approve/${
+    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${path}/#/approve/${
       booking.data.id
     }/${
       booking.data.uuid
@@ -812,7 +813,7 @@ export const sendEmail = async (booking) => {
     <w:anchorlock/>
     <center style="color:#ffffff;font-family:sans-serif;font-size:13px;font-weight:bold;">Approve</center>
     </v:roundrect>
-    <![endif]--><a href="${path}/carbooking/#/approve/${booking.data.id}/${
+    <![endif]--><a href="${path}/#/approve/${booking.data.id}/${
       booking.data.uuid
     }/approve" target="_blank"
     style="background-color:#1D366D;border:1px solid #1D366D;border-radius:4px;color:#ffffff;display:inline-block;font-family:sans-serif;font-size:13px;font-weight:bold;line-height:40px;text-align:center;text-decoration:none;width:100px;-webkit-text-size-adjust:none;mso-hide:all;">Approve</a>
@@ -868,7 +869,7 @@ export const sendFirebaseNotification = async (driverId) => {
           notification: {
             title: "Car Booking System",
             body: "คุณมีงานใหม่",
-            icon: "/carbooking/logo.png",
+            icon: "/logo.png",
           },
         },
         to: res[0].token,

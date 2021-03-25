@@ -22,7 +22,7 @@ function App() {
   return (
     <div style={{ fontFamily: "Bai Jamjuree" }}>
       <DataContextProvider>
-        <Router basename={"/carbooking/#/"}>
+        <Router basename={"/#/"}>
           <Switch>
             <Route exact path="/" component={Login} />
 

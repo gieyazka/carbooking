@@ -475,7 +475,7 @@ const Hrapprove = () => {
           }
         >
           <img
-            src="/carbooking/static/media/wheel.7bfd793f.gif"
+            src="/static/media/wheel.7bfd793f.gif"
             style={{
               borderRadius: "10px",
               top: "50%",
@@ -1212,7 +1212,7 @@ const Hrapprove = () => {
           }
         >
           <img
-            src="/carbooking/static/media/wheel.7bfd793f.gif"
+            src="/static/media/wheel.7bfd793f.gif"
             style={{
               borderRadius: "10px",
               top: "50%",

@@ -328,7 +328,7 @@ const ManageDriver = () => {
     return (
         <div>
             < div style={!loading ? { display: 'none' } : { zIndex: 99999, height: 'calc(100vh + 64px)', width: '100%', textAlign: 'center', position: 'fixed', top: '0', display: 'block', backgroundColor: 'rgba(0, 0, 0, 0.5)' }}>
-                <img src="/carbooking/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
+                <img src="/static/media/wheel.7bfd793f.gif" style={{ borderRadius: '10px', top: '50%', left: '50%', position: 'absolute', transform: 'translate(-50%, -50%)' }} />
             </div >
 
             {/* <img src={state.carData.img  || null} /> */}

@@ -13,13 +13,23 @@ import GifLoader from "react-gif-loader";
 const Approve = () => {
   const [loading, setloading] = useState(true);
   let { id, uuid, type } = useParams();
-  console.log(type);
 
   React.useEffect(async () => {
     if (type == "approve") {
       await checkBookingById(id).then(async (res) => {
-        // console.log(res.data[0], uuid);
-        if (res.data[0].uuid == uuid) {
+        if (res.data[0].managerApprove !== null) {
+          Swal.fire({
+            icon: "warning",
+            title: "Warning",
+            text: `คำขอของ ${res.data[0].name} ${
+              res.data[0].managerApprove === true ? "approve" : "reject"
+            } แล้ว`,
+            showConfirmButton: false,
+            // timer: 1500
+          }).then(() => {
+            return null;
+          });
+        } else if (res.data[0].uuid == uuid) {
           await updateManangerStatus(id)
             .then((d) => {
               // console.log(d.data);
@@ -51,7 +61,19 @@ const Approve = () => {
     } else if (type == "reject") {
       await checkBookingById(id).then(async (res) => {
         // console.log(res.data[0], uuid);
-        if (res.data[0].uuid == uuid) {
+        if (res.data[0].managerApprove !== null) {
+          Swal.fire({
+            icon: "warning",
+            title: "Warning",
+            text: `คำขอของ ${res.data[0].name} ${
+              res.data[0].managerApprove === true ? "approve" : "reject"
+            } แล้ว`,
+            showConfirmButton: false,
+            // timer: 1500
+          }).then(() => {
+            return null;
+          });
+        } else if (res.data[0].uuid == uuid) {
           await rejectManangerStatus(id)
             .then((d) => {
               // console.log(d.data);
@@ -104,7 +126,7 @@ const Approve = () => {
         }
       >
         <img
-          src="/carbooking/static/media/wheel.7bfd793f.gif"
+          src="/static/media/wheel.7bfd793f.gif"
           style={{
             borderRadius: "10px",
             top: "50%",

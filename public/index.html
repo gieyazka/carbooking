@@ -45,7 +45,7 @@
 
   if ('serviceWorker' in navigator) {
   
-    navigator.serviceWorker.register('/carbooking/firebase-messaging-sw.js',{scope : '.'})
+    navigator.serviceWorker.register('/firebase-messaging-sw.js',{scope : '.'})
       .then(function (reg) {
         messaging.useServiceWorker(reg);
         messaging

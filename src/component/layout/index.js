@@ -525,7 +525,7 @@ const AppLayout = () => {
               }}
             >
               <Menu.Item key="requestform" icon={<FormOutlined />}>
-                Request form
+                Form
                 <Link to="/user" />
               </Menu.Item>
               {(loginState && loginState.role == "dispatcher") ||
@@ -765,9 +765,10 @@ const AppLayout = () => {
                       fontSize: "13px",
                       position: "absolute",
                       top: "50%",
+                      left: "30%",
                     }}
                   >
-                    Request&nbsp;form
+                    Form
                   </p>
                 </div>
               </Link>

@@ -30,7 +30,7 @@ messaging.setBackgroundMessageHandler(function (payload) {
 self.addEventListener("notificationclick", function (event) {
   console.log(event);
   event.notification.close();
-  clients.openWindow("https://gieyazka.github.io/carbooking/#/login");
+  // clients.openWindow("https://gieyazka.github.io/carbooking/#/login");
 });
 
 self.addEventListener("fetch", () => null);
