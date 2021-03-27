@@ -1249,7 +1249,6 @@ const Car = () => {
                                           />
                                           {/* {d.needDriver ? 1 : 0} */}
                                           <p>
-                                            {d.id}
                                             {(d &&
                                               JSON.parse(d.destination) +
                                                 " ") ||
