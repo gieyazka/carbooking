@@ -777,6 +777,7 @@ const Car = () => {
     height: isDraggingOver ? "auto" : "100%",
   });
   const clearData = (data, id) => {
+    console.log(data, id);
     let clearTrips = state.booking;
     let dispatched = state.bookingDispatched;
     let trips = data;
@@ -784,21 +785,29 @@ const Car = () => {
     console.log(dispatched);
     data.map((d, index) => {
       if (id == d.destCarId && d.car) {
-        console.log(d.id);
+        console.log(d.dispatch);
         // console.log(dispatched.findIndex(data => data.id == d.id))
-        let [removed] = dispatched.splice(
-          dispatched.findIndex((data) => data.id == d.id),
-          1
-        );
-        delete d.destCarId;
-        d.car = removed.carId;
-        // console.log(oldCar);
-        dispatched.push(d);
+
+        if (d.dispatch === false) {
+          let [removed] = dispatched.splice(
+            dispatched.findIndex((data) => data.id == d.id),
+            1
+          );
+          delete d.destCarId;
+          // console.log(d);
+          clearTrips.push(d);
+        } else {
+          let [removed] = dispatched.splice(
+            dispatched.findIndex((data) => data.id == d.id),
+            1
+          );
+          delete d.destCarId;
+          d.car = removed.carId;
+          // console.log(oldCar);
+          dispatched.push(d);
+        }
       } else if (id == d.destCarId) {
         console.log(d);
-        delete d.destCarId;
-        // console.log(d);
-        clearTrips.push(d);
       }
     });
     console.log(dispatched);
@@ -1166,7 +1175,7 @@ const Car = () => {
                             {/* <div> */}
                             {state.bookingDispatched &&
                               state.bookingDispatched.map((d, i) =>
-                                (d.car && d.car.id == res.id) ||
+                                (d.car && !d.destCarId && d.car.id == res.id) ||
                                 (d.destCarId &&
                                   !d.bookings &&
                                   res.id == d.destCarId) ? (
@@ -1240,6 +1249,7 @@ const Car = () => {
                                           />
                                           {/* {d.needDriver ? 1 : 0} */}
                                           <p>
+                                            {d.id}
                                             {(d &&
                                               JSON.parse(d.destination) +
                                                 " ") ||
@@ -1266,75 +1276,6 @@ const Car = () => {
                                   </Draggable>
                                 ) : null
                               )}
-                            {/* {state.trips.map((data, index) =>
-                                                    data.bookings ? data.bookings.map((d, i) =>
-
-
-                                                        data.car && data.car.id == res.id || data.destCarId && !data.bookings && res.id == data.destCarId
-                                                            ?
-                                                            <Draggable
-                                                                key={data.id}
-                                                                draggableId={`trip${data.id}`}
-                                                                index={index}
-                                                            // isDragDisabled={!data.destCarId}
-                                                            >
-                                                                {provided => (
-                                                                    <div
-                                                                        // style={{ width: '100%' }}
-                                                                        ref={provided.innerRef}
-                                                                        {...provided.draggableProps}
-                                                                    >
-                                                                        <div className='font' style={data.status == null || data.status != 'trip' ?
-                                                                            { position: 'relative', width: '100%', background: '#5A67D8', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                            : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                        } >
-                                                                            {index}
-
-                                                                            <img src={dragicon} {...provided.dragHandleProps} style={{ color: 'red', position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-
-                                                                            <p>{d && (JSON.parse(d.destination) + " ") || (JSON.parse(d.destination) + " ")} {d && (JSON.parse(d.destProvince) + " ") || (JSON.parse(d.destProvince) + " ")}</p>
-                                                                            <p>{d && d.startTime || data.startTime} - {d && d.endTime || data.endTime}</p>
-                                                                        </div>
-
-
-                                                                    </div>
-                                                                )}
-                                                            </Draggable>
-                                                            : null
-                                                    ) :
-                                                        data.car && data.car.id == res.id
-                                                            || data.destCarId && res.id == data.destCarId
-                                                            ?
-                                                            <Draggable
-                                                                key={data.id}
-                                                                draggableId={`trip${data.id}`}
-                                                                index={index}
-                                                            // isDragDisabled={!data.destCarId}
-                                                            >
-                                                                {provided => (
-                                                                    <div
-                                                                        // style={{ width: '100%' }}
-                                                                        ref={provided.innerRef}
-
-                                                                        {...provided.draggableProps}
-                                                                    >
-                                                                        <div className='font' style={data.status == null || data.status != 'trip' ?
-                                                                            { position: 'relative', width: '100%', background: '#1D366D', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                            : { position: 'relative', width: '100%', background: '#FEAB20', borderRadius: '10px', zIndex: '2', width: '100%', paddingTop: '8%', paddingLeft: '8%', paddingBottom: '2%', marginTop: '4%' }
-                                                                        } >
-
-                                                                            <img src={dragicon} {...provided.dragHandleProps} style={{ position: 'absolute', top: '50%', right: '0%', transform: 'translate(-50%,-50%)' }} />
-
-                                                                            <p>{data.booking && (JSON.parse(data.booking.destination) + " ") || (JSON.parse(data.destination) + " ")} {data.booking && (JSON.parse(data.booking.destProvince) + " ") || (JSON.parse(data.destProvince) + " ")}</p>
-                                                                            <p>{data && data.startTime || data.startTime} - {data && data.endTime || data.endTime}</p>
-                                                                        </div>
-
-
-                                                                    </div>
-                                                                )}
-                                                            </Draggable>
-                                                            : null
-                                                )}  */}
                           </div>
                         </Col>
                         <Col xs={{ span: 24 }} sm={{ span: 5 }}>
@@ -1472,7 +1413,9 @@ const Car = () => {
                                 {/* <div> */}
                                 {state.bookingDispatched &&
                                   state.bookingDispatched.map((d, i) =>
-                                    (d.car && d.car.id == res.id) ||
+                                    (d.car &&
+                                      !d.destCarId &&
+                                      d.car.id == res.id) ||
                                     (d.destCarId &&
                                       !d.bookings &&
                                       res.id == d.destCarId) ? (
