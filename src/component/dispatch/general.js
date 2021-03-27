@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { DataContext } from "../store/store";
+import SelectCar from "./selectCar.js";
 import moment from "moment";
 import {
   Form,
@@ -1033,216 +1034,239 @@ const Car = () => {
   } else {
     var device = "vertical";
   }
+  const [filterCar, setFilterCar] = useState(null);
+  const handleChangeSelect = (value) => {
+    if (!value[0]) {
+      setFilterCar(null);
+    } else {
+      setFilterCar(value);
+    }
+  };
 
   return (
-    <div className="horizonScroll">
-      <div className="ScrollCar">
-        <div
-          style={
-            !loading
-              ? { display: "none" }
-              : {
-                  zIndex: 99999,
-                  height: "calc(100vh + 64px)",
-                  width: "100%",
-                  left: 0,
-                  textAlign: "center",
-                  position: "fixed",
-                  top: "0",
-                  display: "block",
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                }
-          }
-        >
-          <img
-            src="static/media/wheel.7bfd793f.gif"
-            style={{
-              borderRadius: "10px",
-              top: "50%",
-              left: "50%",
-              position: "absolute",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
-        </div>
-        {state.cars.map((res, index) => (
-          <Droppable key={index} droppableId={`${res.id}`}>
-            {(provided, snapshot) => (
-              <div
-                className="dragRequest"
-                ref={provided.innerRef}
+    <>
+      <div
+        style={{
+          marginLeft: "auto",
+          marginRight: "4px",
+          marginBottom: 8,
+          width: "50%",
+        }}
+      >
+        <SelectCar parentCallback={handleChangeSelect} car={state.cars} />
+      </div>
+      <div className="horizonScroll">
+        <div className="ScrollCar">
+          <div
+            style={
+              !loading
+                ? { display: "none" }
+                : {
+                    zIndex: 99999,
+                    height: "calc(100vh + 64px)",
+                    width: "100%",
+                    left: 0,
+                    textAlign: "center",
+                    position: "fixed",
+                    top: "0",
+                    display: "block",
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
+                  }
+            }
+          >
+            <img
+              src="static/media/wheel.7bfd793f.gif"
+              style={{
+                borderRadius: "10px",
+                top: "50%",
+                left: "50%",
+                position: "absolute",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          </div>
+          {state.cars.map((res, index) =>
+            filterCar === null ? (
+              <Droppable key={index} droppableId={`${res.id}`}>
+                {(provided, snapshot) => (
+                  <div
+                    className="dragRequest"
+                    ref={provided.innerRef}
 
-                // style={getListStyle(snapshot.isDraggingOver)}
-              >
-                <Card
-                  className="cardMobile"
-                  style={{
-                    backgroundColor: snapshot.isDraggingOver
-                      ? "lightblue"
-                      : "#FFF",
-                    borderColor: "#000000",
-                    borderRadius: "20px",
-                    border: "1px solid rgba(255, 255, 255, 0)",
-                  }}
-                >
-                  <Row gutter={{ xs: 16, sm: 16 }}>
-                    <Col xs={{ span: 24 }} sm={{ span: 8 }} align="center">
-                      <div className="carPos">
-                        <img
-                          src={
-                            res.picture[res.picture.length - 1]
-                              ? `https://ess.aapico.com${
-                                  res.picture[res.picture.length - 1].url
-                                }`
-                              : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
-                          }
-                          className="imgCar"
-                        />
-                        <p
-                          className="carfont"
-                          style={{ paddingTop: "2px", height: "100%" }}
-                        >
-                          {" "}
-                          {res.plateNo} {res.province}
-                        </p>
-                      </div>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 5 }} aling="left">
-                      <div
-                        className="centerDriver"
-                        style={{ position: "relative" }}
-                      >
-                        <p className="carfont text"> คนขับรถ </p>
-                        <span className="carfont">
-                          <Select
-                            key={res.id}
-                            size="large"
-                            style={{
-                              fontFamily: "Bai Jamjuree",
-                              width: "100%",
-                            }}
-                            className="selectWidth"
-                            onChange={(e) => {
-                              changeDriver(e, res.id, res);
-                            }}
-                            showSearch
-                            placeholder="เลือกคนขับรถ"
-                            optionFilterProp="children"
-                            filterOption={(input, option) =>
-                              option.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            }
+                    // style={getListStyle(snapshot.isDraggingOver)}
+                  >
+                    <Card
+                      className="cardMobile"
+                      style={{
+                        backgroundColor: snapshot.isDraggingOver
+                          ? "lightblue"
+                          : "#FFF",
+                        borderColor: "#000000",
+                        borderRadius: "20px",
+                        border: "1px solid rgba(255, 255, 255, 0)",
+                      }}
+                    >
+                      <Row gutter={{ xs: 16, sm: 16 }}>
+                        <Col xs={{ span: 24 }} sm={{ span: 8 }} align="center">
+                          <div className="carPos">
+                            <img
+                              src={
+                                res.picture[res.picture.length - 1]
+                                  ? `https://ess.aapico.com${
+                                      res.picture[res.picture.length - 1].url
+                                    }`
+                                  : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
+                              }
+                              className="imgCar"
+                            />
+                            <p
+                              className="carfont"
+                              style={{ paddingTop: "2px", height: "100%" }}
+                            >
+                              {" "}
+                              {res.plateNo} {res.province}
+                            </p>
+                          </div>
+                        </Col>
+                        <Col xs={{ span: 24 }} sm={{ span: 5 }} aling="left">
+                          <div
+                            className="centerDriver"
+                            style={{ position: "relative" }}
                           >
-                            {state.drivers}
-                          </Select>
-                        </span>
-                      </div>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 6 }}>
-                      {/* <div className='Scroll' style={{overflowY : 'scroll' ,height : '300px'}}> */}
-                      <div className="Scroll">
-                        {/* <div> */}
-                        {state.bookingDispatched &&
-                          state.bookingDispatched.map((d, i) =>
-                            (d.car && d.car.id == res.id) ||
-                            (d.destCarId &&
-                              !d.bookings &&
-                              res.id == d.destCarId) ? (
-                              <Draggable
-                                key={d.id}
-                                draggableId={`trip${d.id}`}
-                                index={i}
-                                // isDragDisabled={!d.destCarId}
+                            <p className="carfont text"> คนขับรถ </p>
+                            <span className="carfont">
+                              <Select
+                                key={res.id}
+                                size="large"
+                                style={{
+                                  fontFamily: "Bai Jamjuree",
+                                  width: "100%",
+                                }}
+                                className="selectWidth"
+                                onChange={(e) => {
+                                  changeDriver(e, res.id, res);
+                                }}
+                                showSearch
+                                placeholder="เลือกคนขับรถ"
+                                optionFilterProp="children"
+                                filterOption={(input, option) =>
+                                  option.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                }
                               >
-                                {(provided) => (
-                                  <div
-                                    // style={{ width: '100%' }}
-                                    ref={provided.innerRef}
-                                    {...provided.draggableProps}
+                                {state.drivers}
+                              </Select>
+                            </span>
+                          </div>
+                        </Col>
+                        <Col xs={{ span: 24 }} sm={{ span: 6 }}>
+                          {/* <div className='Scroll' style={{overflowY : 'scroll' ,height : '300px'}}> */}
+                          <div className="Scroll">
+                            {/* <div> */}
+                            {state.bookingDispatched &&
+                              state.bookingDispatched.map((d, i) =>
+                                (d.car && d.car.id == res.id) ||
+                                (d.destCarId &&
+                                  !d.bookings &&
+                                  res.id == d.destCarId) ? (
+                                  <Draggable
+                                    key={d.id}
+                                    draggableId={`trip${d.id}`}
+                                    index={i}
+                                    // isDragDisabled={!d.destCarId}
                                   >
-                                    <div
-                                      className="font"
-                                      style={
-                                        d.status == null ||
-                                        (d.status != "trip" &&
-                                          d.dispatch == true)
-                                          ? {
-                                              position: "relative",
-                                              width: "100%",
-                                              background: "#5A67D8",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              width: "100%",
-                                              paddingTop: "8%",
-                                              paddingLeft: "8%",
-                                              paddingBottom: "2%",
-                                              marginTop: "4%",
-                                            }
-                                          : d.status == "trip"
-                                          ? {
-                                              position: "relative",
-                                              width: "100%",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              width: "100%",
-                                              paddingTop: "8%",
-                                              paddingLeft: "8%",
-                                              paddingBottom: "2%",
-                                              marginTop: "4%",
-                                            }
-                                          : {
-                                              position: "relative",
-                                              width: "100%",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              width: "100%",
-                                              paddingTop: "8%",
-                                              paddingLeft: "8%",
-                                              paddingBottom: "2%",
-                                              marginTop: "4%",
-                                            }
-                                      }
-                                    >
-                                      <img
-                                        src={dragicon}
-                                        {...provided.dragHandleProps}
-                                        style={{
-                                          color: "red",
-                                          position: "absolute",
-                                          top: "50%",
-                                          right: "0%",
-                                          transform: "translate(-50%,-50%)",
-                                        }}
-                                      />
-                                      {/* {d.needDriver ? 1 : 0} */}
-                                      <p>
-                                        {(d &&
-                                          JSON.parse(d.destination) + " ") ||
-                                          JSON.parse(d.destination) + " "}{" "}
-                                        {(d &&
-                                          JSON.parse(d.destProvince) + " ") ||
-                                          JSON.parse(d.destProvince) + " "}
-                                      </p>
-                                      <p>
-                                        {d &&
-                                          moment(d.date, "YYYYMMDD").format(
-                                            "DD-MM-YYYY"
-                                          )}{" "}
-                                      </p>
-                                      <p>
-                                        {(d && d.startTime) || d.startTime} -{" "}
-                                        {(d && d.endTime) || d.endTime}
-                                      </p>
-                                    </div>
-                                  </div>
-                                )}
-                              </Draggable>
-                            ) : null
-                          )}
-                        {/* {state.trips.map((data, index) =>
+                                    {(provided) => (
+                                      <div
+                                        // style={{ width: '100%' }}
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                      >
+                                        <div
+                                          className="font"
+                                          style={
+                                            d.status == null ||
+                                            (d.status != "trip" &&
+                                              d.dispatch == true)
+                                              ? {
+                                                  position: "relative",
+                                                  width: "100%",
+                                                  background: "#5A67D8",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  width: "100%",
+                                                  paddingTop: "8%",
+                                                  paddingLeft: "8%",
+                                                  paddingBottom: "2%",
+                                                  marginTop: "4%",
+                                                }
+                                              : d.status == "trip"
+                                              ? {
+                                                  position: "relative",
+                                                  width: "100%",
+                                                  background: "#FEAB20",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  width: "100%",
+                                                  paddingTop: "8%",
+                                                  paddingLeft: "8%",
+                                                  paddingBottom: "2%",
+                                                  marginTop: "4%",
+                                                }
+                                              : {
+                                                  position: "relative",
+                                                  width: "100%",
+                                                  background: "#1D366D",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  width: "100%",
+                                                  paddingTop: "8%",
+                                                  paddingLeft: "8%",
+                                                  paddingBottom: "2%",
+                                                  marginTop: "4%",
+                                                }
+                                          }
+                                        >
+                                          <img
+                                            src={dragicon}
+                                            {...provided.dragHandleProps}
+                                            style={{
+                                              color: "red",
+                                              position: "absolute",
+                                              top: "50%",
+                                              right: "0%",
+                                              transform: "translate(-50%,-50%)",
+                                            }}
+                                          />
+                                          {/* {d.needDriver ? 1 : 0} */}
+                                          <p>
+                                            {(d &&
+                                              JSON.parse(d.destination) +
+                                                " ") ||
+                                              JSON.parse(d.destination) +
+                                                " "}{" "}
+                                            {(d &&
+                                              JSON.parse(d.destProvince) +
+                                                " ") ||
+                                              JSON.parse(d.destProvince) + " "}
+                                          </p>
+                                          <p>
+                                            {d &&
+                                              moment(d.date, "YYYYMMDD").format(
+                                                "DD-MM-YYYY"
+                                              )}{" "}
+                                          </p>
+                                          <p>
+                                            {(d && d.startTime) || d.startTime}{" "}
+                                            - {(d && d.endTime) || d.endTime}
+                                          </p>
+                                        </div>
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                ) : null
+                              )}
+                            {/* {state.trips.map((data, index) =>
                                                     data.bookings ? data.bookings.map((d, i) =>
 
 
@@ -1311,54 +1335,303 @@ const Car = () => {
                                                             </Draggable>
                                                             : null
                                                 )}  */}
-                      </div>
-                    </Col>
-                    <Col xs={{ span: 24 }} sm={{ span: 5 }}>
-                      <div className="posGeneralBtn">
-                        <Button
-                          className="fontGeneralBtn"
-                          onClick={() => {
-                            saveDispatch(state.bookingDispatched, res);
-                          }}
-                          style={{
-                            fontSize: "1em",
-                            backgroundColor: "#2CC84D",
-                            color: "#FFF",
-                          }}
-                        >
-                          {" "}
-                          <img src={senddatabtn} />
-                          <span style={{ paddingLeft: "8px" }}>มอบหมายงาน</span>
-                        </Button>
-                        <Button
-                          className="fontGeneralBtn"
-                          onClick={(e) =>
-                            clearData(state.bookingDispatched, res.id)
-                          }
-                          style={{
-                            fontSize: "1em",
-                            backgroundColor: "#40A9FF",
-                            color: "#FFF",
-                          }}
-                        >
-                          <img src={cleardata} />
-                          <span style={{ paddingLeft: "8px" }}>เคลียค่า</span>
-                        </Button>
-                      </div>
-                    </Col>
-                  </Row>
-                </Card>
+                          </div>
+                        </Col>
+                        <Col xs={{ span: 24 }} sm={{ span: 5 }}>
+                          <div className="posGeneralBtn">
+                            <Button
+                              className="fontGeneralBtn"
+                              onClick={() => {
+                                saveDispatch(state.bookingDispatched, res);
+                              }}
+                              style={{
+                                fontSize: "1em",
+                                backgroundColor: "#2CC84D",
+                                color: "#FFF",
+                              }}
+                            >
+                              {" "}
+                              <img src={senddatabtn} />
+                              <span style={{ paddingLeft: "8px" }}>
+                                มอบหมายงาน
+                              </span>
+                            </Button>
+                            <Button
+                              className="fontGeneralBtn"
+                              onClick={(e) =>
+                                clearData(state.bookingDispatched, res.id)
+                              }
+                              style={{
+                                fontSize: "1em",
+                                backgroundColor: "#40A9FF",
+                                color: "#FFF",
+                              }}
+                            >
+                              <img src={cleardata} />
+                              <span style={{ paddingLeft: "8px" }}>
+                                เคลียค่า
+                              </span>
+                            </Button>
+                          </div>
+                        </Col>
+                      </Row>
+                    </Card>
 
-                {provided.placeholder}
-              </div>
-            )}
-          </Droppable>
-        ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            ) : (
+              filterCar.map((d) =>
+                d === res.plateNo ? (
+                  <Droppable key={index} droppableId={`${res.id}`}>
+                    {(provided, snapshot) => (
+                      <div
+                        className="dragRequest"
+                        ref={provided.innerRef}
+
+                        // style={getListStyle(snapshot.isDraggingOver)}
+                      >
+                        <Card
+                          className="cardMobile"
+                          style={{
+                            backgroundColor: snapshot.isDraggingOver
+                              ? "lightblue"
+                              : "#FFF",
+                            borderColor: "#000000",
+                            borderRadius: "20px",
+                            border: "1px solid rgba(255, 255, 255, 0)",
+                          }}
+                        >
+                          <Row gutter={{ xs: 16, sm: 16 }}>
+                            <Col
+                              xs={{ span: 24 }}
+                              sm={{ span: 8 }}
+                              align="center"
+                            >
+                              <div className="carPos">
+                                <img
+                                  src={
+                                    res.picture[res.picture.length - 1]
+                                      ? `https://ess.aapico.com${
+                                          res.picture[res.picture.length - 1]
+                                            .url
+                                        }`
+                                      : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
+                                  }
+                                  className="imgCar"
+                                />
+                                <p
+                                  className="carfont"
+                                  style={{ paddingTop: "2px", height: "100%" }}
+                                >
+                                  {" "}
+                                  {res.plateNo} {res.province}
+                                </p>
+                              </div>
+                            </Col>
+                            <Col
+                              xs={{ span: 24 }}
+                              sm={{ span: 5 }}
+                              aling="left"
+                            >
+                              <div
+                                className="centerDriver"
+                                style={{ position: "relative" }}
+                              >
+                                <p className="carfont text"> คนขับรถ </p>
+                                <span className="carfont">
+                                  <Select
+                                    key={res.id}
+                                    size="large"
+                                    style={{
+                                      fontFamily: "Bai Jamjuree",
+                                      width: "100%",
+                                    }}
+                                    className="selectWidth"
+                                    onChange={(e) => {
+                                      changeDriver(e, res.id, res);
+                                    }}
+                                    showSearch
+                                    placeholder="เลือกคนขับรถ"
+                                    optionFilterProp="children"
+                                    filterOption={(input, option) =>
+                                      option.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                    }
+                                  >
+                                    {state.drivers}
+                                  </Select>
+                                </span>
+                              </div>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 6 }}>
+                              {/* <div className='Scroll' style={{overflowY : 'scroll' ,height : '300px'}}> */}
+                              <div className="Scroll">
+                                {/* <div> */}
+                                {state.bookingDispatched &&
+                                  state.bookingDispatched.map((d, i) =>
+                                    (d.car && d.car.id == res.id) ||
+                                    (d.destCarId &&
+                                      !d.bookings &&
+                                      res.id == d.destCarId) ? (
+                                      <Draggable
+                                        key={d.id}
+                                        draggableId={`trip${d.id}`}
+                                        index={i}
+                                        // isDragDisabled={!d.destCarId}
+                                      >
+                                        {(provided) => (
+                                          <div
+                                            // style={{ width: '100%' }}
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                          >
+                                            <div
+                                              className="font"
+                                              style={
+                                                d.status == null ||
+                                                (d.status != "trip" &&
+                                                  d.dispatch == true)
+                                                  ? {
+                                                      position: "relative",
+                                                      width: "100%",
+                                                      background: "#5A67D8",
+                                                      borderRadius: "10px",
+                                                      zIndex: "2",
+                                                      width: "100%",
+                                                      paddingTop: "8%",
+                                                      paddingLeft: "8%",
+                                                      paddingBottom: "2%",
+                                                      marginTop: "4%",
+                                                    }
+                                                  : d.status == "trip"
+                                                  ? {
+                                                      position: "relative",
+                                                      width: "100%",
+                                                      background: "#FEAB20",
+                                                      borderRadius: "10px",
+                                                      zIndex: "2",
+                                                      width: "100%",
+                                                      paddingTop: "8%",
+                                                      paddingLeft: "8%",
+                                                      paddingBottom: "2%",
+                                                      marginTop: "4%",
+                                                    }
+                                                  : {
+                                                      position: "relative",
+                                                      width: "100%",
+                                                      background: "#1D366D",
+                                                      borderRadius: "10px",
+                                                      zIndex: "2",
+                                                      width: "100%",
+                                                      paddingTop: "8%",
+                                                      paddingLeft: "8%",
+                                                      paddingBottom: "2%",
+                                                      marginTop: "4%",
+                                                    }
+                                              }
+                                            >
+                                              <img
+                                                src={dragicon}
+                                                {...provided.dragHandleProps}
+                                                style={{
+                                                  color: "red",
+                                                  position: "absolute",
+                                                  top: "50%",
+                                                  right: "0%",
+                                                  transform:
+                                                    "translate(-50%,-50%)",
+                                                }}
+                                              />
+                                              {/* {d.needDriver ? 1 : 0} */}
+                                              <p>
+                                                {(d &&
+                                                  JSON.parse(d.destination) +
+                                                    " ") ||
+                                                  JSON.parse(d.destination) +
+                                                    " "}{" "}
+                                                {(d &&
+                                                  JSON.parse(d.destProvince) +
+                                                    " ") ||
+                                                  JSON.parse(d.destProvince) +
+                                                    " "}
+                                              </p>
+                                              <p>
+                                                {d &&
+                                                  moment(
+                                                    d.date,
+                                                    "YYYYMMDD"
+                                                  ).format("DD-MM-YYYY")}{" "}
+                                              </p>
+                                              <p>
+                                                {(d && d.startTime) ||
+                                                  d.startTime}{" "}
+                                                -{" "}
+                                                {(d && d.endTime) || d.endTime}
+                                              </p>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </Draggable>
+                                    ) : null
+                                  )}
+                              </div>
+                            </Col>
+                            <Col xs={{ span: 24 }} sm={{ span: 5 }}>
+                              <div className="posGeneralBtn">
+                                <Button
+                                  className="fontGeneralBtn"
+                                  onClick={() => {
+                                    saveDispatch(state.bookingDispatched, res);
+                                  }}
+                                  style={{
+                                    fontSize: "1em",
+                                    backgroundColor: "#2CC84D",
+                                    color: "#FFF",
+                                  }}
+                                >
+                                  {" "}
+                                  <img src={senddatabtn} />
+                                  <span style={{ paddingLeft: "8px" }}>
+                                    มอบหมายงาน
+                                  </span>
+                                </Button>
+                                <Button
+                                  className="fontGeneralBtn"
+                                  onClick={(e) =>
+                                    clearData(state.bookingDispatched, res.id)
+                                  }
+                                  style={{
+                                    fontSize: "1em",
+                                    backgroundColor: "#40A9FF",
+                                    color: "#FFF",
+                                  }}
+                                >
+                                  <img src={cleardata} />
+                                  <span style={{ paddingLeft: "8px" }}>
+                                    เคลียค่า
+                                  </span>
+                                </Button>
+                              </div>
+                            </Col>
+                          </Row>
+                        </Card>
+
+                        {provided.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                ) : null
+              )
+            )
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
-
 const General = () => {
   let filterCompany = null;
   let filterType = null;
