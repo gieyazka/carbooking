@@ -185,6 +185,22 @@ export const checkTrips = async (date, carId) => {
       return res.data;
     });
 };
+export const checkOldTrips = async (date, carId, bookingId) => {
+  return await axios
+    .get(
+      `${tripApi}?date=${date}&car=${carId}&bookings=${bookingId}&status_ne=finish&status_ne=off`
+    )
+    .then((res) => {
+      return res.data;
+    });
+};
+export const checkTripsById = async (id) => {
+  return await axios
+    .get(`${tripApi}?id=${id}&status_ne=finish&status_ne=off`)
+    .then((res) => {
+      return res.data;
+    });
+};
 export const checkDriver = async (date, driverId) => {
   return await axios
     .get(
@@ -193,6 +209,15 @@ export const checkDriver = async (date, driverId) => {
     .then((res) => {
       return res.data;
     });
+};
+
+export const setTripOff = async (tripId) => {
+  await axios.delete(`${tripApi}/${tripId}`);
+};
+export const updateOldTrip = async (tripId, newBookId) => {
+  await axios.put(`${tripApi}/${tripId}`, {
+    bookings: newBookId,
+  });
 };
 
 export const addOldTrip = async (bookingId, tripData, bookId) => {
@@ -208,15 +233,12 @@ export const addOldTrip = async (bookingId, tripData, bookId) => {
       }
       console.log(res[0].status);
       if (!newBookId[0]) {
-        await axios.put(`${tripApi}/${res[0].id}`, {
-          bookings: newBookId,
-          status: "off",
-        });
+        await setTripOff(res[0].id);
       } else {
         await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId });
         // await axios.put(`${tripApi}/${res[0].id}`, { bookings: newBookId, status: res[0].status })
       }
-    } // update source trup
+    } // update source trip
     await axios
       .put(`${tripApi}/${tripData.id}`, {
         bookings: bookingId,

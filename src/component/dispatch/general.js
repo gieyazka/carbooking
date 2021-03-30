@@ -52,7 +52,10 @@ import {
   addOldTrip,
   addNewTrip,
   checkTrips,
+  checkOldTrips,
+  setTripOff,
   getBooking,
+  updateOldTrip,
   getBookingDispatch,
   sendEmail,
   getCars,
@@ -777,15 +780,15 @@ const Car = () => {
     height: isDraggingOver ? "auto" : "100%",
   });
   const clearData = (data, id) => {
-    console.log(data, id);
+    // console.log(data, id);
     let clearTrips = state.booking;
     let dispatched = state.bookingDispatched;
     let trips = data;
 
-    console.log(dispatched);
+    // console.log(dispatched);
     data.map((d, index) => {
       if (id == d.destCarId && d.car) {
-        console.log(d.dispatch);
+        // console.log(d.dispatch);
         // console.log(dispatched.findIndex(data => data.id == d.id))
 
         if (d.dispatch === false) {
@@ -807,10 +810,16 @@ const Car = () => {
           dispatched.push(d);
         }
       } else if (id == d.destCarId) {
-        console.log(d);
+        let [removed] = dispatched.splice(
+          dispatched.findIndex((data) => data.id == d.id),
+          1
+        );
+        delete d.destCarId;
+        // console.log(d);
+        clearTrips.push(d);
       }
     });
-    console.log(dispatched);
+    // console.log(dispatched);
     const filter = data.filter((res) => res.destCarId != id);
     setState({
       ...state,
@@ -841,7 +850,6 @@ const Car = () => {
     let oldData = [];
     let i = 0;
     for (const d of data) {
-      // console.log(d);
       // return;
       if (d.destCarId == carData.id) {
         // select Car
@@ -866,7 +874,6 @@ const Car = () => {
           }
         }
         await checkTrips(d.date, carData.id).then(async (res) => {
-          console.log(res);
           if (res[0] == null) {
             if (d.needDriver == true) {
               if (driverName == null) {
@@ -887,7 +894,30 @@ const Car = () => {
                 bookings: d.id,
                 date: d.date,
               };
-              await addNewTrip(newData, d).then(() => {
+              await addNewTrip(newData, d).then(async (r) => {
+                // console.log(r);
+                if (d.carId) {
+                  //movetrip
+                  await checkOldTrips(d.date, d.carId.id, d.id).then(
+                    async (oldTripData) => {
+                      let newOldTrip = Array.from(oldTripData);
+                      let oldTrip = oldTripData[0].bookings.filter(
+                        (r) => r.id != d.id
+                      );
+
+                      if (!oldTrip[0]) {
+                        //Delete Trip
+                        await setTripOff(oldTripData[0].id);
+                      } else {
+                        // console.log(917);
+                        newOldTrip[0].bookings = oldTrip;
+                        console.log(oldTripData, oldTrip);
+                        await updateOldTrip(oldTripData[0].id, oldTrip);
+                      }
+                      // console.log(newOldTrip);
+                    }
+                  );
+                }
                 setloading(false);
                 Swal.fire({
                   icon: "success",
@@ -897,6 +927,7 @@ const Car = () => {
                 });
               });
             } else {
+              // console.log(900);
               const newData = {
                 status: "free",
                 user: d.emp_id,
@@ -904,7 +935,32 @@ const Car = () => {
                 bookings: d.id,
                 date: d.date,
               };
-              await addNewTrip(newData, d).then(() => {
+              // console.log(d);
+              await addNewTrip(newData, d).then(async () => {
+                if (d.carId) {
+                  //movetrip
+                  await checkOldTrips(d.date, d.carId.id, d.id).then(
+                    async (oldTripData) => {
+                      // console.log(oldTripData);
+                      let newOldTrip = Array.from(oldTripData);
+                      let oldTrip = oldTripData[0].bookings.filter(
+                        (r) => r.id != d.id
+                      );
+
+                      // console.log(oldTrip);
+                      if (!oldTrip[0]) {
+                        //Delete Trip
+                        await setTripOff(oldTripData[0].id);
+                      } else {
+                        // console.log(959);
+                        newOldTrip[0].bookings = oldTrip;
+                        console.log(oldTripData, oldTrip);
+                        await updateOldTrip(oldTripData[0].id, oldTrip);
+                      }
+                      // console.log(newOldTrip);
+                    }
+                  );
+                }
                 setloading(false);
                 Swal.fire({
                   icon: "success",
@@ -916,27 +972,19 @@ const Car = () => {
             }
           } else {
             // edit car
-            console.log(406);
+            // console.log(406);
             let typeTrip = "add";
             const filter = res.filter((d) => !d.user);
-            const filter1 = filter.filter((d) => d.status != "finish");
-            console.log(filter1);
-            console.log(d.needDriver);
+            const filter2 = filter.filter((d) => !d.status != "off");
+            const filter1 = filter2.filter((d) => d.status != "finish");
+            // console.log(filter1);
+            // console.log(d.needDriver);
             if (filter1[0] && d.needDriver == true) {
               typeTrip = "edit";
             }
-            // for (const r of res) {
-            //     console.log(r.status, r.user, r.driver);
-            //     if (!d.needDriver) {
-            //         typeTrip = 'add'
-            //         break;
-            //     } else if (r.status == 'finish' && !r.driver && r.user) {
-            //         console.log(413)
-            //     }
-            // console.log(typeTrip);
 
-            // }
             if (typeTrip == "edit") {
+              // console.log(941);
               for (const bookingTrip of res[0].bookings) {
                 bookingId.push(bookingTrip.id);
               }
@@ -972,7 +1020,31 @@ const Car = () => {
                   bookings: d.id,
                   date: d.date,
                 };
-                await addNewTrip(newData, d).then(() => {
+                await addNewTrip(newData, d).then(async () => {
+                  if (d.carId) {
+                    //movetrip
+                    await checkOldTrips(d.date, d.carId.id, d.id).then(
+                      async (oldTripData) => {
+                        // console.log(oldTripData);
+                        let newOldTrip = Array.from(oldTripData);
+                        let oldTrip = oldTripData[0].bookings.filter(
+                          (r) => r.id != d.id
+                        );
+
+                        // console.log(oldTrip);
+                        if (!oldTrip[0]) {
+                          //Delete Trip
+                          await setTripOff(oldTripData[0].id);
+                        } else {
+                          // console.log(959);
+                          newOldTrip[0].bookings = oldTrip;
+                          // console.log(oldTripData, oldTrip);
+                          await updateOldTrip(oldTripData[0].id, oldTrip);
+                        }
+                        // console.log(newOldTrip);
+                      }
+                    );
+                  }
                   setloading(false);
                   Swal.fire({
                     icon: "success",
@@ -989,7 +1061,31 @@ const Car = () => {
                   bookings: d.id,
                   date: d.date,
                 };
-                await addNewTrip(newData, d).then(() => {
+                await addNewTrip(newData, d).then(async () => {
+                  if (d.carId) {
+                    //movetrip
+                    await checkOldTrips(d.date, d.carId.id, d.id).then(
+                      async (oldTripData) => {
+                        // console.log(oldTripData);
+                        let newOldTrip = Array.from(oldTripData);
+                        let oldTrip = oldTripData[0].bookings.filter(
+                          (r) => r.id != d.id
+                        );
+
+                        // console.log(oldTrip);
+                        if (!oldTrip[0]) {
+                          //Delete Trip
+                          await setTripOff(oldTripData[0].id);
+                        } else {
+                          console.log(959);
+                          newOldTrip[0].bookings = oldTrip;
+                          console.log(oldTripData, oldTrip);
+                          await updateOldTrip(oldTripData[0].id, oldTrip);
+                        }
+                        // console.log(newOldTrip);
+                      }
+                    );
+                  }
                   setloading(false);
                   Swal.fire({
                     icon: "success",
@@ -1679,7 +1775,7 @@ const General = () => {
           result["trips"] = sourceClone;
         }
       } else {
-        console.log(885);
+        // console.log(885);
         destination.map((res) => {
           if (res.id == removed.id) {
             removed.destCarId = droppableDestination.droppableId;
@@ -1709,7 +1805,7 @@ const General = () => {
       result["trips"] = sourceClone;
       result["droppableId1"] = destClone;
     }
-    console.log(result);
+    // console.log(result);
     return { result, removed };
     // }
   };
@@ -1725,7 +1821,7 @@ const General = () => {
     return result;
   };
   const onDragEnd = (result) => {
-    console.log(result);
+    // console.log(result);
     const { source, destination } = result;
     if (!destination) {
       return;
