@@ -17,7 +17,7 @@ import statusdriver2 from "../asset/statusdriver2.png";
 import noDriver from "../asset/noDriver.png";
 import clearIcon from "../asset/clearIcon.png";
 import { getCars, getBookingDispatched } from "../util/index";
-import {Button as SearchButton} from "@material-ui/core";
+import { Button as SearchButton } from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 
 const App = () => {
@@ -25,6 +25,7 @@ const App = () => {
   const [sidebar, setSidebar] = useState(true);
   const [modal, setModal] = useState({ open: false });
   const wrapperRef = useRef(null);
+  const DatewrapperRef = useRef(null);
 
   // const [test2, setTest2] = useState([0, 1, 2])
 
@@ -100,6 +101,7 @@ const App = () => {
 
   const [count, setCount] = useState(0);
   const filterBooking = (dataFilter, filter) => {
+    console.log(dataFilter, filter);
     // console.log(dataFilter, filter);
     let countBooking = 0;
     if (filter == "Company") {
@@ -181,6 +183,7 @@ const App = () => {
     const countTrip = async () => {
       const cars = await getCars();
       const test = await getBookingDispatched().then((res) => {
+
         setCount(res.length);
         setState({ ...state, BookingDispatched: res, cars: cars });
       });
@@ -191,6 +194,7 @@ const App = () => {
     await countTrip();
   }, []);
   const clearBtn = () => {
+    console.log(DatewrapperRef.current);
     setFilter({
       search: false,
       company: null,
@@ -203,6 +207,7 @@ const App = () => {
     let countData = 0;
   };
   useOutsideAlerter(wrapperRef);
+  // useOutsideAlerter(DatewrapperRef);
   const { Option } = Select;
   const { innerHeight, innerWidth } = window;
   // console.log(innerHeight,innerWidth);
@@ -705,11 +710,11 @@ const App = () => {
                         <DatePicker
                           onChange={(e) =>
                             filterBooking(
-                              (filterCompany = moment(e).format("DD-MM-YYYY")),
+                              (filterCompany = moment(e).format("YYYYMMDD")),
                               (filterType = "Date")
                             )
                           }
-                          ref={wrapperRef}
+                          ref={DatewrapperRef}
                           style={{ width: "100%" }}
                         />
                       </Col>
@@ -805,9 +810,8 @@ const App = () => {
                         <img
                           src={
                             res.picture[res.picture.length - 1]
-                              ? `https://ess.aapico.com${
-                                  res.picture[res.picture.length - 1].url
-                                }`
+                              ? `https://ess.aapico.com${res.picture[res.picture.length - 1].url
+                              }`
                               : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
                           }
                           className="imgCar"
@@ -833,20 +837,25 @@ const App = () => {
                         {/* <div> */}
 
                         <Row>
+
                           {state.BookingDispatched
                             ? state.BookingDispatched.map((d, index) =>
-                                (d.car &&
-                                  d.car.id == res.id &&
-                                  d.company == filerBooking.company &&
-                                  d.car.id == res.id) ||
+                              (filerBooking.search === true && d.car &&
+                                d.car.id == res.id &&
+                                d.company == filerBooking.company &&
+                                d.car.id == res.id) ||
                                 (d.department == filerBooking.department &&
                                   d.car.id == res.id) ||
                                 (d.reason == filerBooking.reason &&
                                   d.car.id == res.id) ||
                                 (d.date == filerBooking.date &&
                                   d.car.id == res.id) ||
-                                (d.destProvince == filerBooking.province &&
-                                  d.car.id == res.id) ? (
+                                d.car.id == res.id &&
+                                (JSON.parse(d.destProvince).filter(data => data === filerBooking.province).length > 0)
+                                ? (
+                                  // (d.destProvince == filerBooking.province &&
+                                  //   d.car.id == res.id) ? (
+
                                   <Col
                                     xs={{ span: 24 }}
                                     sm={{ span: 6 }}
@@ -861,29 +870,38 @@ const App = () => {
                                       style={
                                         d.status == "free"
                                           ? {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            background: "#1D366D",
+                                            borderRadius: "10px",
+                                            zIndex: "2",
+                                            padding: "8px 12px 6px 12px",
+                                            marginTop: "4%",
+                                          }
                                           : {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            background: "#FEAB20",
+                                            borderRadius: "10px",
+                                            zIndex: "2",
+                                            padding: "8px 12px 6px 12px",
+                                            marginTop: "4%",
+                                          }
                                       }
                                     >
                                       <p>
-                                        {JSON.parse(d.destination) + " "}{" "}
-                                        {JSON.parse(d.destProvince) + " "}
-                                      </p>
+
+                                        {JSON.parse(d.destProvince).map((data, i) => {
+                                          return (
+                                            <span>
+
+                                              {JSON.parse(d.destination)[i] + " " +
+                                                JSON.parse(d.destProvince)[i] + " "}
+                                              <br />
+                                            </span>
+                                          )
+                                        }
+                                        )}     </p>
                                       <p>
                                         {d.startTime} - {d.endTime}
                                       </p>
@@ -905,28 +923,38 @@ const App = () => {
                                       style={
                                         d.status == "free"
                                           ? {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            background: "#1D366D",
+                                            borderRadius: "10px",
+                                            zIndex: "2",
+                                            padding: "8px 12px 6px 12px",
+                                            marginTop: "4%",
+                                          }
                                           : {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            background: "#FEAB20",
+                                            borderRadius: "10px",
+                                            zIndex: "2",
+                                            padding: "8px 12px 6px 12px",
+                                            marginTop: "4%",
+                                          }
                                       }
                                     >
                                       <p>
-                                        {JSON.parse(d.destination) + " "}{" "}
-                                        {JSON.parse(d.destProvince) + " "}
+                                        {JSON.parse(d.destProvince).map((data, i) => {
+                                          return (
+                                            <span>
+                                              {JSON.parse(d.destination)[i] + " " +
+                                                JSON.parse(d.destProvince)[i] + " "}
+                                              <br />
+                                            </span>
+                                          )
+                                        }
+                                        )}
+                                        {/* {JSON.parse(d.destination) + " "}{" "}
+                                      {JSON.parse(d.destProvince).map(a => a)} */}
                                       </p>
                                       <p>
                                         {d.startTime} - {d.endTime}
@@ -934,13 +962,13 @@ const App = () => {
                                     </div>
                                   </Col>
                                 ) : (d.car &&
-                                    d.car.id == res.id &&
-                                    filerBooking.company == "Other" &&
-                                    d.company != "AH" &&
-                                    d.company != "AHP" &&
-                                    d.company != "AHT" &&
-                                    d.company != "AITS" &&
-                                    d.company != "ASICO") ||
+                                  d.car.id == res.id &&
+                                  filerBooking.company == "Other" &&
+                                  d.company != "AH" &&
+                                  d.company != "AHP" &&
+                                  d.company != "AHT" &&
+                                  d.company != "AITS" &&
+                                  d.company != "ASICO") ||
                                   (filerBooking.department == "Other" &&
                                     d.car.id == res.id &&
                                     d.department != "Production" &&
@@ -961,7 +989,7 @@ const App = () => {
                                   (filerBooking.reason == "Other" &&
                                     d.car.id == res.id &&
                                     d.reason !=
-                                      "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
+                                    "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
                                     d.reason != "ส่งของ" &&
                                     d.reason != "รับ - ส่งแขก" &&
                                     d.reason != "ติดต่อลูกค้า") ? (
@@ -979,28 +1007,36 @@ const App = () => {
                                       style={
                                         d.status == "free"
                                           ? {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            background: "#1D366D",
+                                            borderRadius: "10px",
+                                            zIndex: "2",
+                                            padding: "8px 12px 6px 12px",
+                                            marginTop: "4%",
+                                          }
                                           : {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
+                                            cursor: "pointer",
+                                            position: "relative",
+                                            background: "#FEAB20",
+                                            borderRadius: "10px",
+                                            zIndex: "2",
+                                            padding: "8px 12px 6px 12px",
+                                            marginTop: "4%",
+                                          }
                                       }
                                     >
                                       <p>
-                                        {JSON.parse(d.destination) + " "}{" "}
-                                        {JSON.parse(d.destProvince) + " "}
+                                        {JSON.parse(d.destProvince).map((data, i) => {
+                                          return (
+                                            <span>
+                                              {JSON.parse(d.destination)[i] + " " +
+                                                JSON.parse(d.destProvince)[i] + " "}
+                                              <br />
+                                            </span>
+                                          )
+                                        }
+                                        )}
                                       </p>
                                       <p>
                                         {d.startTime} - {d.endTime}
@@ -1008,7 +1044,7 @@ const App = () => {
                                     </div>
                                   </Col>
                                 ) : null
-                              )
+                            )
                             : null}
                         </Row>
                       </div>
@@ -1035,9 +1071,8 @@ const App = () => {
                             <img
                               src={
                                 res.picture[res.picture.length - 1]
-                                  ? `https://ess.aapico.com${
-                                      res.picture[res.picture.length - 1].url
-                                    }`
+                                  ? `https://ess.aapico.com${res.picture[res.picture.length - 1].url
+                                  }`
                                   : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
                               }
                               className="imgCar"
@@ -1068,182 +1103,218 @@ const App = () => {
                             <Row>
                               {state.BookingDispatched
                                 ? state.BookingDispatched.map((d, index) =>
-                                    (d.car &&
-                                      d.car.id == res.id &&
-                                      d.company == filerBooking.company &&
-                                      d.car.id == res.id) ||
+                                  (d.car &&
+                                    d.car.id == res.id &&
+                                    d.company == filerBooking.company &&
+                                    d.car.id == res.id) ||
                                     (d.department == filerBooking.department &&
                                       d.car.id == res.id) ||
                                     (d.reason == filerBooking.reason &&
                                       d.car.id == res.id) ||
                                     (d.date == filerBooking.date &&
                                       d.car.id == res.id) ||
-                                    (d.destProvince == filerBooking.province &&
+
+                                    // (JSON.parse(d.destProvince).map(data => {
+                                    //   console.log(data);
+                                    //   if (data == filerBooking.province) {
+                                    //     return true
+                                    //   }
+
+                                    // }) &&
+                                    //   d.car.id == res.id) ? (
+
+
+                                    (JSON.parse(d.destProvince).filter(data => data === filerBooking.province).length > 0 &&
                                       d.car.id == res.id) ? (
-                                      <Col
-                                        xs={{ span: 24 }}
-                                        sm={{ span: 6 }}
-                                        key={d.id}
-                                        className="jobView"
+                                    <Col
+                                      xs={{ span: 24 }}
+                                      sm={{ span: 6 }}
+                                      key={d.id}
+                                      className="jobView"
+                                    >
+                                      <div
+                                        onClick={() => {
+                                          showData(d);
+                                        }}
+                                        className="font"
+                                        style={
+                                          d.status == "free"
+                                            ? {
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#1D366D",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
+                                            : {
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#FEAB20",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
+                                        }
                                       >
-                                        <div
-                                          onClick={() => {
-                                            showData(d);
-                                          }}
-                                          className="font"
-                                          style={
-                                            d.status == "free"
-                                              ? {
-                                                  cursor: "pointer",
-                                                  position: "relative",
-                                                  background: "#1D366D",
-                                                  borderRadius: "10px",
-                                                  zIndex: "2",
-                                                  padding: "8px 12px 6px 12px",
-                                                  marginTop: "4%",
-                                                }
-                                              : {
-                                                  cursor: "pointer",
-                                                  position: "relative",
-                                                  background: "#FEAB20",
-                                                  borderRadius: "10px",
-                                                  zIndex: "2",
-                                                  padding: "8px 12px 6px 12px",
-                                                  marginTop: "4%",
-                                                }
+                                        <p>
+                                          {JSON.parse(d.destProvince).map((data, i) => {
+                                            return (
+                                              <span>
+
+                                                {JSON.parse(d.destination)[i] + " " +
+                                                  JSON.parse(d.destProvince)[i] + " "}
+                                                <br />
+                                              </span>
+                                            )
                                           }
-                                        >
-                                          <p>
-                                            {JSON.parse(d.destination) + " "}{" "}
-                                            {JSON.parse(d.destProvince) + " "}
-                                          </p>
-                                          <p>
-                                            {d.startTime} - {d.endTime}
-                                          </p>
-                                        </div>
-                                      </Col>
-                                    ) : filerBooking.search == false &&
-                                      d.car.id == res.id ? (
-                                      <Col
-                                        xs={{ span: 24 }}
-                                        sm={{ span: 6 }}
-                                        key={d.id}
-                                        className="jobView"
+                                          )}
+                                        </p>
+                                        <p>
+                                          {d.startTime} - {d.endTime}
+                                        </p>
+                                      </div>
+                                    </Col>
+                                  ) : filerBooking.search == false &&
+                                    d.car.id == res.id ? (
+                                    <Col
+                                      xs={{ span: 24 }}
+                                      sm={{ span: 6 }}
+                                      key={d.id}
+                                      className="jobView"
+                                    >
+                                      <div
+                                        onClick={() => {
+                                          showData(d);
+                                        }}
+                                        className="font"
+                                        style={
+                                          d.status == "free"
+                                            ? {
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#1D366D",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
+                                            : {
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#FEAB20",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
+                                        }
                                       >
-                                        <div
-                                          onClick={() => {
-                                            showData(d);
-                                          }}
-                                          className="font"
-                                          style={
-                                            d.status == "free"
-                                              ? {
-                                                  cursor: "pointer",
-                                                  position: "relative",
-                                                  background: "#1D366D",
-                                                  borderRadius: "10px",
-                                                  zIndex: "2",
-                                                  padding: "8px 12px 6px 12px",
-                                                  marginTop: "4%",
-                                                }
-                                              : {
-                                                  cursor: "pointer",
-                                                  position: "relative",
-                                                  background: "#FEAB20",
-                                                  borderRadius: "10px",
-                                                  zIndex: "2",
-                                                  padding: "8px 12px 6px 12px",
-                                                  marginTop: "4%",
-                                                }
+                                        <p>
+                                          {JSON.parse(d.destProvince).map((data, i) => {
+                                            return (
+                                              <span>
+                                                {JSON.parse(d.destination)[i] + " " +
+                                                  JSON.parse(d.destProvince)[i] + " "}
+                                                <br />
+                                              </span>
+                                            )
                                           }
-                                        >
-                                          <p>
-                                            {JSON.parse(d.destination) + " "}{" "}
-                                            {JSON.parse(d.destProvince) + " "}
-                                          </p>
-                                          <p>
-                                            {d.startTime} - {d.endTime}
-                                          </p>
-                                        </div>
-                                      </Col>
-                                    ) : (d.car &&
-                                        d.car.id == res.id &&
-                                        filerBooking.company == "Other" &&
-                                        d.company != "AH" &&
-                                        d.company != "AHP" &&
-                                        d.company != "AHT" &&
-                                        d.company != "AITS" &&
-                                        d.company != "ASICO") ||
-                                      (filerBooking.department == "Other" &&
-                                        d.car.id == res.id &&
-                                        d.department != "Production" &&
-                                        d.department != "production" &&
-                                        d.department != "Marketing" &&
-                                        d.department != "marketing" &&
-                                        d.department != "QA & QC" &&
-                                        d.department != "Personnel" &&
-                                        d.department != "personnel" &&
-                                        d.department != "IT" &&
-                                        d.department != "it" &&
-                                        d.department !=
-                                          "Business Deverlopment" &&
-                                        d.department !=
-                                          "business deverlopment" &&
-                                        d.department != "Purchasing" &&
-                                        d.department != "purchasing" &&
-                                        d.department != "Safety" &&
-                                        d.department != "Safety") ||
-                                      (filerBooking.reason == "Other" &&
-                                        d.car.id == res.id &&
-                                        d.reason !=
-                                          "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
-                                        d.reason != "ส่งของ" &&
-                                        d.reason != "รับ - ส่งแขก" &&
-                                        d.reason != "ติดต่อลูกค้า") ? (
-                                      <Col
-                                        xs={{ span: 24 }}
-                                        sm={{ span: 6 }}
-                                        key={d.id}
-                                        className="jobView"
+                                          )}
+                                        </p>
+                                        <p>
+                                          {d.startTime} - {d.endTime}
+                                        </p>
+                                      </div>
+                                    </Col>
+                                  ) : (d.car &&
+                                    d.car.id == res.id &&
+                                    filerBooking.company == "Other" &&
+                                    d.company != "AH" &&
+                                    d.company != "AHP" &&
+                                    d.company != "AHT" &&
+                                    d.company != "AITS" &&
+                                    d.company != "ASICO") ||
+                                    (filerBooking.department == "Other" &&
+                                      d.car.id == res.id &&
+                                      d.department != "Production" &&
+                                      d.department != "production" &&
+                                      d.department != "Marketing" &&
+                                      d.department != "marketing" &&
+                                      d.department != "QA & QC" &&
+                                      d.department != "Personnel" &&
+                                      d.department != "personnel" &&
+                                      d.department != "IT" &&
+                                      d.department != "it" &&
+                                      d.department !=
+                                      "Business Deverlopment" &&
+                                      d.department !=
+                                      "business deverlopment" &&
+                                      d.department != "Purchasing" &&
+                                      d.department != "purchasing" &&
+                                      d.department != "Safety" &&
+                                      d.department != "Safety") ||
+                                    (filerBooking.reason == "Other" &&
+                                      d.car.id == res.id &&
+                                      d.reason !=
+                                      "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
+                                      d.reason != "ส่งของ" &&
+                                      d.reason != "รับ - ส่งแขก" &&
+                                      d.reason != "ติดต่อลูกค้า") ? (
+                                    <Col
+                                      xs={{ span: 24 }}
+                                      sm={{ span: 6 }}
+                                      key={d.id}
+                                      className="jobView"
+                                    >
+                                      <div
+                                        onClick={() => {
+                                          showData(d);
+                                        }}
+                                        className="font"
+                                        style={
+                                          d.status == "free"
+                                            ? {
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#1D366D",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
+                                            : {
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#FEAB20",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
+                                        }
                                       >
-                                        <div
-                                          onClick={() => {
-                                            showData(d);
-                                          }}
-                                          className="font"
-                                          style={
-                                            d.status == "free"
-                                              ? {
-                                                  cursor: "pointer",
-                                                  position: "relative",
-                                                  background: "#1D366D",
-                                                  borderRadius: "10px",
-                                                  zIndex: "2",
-                                                  padding: "8px 12px 6px 12px",
-                                                  marginTop: "4%",
-                                                }
-                                              : {
-                                                  cursor: "pointer",
-                                                  position: "relative",
-                                                  background: "#FEAB20",
-                                                  borderRadius: "10px",
-                                                  zIndex: "2",
-                                                  padding: "8px 12px 6px 12px",
-                                                  marginTop: "4%",
-                                                }
+                                        <p>
+                                          {JSON.parse(d.destProvince).map((data, i) => {
+                                            return (
+                                              <span>
+                                                {JSON.parse(d.destination)[i] + " " +
+                                                  JSON.parse(d.destProvince)[i] + " "}
+                                                <br />
+                                              </span>
+                                            )
                                           }
-                                        >
-                                          <p>
-                                            {JSON.parse(d.destination) + " "}{" "}
-                                            {JSON.parse(d.destProvince) + " "}
-                                          </p>
-                                          <p>
-                                            {d.startTime} - {d.endTime}
-                                          </p>
-                                        </div>
-                                      </Col>
-                                    ) : null
-                                  )
+                                          )}
+                                        </p>
+                                        <p>
+                                          {d.startTime} - {d.endTime}
+                                        </p>
+                                      </div>
+                                    </Col>
+                                  ) : null
+                                )
                                 : null}
                             </Row>
                           </div>
@@ -1336,14 +1407,14 @@ const App = () => {
           <div style={{ paddingTop: "4%" }}>
             <p>รายละเอียดอื่น ๆ : {modal.comment || "-"}</p>
           </div>
-          
+
           <div style={{ paddingTop: '4%' }}>
             <SearchButton
-                variant="contained"
-                color="secondary"
-                startIcon={<SearchIcon />}
+              variant="contained"
+              color="secondary"
+              startIcon={<SearchIcon />}
             >
-                ดูตำแหน่ง
+              ดูตำแหน่ง
             </SearchButton>
           </div>
 
