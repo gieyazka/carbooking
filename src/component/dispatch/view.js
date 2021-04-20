@@ -17,6 +17,8 @@ import statusdriver2 from "../asset/statusdriver2.png";
 import noDriver from "../asset/noDriver.png";
 import clearIcon from "../asset/clearIcon.png";
 import { getCars, getBookingDispatched } from "../util/index";
+import {Button as SearchButton} from "@material-ui/core";
+import SearchIcon from '@material-ui/icons/Search';
 
 const App = () => {
   const [state, setState] = React.useContext(DataContext);
@@ -1334,6 +1336,17 @@ const App = () => {
           <div style={{ paddingTop: "4%" }}>
             <p>รายละเอียดอื่น ๆ : {modal.comment || "-"}</p>
           </div>
+          
+          <div style={{ paddingTop: '4%' }}>
+            <SearchButton
+                variant="contained"
+                color="secondary"
+                startIcon={<SearchIcon />}
+            >
+                ดูตำแหน่ง
+            </SearchButton>
+          </div>
+
         </Modal>
       ) : null}
     </div>

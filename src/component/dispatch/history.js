@@ -2,9 +2,9 @@ import React, { useState, useRef, useReducer, Fragment } from 'react'
 import { DataContext } from "../store/store"
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import '../form/formrequest.css'
-
-
-import { Modal, Form, Input, Row, Col, Select, InputNumber, Button, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
+import {Button} from "@material-ui/core";
+import SearchIcon from '@material-ui/icons/Search';
+import { Modal, Form, Input, Row, Col, Select, InputNumber, DatePicker, Space, TimePicker, Radio, Card } from 'antd';
 import forward from '../asset/forward.png'
 import backward from '../asset/backward.png'
 import calender from '../asset/hrcarender.png'
@@ -114,6 +114,17 @@ const History = () => {
                             <div style={{ paddingTop: '4%' }}>
                                 <p>รายละเอียดอื่น ๆ   : {modalData.tripData.comment || '-'}</p>
                             </div>
+
+                            <div style={{ paddingTop: '4%' }}>
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
+                                    startIcon={<SearchIcon />}
+                                >
+                                    ดูตำแหน่ง
+                                </Button>
+                            </div>
+                            
                         </div>
                     </>
                     : null}
