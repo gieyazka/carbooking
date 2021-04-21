@@ -52,11 +52,15 @@ import {
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
+import { set } from "lodash";
 const Hrapprove = () => {
   const TestBtn = Button;
+
   let filterCompany = null;
   let filterType = null;
   // console.log(res);
+  const [datePick, setDatePick] = useState(null);
+  const [provincePick, setProvincePick] = useState(null);
   const [sidebar, setSidebar] = useState(true);
   const [bookingData, setBookingData] = useState([]);
   const [defaultBooking, setDefaultBooking] = useState([]);
@@ -212,8 +216,12 @@ const Hrapprove = () => {
     } else if (filter == "Reason") {
       setFilter({ ...filerBooking, search: true, reason: dataFilter });
     } else if (filter == "Date") {
+      setDatePick(moment(dataFilter, "YYYYMMDD"));
+
       setFilter({ ...filerBooking, search: true, date: dataFilter });
     } else if (filter == "Province") {
+      setProvincePick(dataFilter);
+
       setFilter({ ...filerBooking, search: true, province: dataFilter });
     }
   };
@@ -244,7 +252,9 @@ const Hrapprove = () => {
           test.push(res);
         } else if (
           res.hrApprove == null &&
-          res.destProvince == filerBooking.province
+          JSON.parse(res.destProvince).filter(
+            (data) => data === filerBooking.province
+          ).length > 0
         ) {
           countBooking += 1;
           test.push(res);
@@ -299,8 +309,10 @@ const Hrapprove = () => {
     }
   }, [filerBooking]);
   // console.log(filerBooking);
-
+  console.log(datePick);
   const clearBtn = () => {
+    setDatePick(null);
+    setProvincePick(null);
     setFilter({
       search: false,
       company: null,
@@ -963,10 +975,11 @@ const Hrapprove = () => {
                     <DatePicker
                       onChange={(e) =>
                         filterBooking(
-                          (filterCompany = moment(e).format("DD-MM-YYYY")),
+                          (filterCompany = moment(e).format("YYYYMMDD")),
                           (filterType = "Date")
                         )
                       }
+                      value={datePick}
                       ref={wrapperRef}
                       style={{ width: "100%" }}
                     />
@@ -990,6 +1003,7 @@ const Hrapprove = () => {
                           (filterType = "Province")
                         )
                       }
+                      value={provincePick}
                       showSearch
                       style={{ width: "100%" }}
                       placeholder="Select province"
@@ -1158,7 +1172,8 @@ const Hrapprove = () => {
           <div style={{ paddingTop: "4%" }}>
             <img src={calender} />{" "}
             <span style={{ position: "relative", paddingLeft: "4%" }}>
-              {modal.date} &nbsp; &nbsp; {modal.startTime} - {modal.endTime}{" "}
+              {moment(modal.date, "YYYYMMDD").format("DD-MM-YYYY")} &nbsp;
+              &nbsp; {modal.startTime} - {modal.endTime}{" "}
             </span>
           </div>
           <div style={{ paddingTop: "4%" }}>
@@ -1700,10 +1715,11 @@ const Hrapprove = () => {
                     <DatePicker
                       onChange={(e) =>
                         filterBooking(
-                          (filterCompany = moment(e).format("DD-MM-YYYY")),
+                          (filterCompany = moment(e).format("YYYYMMDD")),
                           (filterType = "Date")
                         )
                       }
+                      value={datePick}
                       ref={wrapperRef}
                       style={{ width: "100%" }}
                     />
@@ -1727,6 +1743,7 @@ const Hrapprove = () => {
                           (filterType = "Province")
                         )
                       }
+                      value={provincePick}
                       showSearch
                       style={{ width: "100%" }}
                       placeholder="Select province"
