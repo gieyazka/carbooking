@@ -49,6 +49,8 @@ import {
   Search,
   ViewColumn,
 } from "@material-ui/icons";
+import dataProvince from "../../province.json";
+
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import ThumbUpAltOutlinedIcon from "@material-ui/icons/ThumbUpAltOutlined";
 import ThumbDownAltOutlinedIcon from "@material-ui/icons/ThumbDownAltOutlined";
@@ -63,6 +65,23 @@ const Hrapprove = () => {
   const wrapperRef = useRef(null);
   const [state, setState] = React.useContext(DataContext);
   const { Option } = Select;
+  const [datePick, setDatePick] = useState(null);
+  const [provincePick, setProvincePick] = useState(null);
+  const [provinceState, setProvinceState] = useState(null);
+  React.useEffect(() => {
+    var provinceArray = [];
+
+    var i = 0;
+    for (const data in dataProvince) {
+      provinceArray.push(
+        <Option key={i} value={dataProvince[data].name.th}>
+          {dataProvince[data].name.th}
+        </Option>
+      );
+      i++;
+    }
+    setProvinceState(provinceArray);
+  }, []);
   const [filerBooking, setFilter] = useState({
     search: false,
     company: null,
@@ -85,6 +104,7 @@ const Hrapprove = () => {
     // console.log('closesidebar');
     setSidebar(true);
   };
+
   const [modal, setModal] = useState({
     carType: null,
     comment: null,
@@ -212,8 +232,10 @@ const Hrapprove = () => {
     } else if (filter == "Reason") {
       setFilter({ ...filerBooking, search: true, reason: dataFilter });
     } else if (filter == "Date") {
+      setDatePick(moment(dataFilter));
       setFilter({ ...filerBooking, search: true, date: dataFilter });
     } else if (filter == "Province") {
+      setProvincePick(dataFilter);
       setFilter({ ...filerBooking, search: true, province: dataFilter });
     }
   };
@@ -244,7 +266,9 @@ const Hrapprove = () => {
           test.push(res);
         } else if (
           res.hrApprove == null &&
-          res.destProvince == filerBooking.province
+          JSON.parse(res.destProvince).filter(
+            (data) => data === filerBooking.province
+          ).length > 0
         ) {
           countBooking += 1;
           test.push(res);
@@ -301,6 +325,8 @@ const Hrapprove = () => {
   // console.log(filerBooking);
 
   const clearBtn = () => {
+    setDatePick(null);
+    setProvincePick(null);
     setFilter({
       search: false,
       company: null,
@@ -963,10 +989,11 @@ const Hrapprove = () => {
                     <DatePicker
                       onChange={(e) =>
                         filterBooking(
-                          (filterCompany = moment(e).format("DD-MM-YYYY")),
+                          (filterCompany = moment(e).format("YYYYMMDD")),
                           (filterType = "Date")
                         )
                       }
+                      value={datePick}
                       ref={wrapperRef}
                       style={{ width: "100%" }}
                     />
@@ -990,6 +1017,7 @@ const Hrapprove = () => {
                           (filterType = "Province")
                         )
                       }
+                      value={provincePick}
                       showSearch
                       style={{ width: "100%" }}
                       placeholder="Select province"
@@ -1000,7 +1028,7 @@ const Hrapprove = () => {
                           .indexOf(input.toLowerCase()) >= 0
                       }
                     >
-                      {state.province}
+                      {provinceState}
                     </Select>
                   </Col>
                 </Row>
@@ -1700,10 +1728,11 @@ const Hrapprove = () => {
                     <DatePicker
                       onChange={(e) =>
                         filterBooking(
-                          (filterCompany = moment(e).format("DD-MM-YYYY")),
+                          (filterCompany = moment(e).format("YYYYMKMDD")),
                           (filterType = "Date")
                         )
                       }
+                      value={datePick}
                       ref={wrapperRef}
                       style={{ width: "100%" }}
                     />
@@ -1727,6 +1756,7 @@ const Hrapprove = () => {
                           (filterType = "Province")
                         )
                       }
+                      value={provincePick}
                       showSearch
                       style={{ width: "100%" }}
                       placeholder="Select province"

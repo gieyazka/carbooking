@@ -17,6 +17,8 @@ import {
   Card,
   Modal,
 } from "antd";
+import dataProvince from "../../province.json";
+
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import iconCar from "../asset/iconcar.png";
 import Statusdriver from "../asset/statusdriver.png";
@@ -129,7 +131,9 @@ const RequestCar = ({ filerBooking }) => {
                         res.department == filerBooking.department ||
                         res.reason == filerBooking.reason ||
                         res.date == filerBooking.date ||
-                        res.destProvince == filerBooking.province ? (
+                        JSON.parse(res.destProvince).filter(
+                          (data) => data === filerBooking.province
+                        ).length > 0 ? (
                           <Draggable
                             key={res.id}
                             draggableId={`${res.id}`}
@@ -779,6 +783,7 @@ const Car = () => {
   const getListStyle = (isDraggingOver) => ({
     height: isDraggingOver ? "auto" : "100%",
   });
+
   const clearData = (data, id) => {
     // console.log(data, id);
     let clearTrips = state.booking;
@@ -837,6 +842,7 @@ const Car = () => {
   // console.log(state);
   const [loading, setloading] = useState(false);
   // console.log(state);
+
   const saveDispatch = async (data, carData) => {
     let editable = false;
 
@@ -1681,6 +1687,8 @@ const General = () => {
     date: null,
     province: null,
   });
+  const [provincePick, setProvincePick] = useState(null);
+  const [datePick, setDatePick] = useState(null);
   const [state, setState] = React.useContext(DataContext);
   // console.log(state);
   const [sidebar, setSidebar] = useState(true);
@@ -1720,7 +1728,17 @@ const General = () => {
       );
       i++;
     }
+    var provinceArray = [];
 
+    var i = 0;
+    for (const data in dataProvince) {
+      provinceArray.push(
+        <Option key={i} value={dataProvince[data].name.th}>
+          {dataProvince[data].name.th}
+        </Option>
+      );
+      i++;
+    }
     setState({
       ...state,
       bookingDispatched: bookingDispatched,
@@ -1730,6 +1748,7 @@ const General = () => {
       allTrip: trips,
       trips: trips,
       count: countData,
+      province: provinceArray,
     });
   }, []);
 
@@ -1916,8 +1935,10 @@ const General = () => {
     } else if (filter == "Reason") {
       setFilter({ ...filerBooking, search: true, reason: dataFilter });
     } else if (filter == "Date") {
+      setDatePick(moment(dataFilter));
       setFilter({ ...filerBooking, search: true, date: dataFilter });
     } else if (filter == "Province") {
+      setProvincePick(dataFilter);
       setFilter({ ...filerBooking, search: true, province: dataFilter });
     }
   };
@@ -1983,7 +2004,10 @@ const General = () => {
       setState({ ...state, count: countBooking });
     }
   }, [filerBooking]);
+
   const clearBtn = () => {
+    setDatePick(null);
+    setProvincePick(null);
     setFilter({
       search: false,
       company: null,
@@ -2503,10 +2527,11 @@ const General = () => {
                         <DatePicker
                           onChange={(e) =>
                             filterBooking(
-                              (filterCompany = moment(e).format("DD-MM-YYYY")),
+                              (filterCompany = moment(e).format("YYYYMMDD")),
                               (filterType = "Date")
                             )
                           }
+                          value={datePick}
                           ref={wrapperRef}
                           style={{ width: "100%" }}
                         />
@@ -2530,6 +2555,7 @@ const General = () => {
                               (filterType = "Province")
                             )
                           }
+                          value={provincePick}
                           showSearch
                           style={{ width: "100%" }}
                           placeholder="Select province"

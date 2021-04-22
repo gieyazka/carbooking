@@ -18,7 +18,8 @@ import noDriver from "../asset/noDriver.png";
 import clearIcon from "../asset/clearIcon.png";
 import { getCars, getBookingDispatched } from "../util/index";
 import { Button as SearchButton } from "@material-ui/core";
-import SearchIcon from '@material-ui/icons/Search';
+import SearchIcon from "@material-ui/icons/Search";
+import dataProvince from "../../province.json";
 
 const App = () => {
   const [state, setState] = React.useContext(DataContext);
@@ -98,10 +99,11 @@ const App = () => {
     date: null,
     province: null,
   });
-
+  const [datePick, setDatePick] = useState(null);
+  const [provincePick, setProvincePick] = useState(null);
   const [count, setCount] = useState(0);
   const filterBooking = (dataFilter, filter) => {
-    console.log(dataFilter, filter);
+    // console.log(dataFilter, filter);
     // console.log(dataFilter, filter);
     let countBooking = 0;
     if (filter == "Company") {
@@ -111,8 +113,10 @@ const App = () => {
     } else if (filter == "Reason") {
       setFilter({ ...filerBooking, search: true, reason: dataFilter });
     } else if (filter == "Date") {
+      setDatePick(moment(dataFilter));
       setFilter({ ...filerBooking, search: true, date: dataFilter });
     } else if (filter == "Province") {
+      setProvincePick(dataFilter);
       setFilter({ ...filerBooking, search: true, province: dataFilter });
     }
   };
@@ -178,11 +182,23 @@ const App = () => {
       setCount(countBooking);
     }
   }, [filerBooking]);
-
+  const [provinceState, setProvinceState] = useState(null);
   React.useEffect(async () => {
     const countTrip = async () => {
       const cars = await getCars();
       const test = await getBookingDispatched().then((res) => {
+        var provinceArray = [];
+
+        var i = 0;
+        for (const data in dataProvince) {
+          provinceArray.push(
+            <Option key={i} value={dataProvince[data].name.th}>
+              {dataProvince[data].name.th}
+            </Option>
+          );
+          i++;
+        }
+        setProvinceState(provinceArray);
 
         setCount(res.length);
         setState({ ...state, BookingDispatched: res, cars: cars });
@@ -191,10 +207,12 @@ const App = () => {
       // setCount(countData)
       // console.log(res);
     };
+
     await countTrip();
   }, []);
   const clearBtn = () => {
-    console.log(DatewrapperRef.current);
+    setProvincePick(null);
+    setDatePick(null);
     setFilter({
       search: false,
       company: null,
@@ -714,6 +732,7 @@ const App = () => {
                               (filterType = "Date")
                             )
                           }
+                          value={datePick}
                           ref={DatewrapperRef}
                           style={{ width: "100%" }}
                         />
@@ -737,6 +756,7 @@ const App = () => {
                               (filterType = "Province")
                             )
                           }
+                          value={provincePick}
                           showSearch
                           style={{ width: "100%" }}
                           placeholder="Select province"
@@ -747,7 +767,7 @@ const App = () => {
                               .indexOf(input.toLowerCase()) >= 0
                           }
                         >
-                          {state.province}
+                          {provinceState}
                         </Select>
                       </Col>
                     </Row>
@@ -810,8 +830,9 @@ const App = () => {
                         <img
                           src={
                             res.picture[res.picture.length - 1]
-                              ? `https://ess.aapico.com${res.picture[res.picture.length - 1].url
-                              }`
+                              ? `https://ess.aapico.com${
+                                  res.picture[res.picture.length - 1].url
+                                }`
                               : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
                           }
                           className="imgCar"
@@ -837,22 +858,23 @@ const App = () => {
                         {/* <div> */}
 
                         <Row>
-
                           {state.BookingDispatched
                             ? state.BookingDispatched.map((d, index) =>
-                              (filerBooking.search === true && d.car &&
-                                d.car.id == res.id &&
-                                d.company == filerBooking.company &&
-                                d.car.id == res.id) ||
+                                (filerBooking.search === true &&
+                                  d.car &&
+                                  d.car.id == res.id &&
+                                  d.company == filerBooking.company &&
+                                  d.car.id == res.id) ||
                                 (d.department == filerBooking.department &&
                                   d.car.id == res.id) ||
                                 (d.reason == filerBooking.reason &&
                                   d.car.id == res.id) ||
                                 (d.date == filerBooking.date &&
                                   d.car.id == res.id) ||
-                                d.car.id == res.id &&
-                                (JSON.parse(d.destProvince).filter(data => data === filerBooking.province).length > 0)
-                                ? (
+                                (d.car.id == res.id &&
+                                  JSON.parse(d.destProvince).filter(
+                                    (data) => data === filerBooking.province
+                                  ).length > 0) ? (
                                   // (d.destProvince == filerBooking.province &&
                                   //   d.car.id == res.id) ? (
 
@@ -870,38 +892,42 @@ const App = () => {
                                       style={
                                         d.status == "free"
                                           ? {
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            background: "#1D366D",
-                                            borderRadius: "10px",
-                                            zIndex: "2",
-                                            padding: "8px 12px 6px 12px",
-                                            marginTop: "4%",
-                                          }
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#1D366D",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
                                           : {
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            background: "#FEAB20",
-                                            borderRadius: "10px",
-                                            zIndex: "2",
-                                            padding: "8px 12px 6px 12px",
-                                            marginTop: "4%",
-                                          }
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#FEAB20",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
                                       }
                                     >
                                       <p>
-
-                                        {JSON.parse(d.destProvince).map((data, i) => {
-                                          return (
-                                            <span>
-
-                                              {JSON.parse(d.destination)[i] + " " +
-                                                JSON.parse(d.destProvince)[i] + " "}
-                                              <br />
-                                            </span>
-                                          )
-                                        }
-                                        )}     </p>
+                                        {JSON.parse(d.destProvince).map(
+                                          (data, i) => {
+                                            return (
+                                              <span>
+                                                {JSON.parse(d.destination)[i] +
+                                                  " " +
+                                                  JSON.parse(d.destProvince)[
+                                                    i
+                                                  ] +
+                                                  " "}
+                                                <br />
+                                              </span>
+                                            );
+                                          }
+                                        )}{" "}
+                                      </p>
                                       <p>
                                         {d.startTime} - {d.endTime}
                                       </p>
@@ -923,35 +949,40 @@ const App = () => {
                                       style={
                                         d.status == "free"
                                           ? {
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            background: "#1D366D",
-                                            borderRadius: "10px",
-                                            zIndex: "2",
-                                            padding: "8px 12px 6px 12px",
-                                            marginTop: "4%",
-                                          }
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#1D366D",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
                                           : {
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            background: "#FEAB20",
-                                            borderRadius: "10px",
-                                            zIndex: "2",
-                                            padding: "8px 12px 6px 12px",
-                                            marginTop: "4%",
-                                          }
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#FEAB20",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
                                       }
                                     >
                                       <p>
-                                        {JSON.parse(d.destProvince).map((data, i) => {
-                                          return (
-                                            <span>
-                                              {JSON.parse(d.destination)[i] + " " +
-                                                JSON.parse(d.destProvince)[i] + " "}
-                                              <br />
-                                            </span>
-                                          )
-                                        }
+                                        {JSON.parse(d.destProvince).map(
+                                          (data, i) => {
+                                            return (
+                                              <span>
+                                                {JSON.parse(d.destination)[i] +
+                                                  " " +
+                                                  JSON.parse(d.destProvince)[
+                                                    i
+                                                  ] +
+                                                  " "}
+                                                <br />
+                                              </span>
+                                            );
+                                          }
                                         )}
                                         {/* {JSON.parse(d.destination) + " "}{" "}
                                       {JSON.parse(d.destProvince).map(a => a)} */}
@@ -962,13 +993,13 @@ const App = () => {
                                     </div>
                                   </Col>
                                 ) : (d.car &&
-                                  d.car.id == res.id &&
-                                  filerBooking.company == "Other" &&
-                                  d.company != "AH" &&
-                                  d.company != "AHP" &&
-                                  d.company != "AHT" &&
-                                  d.company != "AITS" &&
-                                  d.company != "ASICO") ||
+                                    d.car.id == res.id &&
+                                    filerBooking.company == "Other" &&
+                                    d.company != "AH" &&
+                                    d.company != "AHP" &&
+                                    d.company != "AHT" &&
+                                    d.company != "AITS" &&
+                                    d.company != "ASICO") ||
                                   (filerBooking.department == "Other" &&
                                     d.car.id == res.id &&
                                     d.department != "Production" &&
@@ -989,7 +1020,7 @@ const App = () => {
                                   (filerBooking.reason == "Other" &&
                                     d.car.id == res.id &&
                                     d.reason !=
-                                    "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
+                                      "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
                                     d.reason != "ส่งของ" &&
                                     d.reason != "รับ - ส่งแขก" &&
                                     d.reason != "ติดต่อลูกค้า") ? (
@@ -1007,35 +1038,40 @@ const App = () => {
                                       style={
                                         d.status == "free"
                                           ? {
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            background: "#1D366D",
-                                            borderRadius: "10px",
-                                            zIndex: "2",
-                                            padding: "8px 12px 6px 12px",
-                                            marginTop: "4%",
-                                          }
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#1D366D",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
                                           : {
-                                            cursor: "pointer",
-                                            position: "relative",
-                                            background: "#FEAB20",
-                                            borderRadius: "10px",
-                                            zIndex: "2",
-                                            padding: "8px 12px 6px 12px",
-                                            marginTop: "4%",
-                                          }
+                                              cursor: "pointer",
+                                              position: "relative",
+                                              background: "#FEAB20",
+                                              borderRadius: "10px",
+                                              zIndex: "2",
+                                              padding: "8px 12px 6px 12px",
+                                              marginTop: "4%",
+                                            }
                                       }
                                     >
                                       <p>
-                                        {JSON.parse(d.destProvince).map((data, i) => {
-                                          return (
-                                            <span>
-                                              {JSON.parse(d.destination)[i] + " " +
-                                                JSON.parse(d.destProvince)[i] + " "}
-                                              <br />
-                                            </span>
-                                          )
-                                        }
+                                        {JSON.parse(d.destProvince).map(
+                                          (data, i) => {
+                                            return (
+                                              <span>
+                                                {JSON.parse(d.destination)[i] +
+                                                  " " +
+                                                  JSON.parse(d.destProvince)[
+                                                    i
+                                                  ] +
+                                                  " "}
+                                                <br />
+                                              </span>
+                                            );
+                                          }
                                         )}
                                       </p>
                                       <p>
@@ -1044,7 +1080,7 @@ const App = () => {
                                     </div>
                                   </Col>
                                 ) : null
-                            )
+                              )
                             : null}
                         </Row>
                       </div>
@@ -1071,8 +1107,9 @@ const App = () => {
                             <img
                               src={
                                 res.picture[res.picture.length - 1]
-                                  ? `https://ess.aapico.com${res.picture[res.picture.length - 1].url
-                                  }`
+                                  ? `https://ess.aapico.com${
+                                      res.picture[res.picture.length - 1].url
+                                    }`
                                   : "https://static1.cargurus.com/gfx/reskin/no-image-available.jpg?io=true&format=jpg&auto=webp"
                               }
                               className="imgCar"
@@ -1103,17 +1140,16 @@ const App = () => {
                             <Row>
                               {state.BookingDispatched
                                 ? state.BookingDispatched.map((d, index) =>
-                                  (d.car &&
-                                    d.car.id == res.id &&
-                                    d.company == filerBooking.company &&
-                                    d.car.id == res.id) ||
+                                    (d.car &&
+                                      d.car.id == res.id &&
+                                      d.company == filerBooking.company &&
+                                      d.car.id == res.id) ||
                                     (d.department == filerBooking.department &&
                                       d.car.id == res.id) ||
                                     (d.reason == filerBooking.reason &&
                                       d.car.id == res.id) ||
                                     (d.date == filerBooking.date &&
                                       d.car.id == res.id) ||
-
                                     // (JSON.parse(d.destProvince).map(data => {
                                     //   console.log(data);
                                     //   if (data == filerBooking.province) {
@@ -1123,198 +1159,219 @@ const App = () => {
                                     // }) &&
                                     //   d.car.id == res.id) ? (
 
-
-                                    (JSON.parse(d.destProvince).filter(data => data === filerBooking.province).length > 0 &&
+                                    (JSON.parse(d.destProvince).filter(
+                                      (data) => data === filerBooking.province
+                                    ).length > 0 &&
                                       d.car.id == res.id) ? (
-                                    <Col
-                                      xs={{ span: 24 }}
-                                      sm={{ span: 6 }}
-                                      key={d.id}
-                                      className="jobView"
-                                    >
-                                      <div
-                                        onClick={() => {
-                                          showData(d);
-                                        }}
-                                        className="font"
-                                        style={
-                                          d.status == "free"
-                                            ? {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
-                                            : {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
-                                        }
+                                      <Col
+                                        xs={{ span: 24 }}
+                                        sm={{ span: 6 }}
+                                        key={d.id}
+                                        className="jobView"
                                       >
-                                        <p>
-                                          {JSON.parse(d.destProvince).map((data, i) => {
-                                            return (
-                                              <span>
-
-                                                {JSON.parse(d.destination)[i] + " " +
-                                                  JSON.parse(d.destProvince)[i] + " "}
-                                                <br />
-                                              </span>
-                                            )
+                                        <div
+                                          onClick={() => {
+                                            showData(d);
+                                          }}
+                                          className="font"
+                                          style={
+                                            d.status == "free"
+                                              ? {
+                                                  cursor: "pointer",
+                                                  position: "relative",
+                                                  background: "#1D366D",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  padding: "8px 12px 6px 12px",
+                                                  marginTop: "4%",
+                                                }
+                                              : {
+                                                  cursor: "pointer",
+                                                  position: "relative",
+                                                  background: "#FEAB20",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  padding: "8px 12px 6px 12px",
+                                                  marginTop: "4%",
+                                                }
                                           }
-                                          )}
-                                        </p>
-                                        <p>
-                                          {d.startTime} - {d.endTime}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                  ) : filerBooking.search == false &&
-                                    d.car.id == res.id ? (
-                                    <Col
-                                      xs={{ span: 24 }}
-                                      sm={{ span: 6 }}
-                                      key={d.id}
-                                      className="jobView"
-                                    >
-                                      <div
-                                        onClick={() => {
-                                          showData(d);
-                                        }}
-                                        className="font"
-                                        style={
-                                          d.status == "free"
-                                            ? {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
-                                            : {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
-                                        }
+                                        >
+                                          <p>
+                                            {JSON.parse(d.destProvince).map(
+                                              (data, i) => {
+                                                return (
+                                                  <span>
+                                                    {JSON.parse(d.destination)[
+                                                      i
+                                                    ] +
+                                                      " " +
+                                                      JSON.parse(
+                                                        d.destProvince
+                                                      )[i] +
+                                                      " "}
+                                                    <br />
+                                                  </span>
+                                                );
+                                              }
+                                            )}
+                                          </p>
+                                          <p>
+                                            {d.startTime} - {d.endTime}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                    ) : filerBooking.search == false &&
+                                      d.car.id == res.id ? (
+                                      <Col
+                                        xs={{ span: 24 }}
+                                        sm={{ span: 6 }}
+                                        key={d.id}
+                                        className="jobView"
                                       >
-                                        <p>
-                                          {JSON.parse(d.destProvince).map((data, i) => {
-                                            return (
-                                              <span>
-                                                {JSON.parse(d.destination)[i] + " " +
-                                                  JSON.parse(d.destProvince)[i] + " "}
-                                                <br />
-                                              </span>
-                                            )
+                                        <div
+                                          onClick={() => {
+                                            showData(d);
+                                          }}
+                                          className="font"
+                                          style={
+                                            d.status == "free"
+                                              ? {
+                                                  cursor: "pointer",
+                                                  position: "relative",
+                                                  background: "#1D366D",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  padding: "8px 12px 6px 12px",
+                                                  marginTop: "4%",
+                                                }
+                                              : {
+                                                  cursor: "pointer",
+                                                  position: "relative",
+                                                  background: "#FEAB20",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  padding: "8px 12px 6px 12px",
+                                                  marginTop: "4%",
+                                                }
                                           }
-                                          )}
-                                        </p>
-                                        <p>
-                                          {d.startTime} - {d.endTime}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                  ) : (d.car &&
-                                    d.car.id == res.id &&
-                                    filerBooking.company == "Other" &&
-                                    d.company != "AH" &&
-                                    d.company != "AHP" &&
-                                    d.company != "AHT" &&
-                                    d.company != "AITS" &&
-                                    d.company != "ASICO") ||
-                                    (filerBooking.department == "Other" &&
-                                      d.car.id == res.id &&
-                                      d.department != "Production" &&
-                                      d.department != "production" &&
-                                      d.department != "Marketing" &&
-                                      d.department != "marketing" &&
-                                      d.department != "QA & QC" &&
-                                      d.department != "Personnel" &&
-                                      d.department != "personnel" &&
-                                      d.department != "IT" &&
-                                      d.department != "it" &&
-                                      d.department !=
-                                      "Business Deverlopment" &&
-                                      d.department !=
-                                      "business deverlopment" &&
-                                      d.department != "Purchasing" &&
-                                      d.department != "purchasing" &&
-                                      d.department != "Safety" &&
-                                      d.department != "Safety") ||
-                                    (filerBooking.reason == "Other" &&
-                                      d.car.id == res.id &&
-                                      d.reason !=
-                                      "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
-                                      d.reason != "ส่งของ" &&
-                                      d.reason != "รับ - ส่งแขก" &&
-                                      d.reason != "ติดต่อลูกค้า") ? (
-                                    <Col
-                                      xs={{ span: 24 }}
-                                      sm={{ span: 6 }}
-                                      key={d.id}
-                                      className="jobView"
-                                    >
-                                      <div
-                                        onClick={() => {
-                                          showData(d);
-                                        }}
-                                        className="font"
-                                        style={
-                                          d.status == "free"
-                                            ? {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#1D366D",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
-                                            : {
-                                              cursor: "pointer",
-                                              position: "relative",
-                                              background: "#FEAB20",
-                                              borderRadius: "10px",
-                                              zIndex: "2",
-                                              padding: "8px 12px 6px 12px",
-                                              marginTop: "4%",
-                                            }
-                                        }
+                                        >
+                                          <p>
+                                            {JSON.parse(d.destProvince).map(
+                                              (data, i) => {
+                                                return (
+                                                  <span>
+                                                    {JSON.parse(d.destination)[
+                                                      i
+                                                    ] +
+                                                      " " +
+                                                      JSON.parse(
+                                                        d.destProvince
+                                                      )[i] +
+                                                      " "}
+                                                    <br />
+                                                  </span>
+                                                );
+                                              }
+                                            )}
+                                          </p>
+                                          <p>
+                                            {d.startTime} - {d.endTime}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                    ) : (d.car &&
+                                        d.car.id == res.id &&
+                                        filerBooking.company == "Other" &&
+                                        d.company != "AH" &&
+                                        d.company != "AHP" &&
+                                        d.company != "AHT" &&
+                                        d.company != "AITS" &&
+                                        d.company != "ASICO") ||
+                                      (filerBooking.department == "Other" &&
+                                        d.car.id == res.id &&
+                                        d.department != "Production" &&
+                                        d.department != "production" &&
+                                        d.department != "Marketing" &&
+                                        d.department != "marketing" &&
+                                        d.department != "QA & QC" &&
+                                        d.department != "Personnel" &&
+                                        d.department != "personnel" &&
+                                        d.department != "IT" &&
+                                        d.department != "it" &&
+                                        d.department !=
+                                          "Business Deverlopment" &&
+                                        d.department !=
+                                          "business deverlopment" &&
+                                        d.department != "Purchasing" &&
+                                        d.department != "purchasing" &&
+                                        d.department != "Safety" &&
+                                        d.department != "Safety") ||
+                                      (filerBooking.reason == "Other" &&
+                                        d.car.id == res.id &&
+                                        d.reason !=
+                                          "ส่งเอกสาร เก็บเช็ค วางบิล ติดต่อธนาคาร" &&
+                                        d.reason != "ส่งของ" &&
+                                        d.reason != "รับ - ส่งแขก" &&
+                                        d.reason != "ติดต่อลูกค้า") ? (
+                                      <Col
+                                        xs={{ span: 24 }}
+                                        sm={{ span: 6 }}
+                                        key={d.id}
+                                        className="jobView"
                                       >
-                                        <p>
-                                          {JSON.parse(d.destProvince).map((data, i) => {
-                                            return (
-                                              <span>
-                                                {JSON.parse(d.destination)[i] + " " +
-                                                  JSON.parse(d.destProvince)[i] + " "}
-                                                <br />
-                                              </span>
-                                            )
+                                        <div
+                                          onClick={() => {
+                                            showData(d);
+                                          }}
+                                          className="font"
+                                          style={
+                                            d.status == "free"
+                                              ? {
+                                                  cursor: "pointer",
+                                                  position: "relative",
+                                                  background: "#1D366D",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  padding: "8px 12px 6px 12px",
+                                                  marginTop: "4%",
+                                                }
+                                              : {
+                                                  cursor: "pointer",
+                                                  position: "relative",
+                                                  background: "#FEAB20",
+                                                  borderRadius: "10px",
+                                                  zIndex: "2",
+                                                  padding: "8px 12px 6px 12px",
+                                                  marginTop: "4%",
+                                                }
                                           }
-                                          )}
-                                        </p>
-                                        <p>
-                                          {d.startTime} - {d.endTime}
-                                        </p>
-                                      </div>
-                                    </Col>
-                                  ) : null
-                                )
+                                        >
+                                          <p>
+                                            {JSON.parse(d.destProvince).map(
+                                              (data, i) => {
+                                                return (
+                                                  <span>
+                                                    {JSON.parse(d.destination)[
+                                                      i
+                                                    ] +
+                                                      " " +
+                                                      JSON.parse(
+                                                        d.destProvince
+                                                      )[i] +
+                                                      " "}
+                                                    <br />
+                                                  </span>
+                                                );
+                                              }
+                                            )}
+                                          </p>
+                                          <p>
+                                            {d.startTime} - {d.endTime}
+                                          </p>
+                                        </div>
+                                      </Col>
+                                    ) : null
+                                  )
                                 : null}
                             </Row>
                           </div>
@@ -1408,7 +1465,7 @@ const App = () => {
             <p>รายละเอียดอื่น ๆ : {modal.comment || "-"}</p>
           </div>
 
-          <div style={{ paddingTop: '4%' }}>
+          <div style={{ paddingTop: "4%" }}>
             <SearchButton
               variant="contained"
               color="secondary"
@@ -1417,7 +1474,6 @@ const App = () => {
               ดูตำแหน่ง
             </SearchButton>
           </div>
-
         </Modal>
       ) : null}
     </div>
