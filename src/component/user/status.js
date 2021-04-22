@@ -22,6 +22,8 @@ import {
 } from "antd";
 import forward from "../asset/forward.png";
 import backward from "../asset/backward.png";
+import SearchIcon from "@material-ui/icons/Search";
+import { Button as SearchButton } from "@material-ui/core";
 
 import calender from "../asset/hrcarender.png";
 import location from "../asset/hrlocation.png";
@@ -96,7 +98,7 @@ const Trips = () => {
   }, []);
   // console.log(modalData);
   var i = 0;
-
+  // console.log(modalData.tripData.car);
   return (
     <Fragment>
       <div className="driverCalendar">
@@ -305,6 +307,23 @@ const Trips = () => {
                       />
                     </Steps>
                   </Col>
+                  {modalData.tripData.dispatch === true &&
+                  modalData.tripData.status != "finish" ? (
+                    <Col span={24}>
+                      <div style={{ paddingTop: "4%" }}>
+                        <SearchButton
+                          onClick={() =>
+                            window.open(modalData.tripData.car.gps_link)
+                          }
+                          variant="contained"
+                          color="secondary"
+                          startIcon={<SearchIcon />}
+                        >
+                          ดูตำแหน่ง
+                        </SearchButton>
+                      </div>
+                    </Col>
+                  ) : null}
                 </Row>
               </div>
             </div>

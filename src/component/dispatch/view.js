@@ -1465,7 +1465,7 @@ const App = () => {
             <p>รายละเอียดอื่น ๆ : {modal.comment || "-"}</p>
           </div>
 
-          <div style={{ paddingTop: "4%" }}>
+          {/* <div style={{ paddingTop: "4%" }}>
             <SearchButton
               variant="contained"
               color="secondary"
@@ -1473,7 +1473,7 @@ const App = () => {
             >
               ดูตำแหน่ง
             </SearchButton>
-          </div>
+          </div> */}
         </Modal>
       ) : null}
     </div>
