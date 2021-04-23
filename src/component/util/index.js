@@ -156,6 +156,7 @@ export const getTripsSinceDate = async (date) => {
       ]);
     });
 };
+
 export const getTripsBybooking = async (bookingId) => {
   return await axios
     .get(`${tripApi}?bookings=${bookingId}&status_ne=off`)
@@ -176,6 +177,11 @@ export const getAllTrips = async () => {
         return o.date;
       },
     ]);
+  });
+};
+export const updateStatusTrip = async (tripId, status) => {
+  await axios.put(`${tripApi}/${tripId}`, {
+    status,
   });
 };
 export const checkTrips = async (date, carId) => {

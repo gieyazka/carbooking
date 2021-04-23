@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
+import Swal from "sweetalert2";
+
 import SelectCar from "./selectCar.js";
 import { DataContext } from "../store/store";
 import moment from "moment";
@@ -16,11 +18,17 @@ import people from "../asset/people.png";
 import statusdriver2 from "../asset/statusdriver2.png";
 import noDriver from "../asset/noDriver.png";
 import clearIcon from "../asset/clearIcon.png";
-import { getCars, getBookingDispatched } from "../util/index";
+import {
+  getCars,
+  getBookingDispatched,
+  getTripsBybooking,
+  updateStatusTrip,
+  editBookingStatus,
+} from "../util/index";
 import { Button as SearchButton } from "@material-ui/core";
 import SearchIcon from "@material-ui/icons/Search";
 import dataProvince from "../../province.json";
-
+import CheckIcon from "@material-ui/icons/Check";
 const App = () => {
   const [state, setState] = React.useContext(DataContext);
   const [sidebar, setSidebar] = useState(true);
@@ -183,6 +191,29 @@ const App = () => {
     }
   }, [filerBooking]);
   const [provinceState, setProvinceState] = useState(null);
+  const handleFinish = async (booking) => {
+    console.log(booking);
+
+    await editBookingStatus(booking, "finish", null).then(async () => {
+      await getTripsBybooking(booking.id).then(async (res) => {
+        console.log(res);
+        if (res[0].bookings.filter((d) => d.status != "finish").length === 0) {
+          await updateStatusTrip(res[0].id, "finish");
+        }
+        await getBookingDispatched().then((res) => {
+          setCount(res.length);
+          setState({ ...state, BookingDispatched: res });
+          setModal({ ...modal, open: false });
+          Swal.fire({
+            icon: "success",
+            title: `Finish job success`,
+            showConfirmButton: false,
+            timer: 1500,
+          });
+        });
+      });
+    });
+  };
   React.useEffect(async () => {
     const countTrip = async () => {
       const cars = await getCars();
@@ -1465,15 +1496,16 @@ const App = () => {
             <p>รายละเอียดอื่น ๆ : {modal.comment || "-"}</p>
           </div>
 
-          {/* <div style={{ paddingTop: "4%" }}>
+          <div style={{ paddingTop: "4%" }}>
             <SearchButton
               variant="contained"
-              color="secondary"
-              startIcon={<SearchIcon />}
+              color="primary"
+              startIcon={<CheckIcon />}
+              onClick={() => handleFinish(modal.booking)}
             >
-              ดูตำแหน่ง
+              Finish Job
             </SearchButton>
-          </div> */}
+          </div>
         </Modal>
       ) : null}
     </div>
